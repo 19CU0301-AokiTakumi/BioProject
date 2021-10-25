@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\BioProject.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{7864DE0A-3859-4790-83AB-F40BBA791C99}</UniqueIdentifier>
+      <UniqueIdentifier>{64743E0B-E1D3-4751-B791-2AA339076C01}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\BioProject.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{0F2EFD0C-5D35-407D-A4AD-207F8E270141}</UniqueIdentifier>
+      <UniqueIdentifier>{232227D9-3715-43D7-AE96-F359612A5F1F}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -24,7 +24,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\BioProject">
-      <UniqueIdentifier>{84760B44-EBA9-4CBD-8928-231D304FD10F}</UniqueIdentifier>
+      <UniqueIdentifier>{2326AD39-F2A1-4223-A72A-9F5FC08E79BA}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\BioProject\BioProject.Build.cs">
       <Filter>Source\BioProject</Filter>
@@ -39,6 +39,12 @@
       <Filter>Source\BioProject</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\BioProject\BioProjectGameModeBase.h">
+      <Filter>Source\BioProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\BioProject\DoorBase.cpp">
+      <Filter>Source\BioProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\BioProject\DoorBase.h">
       <Filter>Source\BioProject</Filter>
     </ClInclude>
   </ItemGroup>
