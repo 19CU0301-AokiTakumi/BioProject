@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\BioProject.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{64743E0B-E1D3-4751-B791-2AA339076C01}</UniqueIdentifier>
+      <UniqueIdentifier>{62DD891B-828F-4C6A-8441-AF91D2660225}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\BioProject.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{232227D9-3715-43D7-AE96-F359612A5F1F}</UniqueIdentifier>
+      <UniqueIdentifier>{00F864DF-3BEF-4045-A46A-409AB952F8C7}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -24,7 +24,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\BioProject">
-      <UniqueIdentifier>{2326AD39-F2A1-4223-A72A-9F5FC08E79BA}</UniqueIdentifier>
+      <UniqueIdentifier>{4A89B68E-FFE6-4EBF-86F6-5BE7946312E3}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\BioProject\BioProject.Build.cs">
       <Filter>Source\BioProject</Filter>
