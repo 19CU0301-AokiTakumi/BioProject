@@ -370,11 +370,14 @@
     <None Include="..\..\Config\DefaultEditor.ini"/>
     <None Include="..\..\Config\DefaultEngine.ini"/>
     <None Include="..\..\Config\DefaultGame.ini"/>
+    <None Include="..\..\Config\DefaultInput.ini"/>
     <None Include="..\..\Source\BioProject\BioProject.Build.cs"/>
     <ClCompile Include="..\..\Source\BioProject\BioProject.cpp"/>
     <ClInclude Include="..\..\Source\BioProject\BioProject.h"/>
     <ClCompile Include="..\..\Source\BioProject\BioProjectGameModeBase.cpp"/>
     <ClInclude Include="..\..\Source\BioProject\BioProjectGameModeBase.h"/>
+    <ClCompile Include="..\..\Source\BioProject\EnemyChara.cpp"/>
+    <ClInclude Include="..\..\Source\BioProject\EnemyChara.h"/>
     <ClCompile Include="..\..\Source\BioProject\PlayerChara.cpp"/>
     <ClInclude Include="..\..\Source\BioProject\PlayerChara.h"/>
   </ItemGroup>

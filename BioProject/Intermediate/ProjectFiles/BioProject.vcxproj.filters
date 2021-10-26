@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\BioProject.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{44571B3A-99C2-4869-A30B-2B82F3858FF3}</UniqueIdentifier>
+      <UniqueIdentifier>{C296743A-E948-4223-BB74-441854EEFF08}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\BioProject.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{D2861B38-C277-47B0-A6CC-898CB4B0E286}</UniqueIdentifier>
+      <UniqueIdentifier>{A7732DF4-3126-4A9A-9054-0758F7218122}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -23,8 +23,11 @@
     <None Include="..\..\Config\DefaultGame.ini">
       <Filter>Config</Filter>
     </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
     <Filter Include="Source\BioProject">
-      <UniqueIdentifier>{39397CB9-D31F-409C-8846-5EC0246CA4B9}</UniqueIdentifier>
+      <UniqueIdentifier>{A7B92139-3F0A-4F8A-B1FD-5A3E8699A9D8}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\BioProject\BioProject.Build.cs">
       <Filter>Source\BioProject</Filter>
@@ -39,6 +42,12 @@
       <Filter>Source\BioProject</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\BioProject\BioProjectGameModeBase.h">
+      <Filter>Source\BioProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\BioProject\EnemyChara.cpp">
+      <Filter>Source\BioProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\BioProject\EnemyChara.h">
       <Filter>Source\BioProject</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\BioProject\PlayerChara.cpp">
