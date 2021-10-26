@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"D:\\Projects\\UE4\\JECHAZARD\\Git\\BioProject\\Source\\BioProject\\BioProject.Build.cs",
-		"D:\\Projects\\UE4\\JECHAZARD\\Git\\BioProject\\Source\\BioProject.Target.cs",
-		"D:\\Projects\\UE4\\JECHAZARD\\Git\\BioProject\\Source\\BioProjectEditor.Target.cs"
+		"D:\\UE4\\BioProject\\BioProject\\Source\\BioProject\\BioProject.Build.cs",
+		"D:\\UE4\\BioProject\\BioProject\\Source\\BioProject.Target.cs",
+		"D:\\UE4\\BioProject\\BioProject\\Source\\BioProjectEditor.Target.cs"
 	],
-	"EngineVersion": "4.26.2"
+	"EngineVersion": "4.26.0"
 }

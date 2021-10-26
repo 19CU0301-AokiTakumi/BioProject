@@ -31,14 +31,16 @@
 /wd4244
 /wd4838
 /I .
-/I ..\Intermediate\Build\Win64\UE4Editor\Inc\Engine
+/I D:\UE4\BioProject\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject
+/I D:\UE4\BioProject\BioProject\Source
 /I Runtime
-/I Runtime\Engine\Classes
-/I Runtime\Engine\Public
 /I Runtime\TraceLog\Public
 /I Runtime\Core\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\CoreUObject
 /I Runtime\CoreUObject\Public
+/I ..\Intermediate\Build\Win64\UE4Editor\Inc\Engine
+/I Runtime\Engine\Classes
+/I Runtime\Engine\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\NetCore
 /I Runtime\Net
 /I Runtime\Net\Core\Classes
@@ -230,8 +232,6 @@
 /I Editor\Kismet\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\ClothingSystemRuntimeInterface
 /I Runtime\ClothingSystemRuntimeInterface\Public
-/I D:\Projects\UE4\JECHAZARD\Git\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject
-/I D:\Projects\UE4\JECHAZARD\Git\BioProject\Source
 /I ThirdParty\PhysX3\PxShared\include
 /I ThirdParty\PhysX3\PxShared\include\cudamanager
 /I ThirdParty\PhysX3\PxShared\include\filebuf
@@ -255,18 +255,18 @@
 /I ThirdParty\PhysX3\APEX_1.4\shared\general\RenderDebug\public
 /I ThirdParty\PhysX3\APEX_1.4\shared\general\PairFilter\include
 /I ThirdParty\PhysX3\APEX_1.4\shared\internal\include
-/I "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\INCLUDE"
-/I "C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um"
-/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"
-/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"
-/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"
-/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"
-/FI"D:\Projects\UE4\JECHAZARD\Git\BioProject\Intermediate\Build\Win64\BioProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
-/Yu"D:\Projects\UE4\JECHAZARD\Git\BioProject\Intermediate\Build\Win64\BioProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
-/Fp"D:\Projects\UE4\JECHAZARD\Git\BioProject\Intermediate\Build\Win64\BioProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.pch"
-"D:\Projects\UE4\JECHAZARD\Git\BioProject\Source\BioProject\BioProjectGameModeBase.cpp"
-/FI"D:\Projects\UE4\JECHAZARD\Git\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\Definitions.BioProject.h"
-/Fo"D:\Projects\UE4\JECHAZARD\Git\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\BioProjectGameModeBase.cpp.obj"
+/I "D:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.25.28610\INCLUDE"
+/I "C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um"
+/I "D:\Windows Kits\10\include\10.0.18362.0\ucrt"
+/I "D:\Windows Kits\10\include\10.0.18362.0\shared"
+/I "D:\Windows Kits\10\include\10.0.18362.0\um"
+/I "D:\Windows Kits\10\include\10.0.18362.0\winrt"
+/FI"D:\UE4\BioProject\BioProject\Intermediate\Build\Win64\BioProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
+/Yu"D:\UE4\BioProject\BioProject\Intermediate\Build\Win64\BioProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
+/Fp"D:\UE4\BioProject\BioProject\Intermediate\Build\Win64\BioProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.pch"
+"D:\UE4\BioProject\BioProject\Source\BioProject\BioProjectGameModeBase.cpp"
+/FI"D:\UE4\BioProject\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\Definitions.BioProject.h"
+/Fo"D:\UE4\BioProject\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\BioProjectGameModeBase.cpp.obj"
 /TP
 /GR-
 /W4

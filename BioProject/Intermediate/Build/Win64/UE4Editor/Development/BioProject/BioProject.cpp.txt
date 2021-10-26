@@ -1,2 +1,2 @@
-D:\Projects\UE4\JECHAZARD\Git\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\Definitions.BioProject.h
-D:\Projects\UE4\JECHAZARD\Git\BioProject\Source\BioProject\BioProject.h
+D:\UE4\BioProject\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\Definitions.BioProject.h
+D:\UE4\BioProject\BioProject\Source\BioProject\BioProject.h

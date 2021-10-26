@@ -2,12 +2,12 @@
 	"Targets": [
 		{
 			"Name": "BioProject",
-			"Path": "D:\\Projects\\UE4\\JECHAZARD\\Git\\BioProject\\Source\\BioProject.Target.cs",
+			"Path": "D:\\UE4\\BioProject\\BioProject\\Source\\BioProject.Target.cs",
 			"Type": "Game"
 		},
 		{
 			"Name": "BioProjectEditor",
-			"Path": "D:\\Projects\\UE4\\JECHAZARD\\Git\\BioProject\\Source\\BioProjectEditor.Target.cs",
+			"Path": "D:\\UE4\\BioProject\\BioProject\\Source\\BioProjectEditor.Target.cs",
 			"Type": "Editor"
 		}
 	]
