@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "PlayerChara.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class BIOPROJECT_API APlayerChara : public ACharacter
 {
@@ -26,8 +29,36 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-protected:
-	void MoveForward(float Val);
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		USpringArmComponent* m_pSpringArm;
 
-	void MoveRight(float Val);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		UCameraComponent* m_pCamera;
+
+private:
+	FVector m_CharaMoveInput;
+	FVector m_CameraRotationInput;
+
+	UPROPERTY(EditAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		FVector2D m_CameraYawLimit;
+
+	UPROPERTY(EditAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		FVector2D m_CameraPitchLimit;
+
+	UPROPERTY(EditAnywhere, Category = "Status", meta = (AllowPrivateAccess = "true"))
+		float m_MoveSpeed;
+
+private:
+	void UpdateMove(float _deltaTime);
+	void UpdateCamera(float _deltaTime);
+
+protected:
+	void MoveForward(float _axisValue);
+
+	void MoveRight(float _axisValue);
+
+	void MoveCameraForword(float _axisValue);
+
+	void MoveCameraRight(float _axisValue);
 };
