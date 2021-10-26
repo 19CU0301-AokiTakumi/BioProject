@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "PlayerChara.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -14,6 +12,7 @@ APlayerChara::APlayerChara()
 	, m_CameraYawLimit(FVector2D(-100.f, 100.f))
 	, m_CameraPitchLimit(FVector2D(-80.f, 80.f))
 	, m_MoveSpeed(1000.f)
+	, m_bagSize(8)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -47,7 +46,9 @@ APlayerChara::APlayerChara()
 void APlayerChara::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//	バッグの中身を初期化
+	m_ItemDatas.Init(FItemData::NoneData(), m_bagSize);
 }
 
 // 毎フレーム更新処理

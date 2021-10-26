@@ -1,8 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MyGameInstance.h"
+#include "ItemBase.h"
 #include "GameFramework/Character.h"
 #include "PlayerChara.generated.h"
 
@@ -55,8 +56,19 @@ private:
 		FVector2D m_CameraPitchLimit;
 
 	// 移動速度
-	UPROPERTY(EditAnywhere, Category = "Status", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Status")
 		float m_MoveSpeed;
+
+	// Player のカバンの中身を格納
+	UPROPERTY(EditAnywhere, Category = "ItemData")
+		TArray<FItemData> m_ItemDatas;
+
+	// バッグのサイズ
+	UPROPERTY(EditAnywhere, Category = "ItemData")
+		int m_bagSize;
+
+	// アイテムを取得したか
+	bool m_bisItemGet;
 
 private:
 	// 移動処理
@@ -64,6 +76,14 @@ private:
 
 	// カメラ更新処理
 	void UpdateCamera(float _deltaTime);
+
+public:
+	// アイテムを取得したかを渡す
+	bool IsGetItem() { return m_bisItemGet; }
+
+	// バッグの中身を渡す
+	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool", BlueprintPure)
+		TArray<FItemData> GetPlayerBag() { return m_ItemDatas; }
 
 public:
 	// 【入力バインド】キャラ移動：前後
