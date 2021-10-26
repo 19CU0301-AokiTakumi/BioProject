@@ -5,7 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
-// Sets default values
+// コンストラクタ
 APlayerChara::APlayerChara()
 	: m_pSpringArm(NULL)
 	, m_pCamera(NULL)
@@ -15,9 +15,10 @@ APlayerChara::APlayerChara()
 	, m_CameraPitchLimit(FVector2D(-80.f, 80.f))
 	, m_MoveSpeed(1000.f)
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
 
+	//　スプリングアームのオブジェクトを生成
 	m_pSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	if (m_pSpringArm)
 	{
@@ -36,19 +37,20 @@ APlayerChara::APlayerChara()
 		m_pSpringArm->CameraRotationLagSpeed = 20.f;
 	}
 
+	// カメラのオブジェクトを生成
 	m_pCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	if (m_pCamera)
 		m_pCamera->SetupAttachment(m_pSpringArm);
 }
 
-// Called when the game starts or when spawned
+// ゲーム開始時、または生成時に呼ばれる処理
 void APlayerChara::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
+// 毎フレーム更新処理
 void APlayerChara::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -57,91 +59,77 @@ void APlayerChara::Tick(float DeltaTime)
 	UpdateCamera(DeltaTime);
 }
 
-// Called to bind functionality to input
+// 各入力関係メソッドとのバインド処理
 void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// 移動
 	InputComponent->BindAxis("Move_Forward", this, &APlayerChara::MoveForward);
 	InputComponent->BindAxis("Move_Right", this, &APlayerChara::MoveRight);
-	InputComponent->BindAxis("Camera_Forward", this, &APlayerChara::MoveCameraForword);
-	InputComponent->BindAxis("Camera_Right", this, &APlayerChara::MoveCameraRight);
+
+	// カメラの回転
+	InputComponent->BindAxis("Camera_Forward", this, &APlayerChara::CameraRotatePitch);
+	InputComponent->BindAxis("Camera_Right", this, &APlayerChara::CameraRotateYaw);
 }
 
+// 移動処理
 void APlayerChara::UpdateMove(float _deltaTime)
 {
-	// 移動入力があった場合のみ
-		//　入力に合わせて、Actorを左右前後に移動
-	USpringArmComponent* pSpringArm = m_pSpringArm;
-
-	if (pSpringArm != NULL)
+	if (m_pSpringArm)
 	{
 		//　キャラクターの移動
 		{
 			// SpringArmが向く方向に、入力による移動量をPawnMovementComponentに渡す
-			const FVector forwardVec = pSpringArm->GetForwardVector();
+			const FVector forwardVec = m_pSpringArm->GetForwardVector();
 			AddMovementInput(forwardVec, m_CharaMoveInput.Y * m_MoveSpeed);
 
-			const FVector rightVec = pSpringArm->GetRightVector();
+			const FVector rightVec = m_pSpringArm->GetRightVector();
 			AddMovementInput(rightVec, m_CharaMoveInput.X * m_MoveSpeed);
 		}
 	}
 }
 
+//　カメラの更新処理
 void APlayerChara::UpdateCamera(float _deltaTime)
 {
-	//if (m_pSpringArm)
-	//{
-	//	FRotator NewRotation = m_pSpringArm->GetRelativeRotation();
-
-	//	NewRotation.Yaw += m_CameraRotationInput.X;
-
-	//	NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + m_CameraRotationInput.Y, m_CameraPitchLimit.X, m_CameraPitchLimit.Y);
-
-	//	m_pSpringArm->SetRelativeRotation(NewRotation);
-	//}
-
-	USpringArmComponent* pSpringArm = m_pSpringArm;
-	if (pSpringArm != NULL)
+	if (m_pSpringArm)
 	{
-		//　現在のFPSを測定
-		float fps = 1.0f / _deltaTime;
-
-		//　処理落ちしても、一定速度でカメラが回るように補正
-		float rotateCorrection = 1.0f;// 60.f / fps;
-
 		//　カメラの新しい角度を求める
 		//　現在の角度を取得
-		FRotator NewRotation = pSpringArm->GetRelativeRotation();
+		FRotator NewRotation = m_pSpringArm->GetRelativeRotation();
 
 		//　Yawは入力した分回す
-		NewRotation.Yaw += m_CameraRotationInput.X * rotateCorrection;
+		NewRotation.Yaw += m_CameraRotationInput.X;
 
 		//　Pitchに関しては、上下の制限角度の範囲内で切る
-		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + (m_CameraRotationInput.Y * rotateCorrection), m_CameraPitchLimit.X, m_CameraPitchLimit.Y);
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + m_CameraRotationInput.Y, m_CameraPitchLimit.X, m_CameraPitchLimit.Y);
 
 		//　新しい角度を反映
-		pSpringArm->SetRelativeRotation(NewRotation);
-
+		m_pSpringArm->SetRelativeRotation(NewRotation);
 	}
 }
 
+//　【入力バインド】キャラ移動：前後
 void APlayerChara::MoveForward(float _axisValue)
 {
 	m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 }
 
+//　【入力バインド】キャラ移動左右
 void APlayerChara::MoveRight(float _axisValue)
 {
 	m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 }
 
-void APlayerChara::MoveCameraForword(float _axisValue)
+//　【入力バインド】カメラの回転：（Y軸）
+void APlayerChara::CameraRotatePitch(float _axisValue)
 {
 	m_CameraRotationInput.Y = _axisValue;
 }
 
-void APlayerChara::MoveCameraRight(float _axisValue)
+//　【入力バインド】カメラ回転：（Z軸）
+void APlayerChara::CameraRotateYaw(float _axisValue)
 {
 	m_CameraRotationInput.X = _axisValue;
 }
