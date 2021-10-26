@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 /*===========================================================================
 	Generated code exported from UnrealHeaderTool.
 	DO NOT modify this manually! Edit the corresponding .h files instead!
@@ -74,7 +74,7 @@ void EmptyLinkFunctionForGeneratedCodeBioProjectGameModeBase() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(ABioProjectGameModeBase, 3790495920);
+	IMPLEMENT_CLASS(ABioProjectGameModeBase, 606556530);
 	template<> BIOPROJECT_API UClass* StaticClass<ABioProjectGameModeBase>()
 	{
 		return ABioProjectGameModeBase::StaticClass();

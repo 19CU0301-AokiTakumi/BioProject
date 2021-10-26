@@ -7,7 +7,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Editor|x64'">
-    <LocalDebuggerCommandArguments>"$(SolutionDir)BioProject.uproject" -skipcompile</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"$(SolutionDir)$(ProjectName).uproject" -skipcompile</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'">
@@ -17,7 +17,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Editor|x64'">
-    <LocalDebuggerCommandArguments>"$(SolutionDir)BioProject.uproject" -skipcompile</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"$(SolutionDir)$(ProjectName).uproject" -skipcompile</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping|Win32'">
