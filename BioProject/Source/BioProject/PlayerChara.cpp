@@ -2,6 +2,8 @@
 #include "PlayerChara.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "DoorBase.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -11,7 +13,6 @@ APlayerChara::APlayerChara()
 	, m_CameraRotationInput(FVector::ZeroVector)
 	, m_CameraYawLimit(FVector2D(-100.f, 100.f))
 	, m_CameraPitchLimit(FVector2D(-80.f, 80.f))
-	, m_MoveSpeed(1000.f)
 	, m_bagSize(8)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
@@ -40,6 +41,8 @@ APlayerChara::APlayerChara()
 	m_pCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	if (m_pCamera)
 		m_pCamera->SetupAttachment(m_pSpringArm);
+
+	m_playerStatus = { 10, 10, 1000.f };
 }
 
 // ゲーム開始時、または生成時に呼ばれる処理
@@ -49,6 +52,12 @@ void APlayerChara::BeginPlay()
 
 	//	バッグの中身を初期化
 	m_ItemDatas.Init(FItemData::NoneData(), m_bagSize);
+
+	// オーバーラップしたら呼ばれる関数を登録
+	if (GetCapsuleComponent())
+	{
+		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerChara::OnOverlapBegin);
+	}
 }
 
 // 毎フレーム更新処理
@@ -74,6 +83,23 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAxis("Camera_Right", this, &APlayerChara::CameraRotateYaw);
 }
 
+// オーバーラップ接触をし終えたときに呼ばれるイベント関数
+void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (Cast<ADoorBase>(OtherActor))
+	{
+		if (OtherComp->ComponentHasTag("Front"))
+		{
+			Cast<ADoorBase>(OtherActor)->SetOpenReverse(false);
+		}
+		else if (OtherComp->ComponentHasTag("Back"))
+		{
+			Cast<ADoorBase>(OtherActor)->SetOpenReverse(true);
+		}
+	}
+}
+
 // 移動処理
 void APlayerChara::UpdateMove(float _deltaTime)
 {
@@ -83,10 +109,10 @@ void APlayerChara::UpdateMove(float _deltaTime)
 		{
 			// SpringArmが向く方向に、入力による移動量をPawnMovementComponentに渡す
 			const FVector forwardVec = m_pSpringArm->GetForwardVector();
-			AddMovementInput(forwardVec, m_CharaMoveInput.Y * m_MoveSpeed);
+			AddMovementInput(forwardVec, m_CharaMoveInput.Y * m_playerStatus.moveSpeed);
 
 			const FVector rightVec = m_pSpringArm->GetRightVector();
-			AddMovementInput(rightVec, m_CharaMoveInput.X * m_MoveSpeed);
+			AddMovementInput(rightVec, m_CharaMoveInput.X * m_playerStatus.moveSpeed);
 		}
 	}
 }

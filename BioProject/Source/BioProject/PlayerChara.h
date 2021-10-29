@@ -11,6 +11,16 @@
 class USpringArmComponent;
 class UCameraComponent;
 
+USTRUCT(BlueprintType)
+struct FPlayerStatus
+{
+	GENERATED_USTRUCT_BODY()
+
+	int hp;
+	int maxHP;
+	float moveSpeed;
+};
+
 UCLASS()
 class BIOPROJECT_API APlayerChara : public ACharacter
 {
@@ -30,6 +40,11 @@ public:
 
 	// 各入力関係とのバインド処理
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	// オーバーラップ接触をし始めたときに呼ばれるイベント関数
+	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
 	// スプリングアーム
@@ -57,7 +72,7 @@ private:
 
 	// 移動速度
 	UPROPERTY(EditAnywhere, Category = "Status")
-		float m_MoveSpeed;
+		FPlayerStatus m_playerStatus;
 
 	// Player のカバンの中身を格納
 	UPROPERTY(EditAnywhere, Category = "ItemData")
@@ -82,8 +97,14 @@ public:
 	bool IsGetItem() { return m_bisItemGet; }
 
 	// バッグの中身を渡す
-	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool", BlueprintPure)
-		TArray<FItemData> GetPlayerBag() { return m_ItemDatas; }
+	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
+		TArray<FItemData> GetPlayerBag() const { return m_ItemDatas; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
+		int GetPlayerHP() const { return m_playerStatus.hp; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
+		int GetPlayerMaxHP() const { return m_playerStatus.maxHP; }
 
 public:
 	// 【入力バインド】キャラ移動：前後
