@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"D:\\TeamProduction_New\\Data\\BioProject\\Source\\BioProject\\BioProject.Build.cs",
-		"D:\\TeamProduction_New\\Data\\BioProject\\Source\\BioProject.Target.cs",
-		"D:\\TeamProduction_New\\Data\\BioProject\\Source\\BioProjectEditor.Target.cs"
+		"D:\\UE4\\BioProject\\BioProject\\Source\\BioProject\\BioProject.Build.cs",
+		"D:\\UE4\\BioProject\\BioProject\\Source\\BioProject.Target.cs",
+		"D:\\UE4\\BioProject\\BioProject\\Source\\BioProjectEditor.Target.cs"
 	],
 	"EngineVersion": "4.24.3"
 }
