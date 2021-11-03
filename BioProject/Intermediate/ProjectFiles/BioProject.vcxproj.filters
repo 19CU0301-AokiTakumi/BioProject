@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\BioProject.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{C296743A-E948-4223-BB74-441854EEFF08}</UniqueIdentifier>
+      <UniqueIdentifier>{4FE61BE0-D6C3-4C32-A33A-CFF195D647F6}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\BioProject.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{A7732DF4-3126-4A9A-9054-0758F7218122}</UniqueIdentifier>
+      <UniqueIdentifier>{70290793-198F-4010-9550-D4DC7659C9DA}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -27,7 +27,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\BioProject">
-      <UniqueIdentifier>{A7B92139-3F0A-4F8A-B1FD-5A3E8699A9D8}</UniqueIdentifier>
+      <UniqueIdentifier>{72B1C17E-6816-4F8C-9D1A-5A936FA3C362}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\BioProject\BioProject.Build.cs">
       <Filter>Source\BioProject</Filter>
@@ -44,16 +44,46 @@
     <ClInclude Include="..\..\Source\BioProject\BioProjectGameModeBase.h">
       <Filter>Source\BioProject</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\BioProject\DoorBase.cpp">
+      <Filter>Source\BioProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\BioProject\DoorBase.h">
+      <Filter>Source\BioProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\BioProject\DoubleDoor.cpp">
+      <Filter>Source\BioProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\BioProject\DoubleDoor.h">
+      <Filter>Source\BioProject</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\BioProject\EnemyChara.cpp">
       <Filter>Source\BioProject</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\BioProject\EnemyChara.h">
       <Filter>Source\BioProject</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\BioProject\ItemBase.cpp">
+      <Filter>Source\BioProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\BioProject\ItemBase.h">
+      <Filter>Source\BioProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\BioProject\MyGameInstance.cpp">
+      <Filter>Source\BioProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\BioProject\MyGameInstance.h">
+      <Filter>Source\BioProject</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\BioProject\PlayerChara.cpp">
       <Filter>Source\BioProject</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\BioProject\PlayerChara.h">
+      <Filter>Source\BioProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\BioProject\SingleDoor.cpp">
+      <Filter>Source\BioProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\BioProject\SingleDoor.h">
       <Filter>Source\BioProject</Filter>
     </ClInclude>
   </ItemGroup>
