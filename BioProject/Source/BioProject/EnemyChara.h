@@ -9,6 +9,16 @@
 class UStaticMeshComponent;
 class UBoxComponent;
 
+UENUM(BlueprintType)
+enum class Status : uint8
+{
+	Idle,		// 待機
+	Move,		// 移動
+	Attack,		// 攻撃
+	Avoid,		// 回避
+	KnockBack,	// ノックバック
+};
+
 UCLASS()
 class BIOPROJECT_API AEnemyChara : public ACharacter
 {
@@ -35,19 +45,10 @@ private:
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
-		UBoxComponent* m_BoxBase;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
-		UBoxComponent* m_OverLapComp;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* m_EnemyMesh;
+		UStaticMeshComponent* m_Mesh;
 
 	UPROPERTY(EditAnywhere, Category = "speed")
 		float m_Speed;
-
-	UPROPERTY(EditAnywhere, Category = "speed")
-		float m_ToTheGround;
 
 	UPROPERTY(EditAnywhere, Category = "HP")
 		float m_HP;
@@ -55,16 +56,17 @@ private:
 private:
 	ACharacter* m_Player;
 
-	bool m_MoveStop;
-	bool m_Ground;
+	float m_Count;
 
-	float m_StopCount;
-	float m_ToTheGroundCount;
+	bool m_ReduceOnce;
 
-	// 移動処理
-	void EnemyMove(float _deltaTime);
+	void Move(float _deltaTime);
+	void Idle(float _deltaTime);
+	void Attack(float _deltaTime);
+	void Avoid(float _deltaTime);
+	void KnockBack(float _deltaTime);
 
-	void StopTime(float _deltaTime);
+	void UpdateAction(float _deltaTime);;
 
-	void AfterSpawn(float _deltaTime);
+	Status m_status;
 };
