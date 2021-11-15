@@ -11,6 +11,39 @@ class UBoxComponent;
 class UStaticMeshComponent;
 class APlayerChara;
 
+UENUM(BlueprintType)
+enum class ItemType : uint8
+{
+	None,
+	Key,
+	Heal,
+	Weapon,
+	Bullet,
+	Event,
+	Debug,
+};
+
+USTRUCT(BlueprintType)
+struct FItemData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int id;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") FString name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") ItemType type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") FString comment;
+
+public:
+	FItemData(const int _id = 0, const FString _name = "", ItemType _type = ItemType::None, FString _comment = "")
+	{
+		id = _id;
+		name = _name;
+		type = _type;
+		comment = _comment;
+	}
+	static FItemData NoneData() { return FItemData(-1, "", ItemType::None, ""); }
+};
+
 UCLASS()
 class BIOPROJECT_API AItemBase : public AActor
 {
@@ -48,12 +81,13 @@ private:
 
 	// 自身のアイテムデータ
 	UPROPERTY(EditAnywhere, Category = "Data")
-		FItemData ItemData;
+		FItemData m_itemData;
 
 	// 自身が触れているプレイヤーを保管
 	APlayerChara* m_pOtherPlayer;
 
 public:
 	// 自身のアイテムデータを渡す
-	FItemData GetFItemData() { return ItemData; }
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		FItemData GetItemData() { return m_itemData; }
 };

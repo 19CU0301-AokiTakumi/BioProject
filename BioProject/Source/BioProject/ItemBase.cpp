@@ -9,6 +9,7 @@ AItemBase::AItemBase()
 	: m_pBoxComp(NULL)
 	, m_pMesh(NULL)
 	, m_pOtherPlayer(NULL)
+	, m_itemData(FItemData::NoneData())
 {
 	// –ˆƒtƒŒ[ƒ€Tick()ˆ—‚ğŒÄ‚Ô‚©‚Ç‚¤‚©
 	PrimaryActorTick.bCanEverTick = true;

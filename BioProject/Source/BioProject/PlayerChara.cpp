@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DoorBase.h"
+#include "ItemBase.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -14,6 +15,9 @@ APlayerChara::APlayerChara()
 	, m_CameraYawLimit(FVector2D(-100.f, 100.f))
 	, m_CameraPitchLimit(FVector2D(-80.f, 80.f))
 	, m_bagSize(8)
+	, m_pOverlapActor(NULL)
+	, m_OverlapActorPos(FVector::ZeroVector)
+	, m_invenoryState(EInventoryState::Idle)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -43,6 +47,7 @@ APlayerChara::APlayerChara()
 		m_pCamera->SetupAttachment(m_pSpringArm);
 
 	m_playerStatus = { 10, 10, 1000.f };
+	m_statusConst = { 1000.f, 10000000.f };
 }
 
 // ゲーム開始時、または生成時に呼ばれる処理
@@ -57,6 +62,7 @@ void APlayerChara::BeginPlay()
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerChara::OnOverlapBegin);
+		GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &APlayerChara::OnOverlapEnd);
 	}
 }
 
@@ -75,18 +81,41 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// 移動
-	InputComponent->BindAxis("Move_Forward", this, &APlayerChara::MoveForward);
-	InputComponent->BindAxis("Move_Right", this, &APlayerChara::MoveRight);
+	InputComponent->BindAxis("Move_Forward", this, &APlayerChara::Input_MoveForward);
+	InputComponent->BindAxis("Move_Right", this, &APlayerChara::Input_MoveRight);
 
 	// カメラの回転
-	InputComponent->BindAxis("Camera_Forward", this, &APlayerChara::CameraRotatePitch);
-	InputComponent->BindAxis("Camera_Right", this, &APlayerChara::CameraRotateYaw);
+	InputComponent->BindAxis("Camera_Forward", this, &APlayerChara::Input_CameraRotatePitch);
+	InputComponent->BindAxis("Camera_Right", this, &APlayerChara::Input_CameraRotateYaw);
+
+	// 走り
+	InputComponent->BindAction("Run", IE_Pressed, this, &APlayerChara::Input_Run);
+
+	// アクション
+	InputComponent->BindAction("Action", IE_Pressed, this, &APlayerChara::Input_Action);
+
+	// 銃を構える
+	InputComponent->BindAxis("Hold", this, &APlayerChara::Input_Hold);
+
+	// リロード
+	InputComponent->BindAction("Reload", IE_Pressed, this, &APlayerChara::Input_Reload);
+
+	// リロード
+	InputComponent->BindAction("Inventory", IE_Pressed, this, &APlayerChara::Input_Inventory);
 }
 
 // オーバーラップ接触をし終えたときに呼ばれるイベント関数
 void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	m_pOverlapActor = OtherActor;
+	m_OverlapActorPos = OtherActor->GetActorLocation();
+
+	if (Cast<AItemBase>(OtherActor))
+	{
+		m_playerFlags.flagBits.isItemTouch = true;
+	}
+
 	if (Cast<ADoorBase>(OtherActor))
 	{
 		if (OtherComp->ComponentHasTag("Front"))
@@ -99,6 +128,27 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 		}
 	}
 }
+
+// オーバーラップ接触をし終えたときに呼ばれるイベント関数
+void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	// 当たっていたアイテムを無効にする
+	m_playerFlags.flagBits.isItemTouch = false;
+
+	if (m_pOverlapActor)
+	{
+		m_pOverlapActor = NULL;
+	}
+	if (Cast<ADoorBase>(OtherActor))
+	{
+		if (Cast<ADoorBase>(OtherActor)->GetIsLock())
+		{
+			m_playerFlags.flagBits.isOpenMenu = false;
+		}
+		m_playerFlags.flagBits.isOpenMenu = false;
+	}
+}
+
 
 // 移動処理
 void APlayerChara::UpdateMove(float _deltaTime)
@@ -138,25 +188,128 @@ void APlayerChara::UpdateCamera(float _deltaTime)
 }
 
 //　【入力バインド】キャラ移動：前後
-void APlayerChara::MoveForward(float _axisValue)
+void APlayerChara::Input_MoveForward(float _axisValue)
 {
 	m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 }
 
 //　【入力バインド】キャラ移動左右
-void APlayerChara::MoveRight(float _axisValue)
+void APlayerChara::Input_MoveRight(float _axisValue)
 {
 	m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 }
 
 //　【入力バインド】カメラの回転：（Y軸）
-void APlayerChara::CameraRotatePitch(float _axisValue)
+void APlayerChara::Input_CameraRotatePitch(float _axisValue)
 {
 	m_CameraRotationInput.Y = _axisValue;
 }
 
 //　【入力バインド】カメラ回転：（Z軸）
-void APlayerChara::CameraRotateYaw(float _axisValue)
+void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 {
 	m_CameraRotationInput.X = _axisValue;
+}
+
+//【入力バインド】銃を構える
+void APlayerChara::Input_Hold(float _axisValue)
+{
+	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
+}
+
+// 【入力バインド】銃を撃つ
+void APlayerChara::Input_Shooting()
+{
+
+	//m_bShootGun = true;
+	//UE_LOG(LogTemp, Log, TEXT("MM"));
+
+	//if (m_iGunAmmoCount < 1)
+	//{
+	//	m_ZeroBullet = true;
+	//}
+
+	//if (!m_bHaveGun && m_iGunAmmoCount >= 0) { return; }
+
+	//FRotator SpawnRotation = GetControlRotation();
+	//FVector SpawnLocation = GetCapsuleComponent()->GetComponentLocation();
+	//FActorSpawnParameters ActorSpawnParams;
+	////GetWorld()->SpawnActor<APlayerChara>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	//m_iGunAmmoCount--;
+
+	if (m_playerFlags.flagBits.isHaveGun == false)
+		return;
+
+	//FHitResult OutHits;
+
+	//bool isHit = GetWorld()->LineTraceMultiByObjectType(OutHits, Start, End, FCollisionObjectQueryParams::AllObjects, CollisionParams);
+
+	//FString path = "/Game/BP/BulletBP.BulletBP_C";
+	//TSubclassOf<class AActor> sc = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();
+	//ABullet* SpawnBullet = (ABullet*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/BulletBP.BulletBP_C");
+	//if (SpawnBullet != NULL)
+	//{
+	//	//SpawnBullet->SetActorLocation(m_pSpringArm->GetRelativeLocation());
+	//	SpawnBullet->Init(GetActorLocation() + FVector(0.0f, 0.0f, 0.0f), GetLandingPoint());
+	//
+}
+
+// 【入力バインド】走り
+void APlayerChara::Input_Run()
+{
+	// コントロール出来るか
+	m_playerStatus.moveSpeed = m_statusConst.runSpeed;
+	m_ActionStatus = EActionStatus::Run;
+}
+
+// 【入力バインド】アクション
+void APlayerChara::Input_Action()
+{
+	if (m_pOverlapActor == NULL)
+		return;
+
+	if (Cast<ADoorBase>(m_pOverlapActor))
+	{
+		if (Cast<ADoorBase>(m_pOverlapActor)->GetIsLock())
+		{
+			m_playerFlags.flagBits.isOpenMenu = true;
+		}
+		return;
+	}
+
+	if (m_playerFlags.flagBits.isItemTouch == true)
+	{
+		for (int i = 0; i < m_ItemDatas.Num(); i++)
+		{
+			if (m_ItemDatas[i].type == ItemType::None)
+			{
+				m_ItemDatas[i] = Cast<AItemBase>(m_pOverlapActor)->GetItemData();
+
+				AGunControl* OverlapGun = Cast<AGunControl>(m_pOverlapActor);
+				if (OverlapGun)
+				{
+					m_playerFlags.flagBits.isHaveGun = true;
+					m_playerStatus.equipGunData = Cast<AGunControl>(m_pOverlapActor)->GetGunData();
+				}
+				
+				m_playerFlags.flagBits.isItemGet = true;
+				UE_LOG(LogTemp, Error, TEXT("ItemGet"));
+				break;
+			}
+		}
+	}
+}
+
+void APlayerChara::Input_Reload()
+{
+	if (Cast<AGunControl>(m_pOverlapActor) == NULL)
+		return;
+
+	//Cast<AGunControl>(m_pOverlapActor)->Reload();
+}
+
+void APlayerChara::Input_Inventory()
+{
+	m_playerFlags.flagBits.isOpenMenu = !(m_playerFlags.flagBits.isOpenMenu);
+	m_invenoryState = (m_playerFlags.flagBits.isOpenMenu) ? EInventoryState::Open : EInventoryState::Close;
 }
