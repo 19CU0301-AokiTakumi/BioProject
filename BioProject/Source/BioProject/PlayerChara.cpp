@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "DoorBase.h"
 #include "ItemBase.h"
+#include "DrawDebugHelpers.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -215,6 +216,33 @@ void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 void APlayerChara::Input_Hold(float _axisValue)
 {
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
+
+
+	// レイを飛ばす
+	// レイの始点はActorの位置
+	FVector Start = GetActorLocation();
+	// レイの終点はActorから前方向の一定距離
+	FVector End = GetActorLocation();
+
+	//// デバッグ確認用のラインを描画
+	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
+
+	// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	// ヒットした（=コリジョン判定を受けた）オブジェクトを格納する変数
+	FHitResult OutHit;
+
+	// レイを飛ばし、オブジェクトに対してコリジョン判定を行う
+	// isHitは、ヒットした場合にtrueになる
+	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
+
+	// ヒットするオブジェクトがある場合
+	if (isHit)
+	{
+
+	}
 }
 
 // 【入力バインド】銃を撃つ

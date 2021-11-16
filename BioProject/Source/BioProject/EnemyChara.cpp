@@ -17,6 +17,7 @@ AEnemyChara::AEnemyChara()
 	, m_HP(0.f)
 	, m_status(Status::Idle)
 	, m_ReduceOnce(false)
+	, m_SearchArea(0.f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -54,9 +55,6 @@ void AEnemyChara::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (Cast<APlayerChara>(OtherActor))
-		m_status = Status::Attack;
-
 	if (Cast<ABullet>(OtherActor))
 		m_status = Status::KnockBack;
 }
@@ -122,7 +120,7 @@ void AEnemyChara::Move(float _deltaTime)
 	// レイの始点はActorの位置
 	FVector Start = GetActorLocation();
 	// レイの終点はActorから前方向の一定距離
-	FVector End = GetActorLocation() + m_Mesh->GetForwardVector() * 300.f;
+	FVector End = GetActorLocation() + m_Mesh->GetForwardVector() * m_SearchArea;
 
 	//// デバッグ確認用のラインを描画
 	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);

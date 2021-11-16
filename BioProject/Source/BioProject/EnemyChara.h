@@ -47,11 +47,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* m_Mesh;
 
-	UPROPERTY(EditAnywhere, Category = "speed")
+	UPROPERTY(EditAnywhere, Category = "Status")
 		float m_Speed;
 
-	UPROPERTY(EditAnywhere, Category = "HP")
+	UPROPERTY(EditAnywhere, Category = "Status")
 		float m_HP;
+
+	UPROPERTY(EditAnywhere, Category = "Status")
+		float m_SearchArea;
 
 private:
 	ACharacter* m_Player;
