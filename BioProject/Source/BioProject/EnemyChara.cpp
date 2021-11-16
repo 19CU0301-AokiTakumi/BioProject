@@ -18,6 +18,9 @@ AEnemyChara::AEnemyChara()
 	, m_status(Status::Idle)
 	, m_ReduceOnce(false)
 	, m_SearchArea(0.f)
+	, m_IsWalk(false)
+	, m_IsRunning(false)
+	, m_IsDeath(false)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -116,6 +119,12 @@ void AEnemyChara::Move(float _deltaTime)
 
 	AddActorWorldOffset(GetActorForwardVector() * m_Speed * _deltaTime);
 
+	if (m_status == Status::Move)
+	{
+		m_IsWalk = true;
+	}
+	
+
 	// レイを飛ばす
 	// レイの始点はActorの位置
 	FVector Start = GetActorLocation();
@@ -177,4 +186,16 @@ void AEnemyChara::KnockBack(float _deltaTime)
 		m_ReduceOnce = false;
 		m_status = Status::Move;
 	}
+}
+
+//----------------------------------------
+// アニメーション遷移
+//---------------------------------------
+bool AEnemyChara::ReturnWalk()
+{
+	if (m_status == Status::Move)
+	{
+		m_IsWalk = true;
+	}
+	return m_IsWalk;
 }

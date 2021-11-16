@@ -17,6 +17,7 @@ enum class Status : uint8
 	Attack,		// 攻撃
 	Avoid,		// 回避
 	KnockBack,	// ノックバック
+	Death,		// 死亡
 };
 
 UCLASS()
@@ -56,6 +57,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Status")
 		float m_SearchArea;
 
+public:
+	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
+		bool ReturnWalk();
+
 private:
 	ACharacter* m_Player;
 
@@ -72,4 +77,16 @@ private:
 	void UpdateAction(float _deltaTime);;
 
 	Status m_status;
+
+	// アニメーション用
+
+	// 歩き
+	bool m_IsWalk;
+
+	// 走り 
+	bool m_IsRunning;
+
+	// 死亡
+	bool m_IsDeath;
+
 };
