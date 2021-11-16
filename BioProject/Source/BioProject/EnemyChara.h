@@ -89,20 +89,23 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
 		bool ReturnKnockBack();
 
+	// ノックバックアニメーション
+	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
+		bool ReturnAttack();
+
 private:
 	APlayerChara* m_Player;
 
 	float m_Count;
 
-	bool m_ReduceOnce;
+	void UpdateAction(float _deltaTime);
 
 	void Move(float _deltaTime);
 	void Idle(float _deltaTime);
 	void Attack(float _deltaTime);
 	void Avoid(float _deltaTime);
 	void KnockBack(float _deltaTime);
-
-	void UpdateAction(float _deltaTime);
+	void Death(float _deltaTime);
 
 	ActionStatus m_status;
 };

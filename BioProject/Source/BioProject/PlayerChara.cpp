@@ -6,6 +6,7 @@
 #include "DoorBase.h"
 #include "ItemBase.h"
 #include "DrawDebugHelpers.h"
+#include "Bullet.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -98,10 +99,13 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	// 銃を構える
 	InputComponent->BindAxis("Hold", this, &APlayerChara::Input_Hold);
 
+	// 弾を撃つ
+	InputComponent->BindAction("Shooting", IE_Pressed, this, &APlayerChara::Input_Shooting);
+
 	// リロード
 	InputComponent->BindAction("Reload", IE_Pressed, this, &APlayerChara::Input_Reload);
 
-	// リロード
+	// インベントリ
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &APlayerChara::Input_Inventory);
 }
 
@@ -216,32 +220,6 @@ void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 void APlayerChara::Input_Hold(float _axisValue)
 {
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
-
-	// レイを飛ばす
-	// レイの始点はActorの位置
-	FVector Start = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
-	// レイの終点はActorから前方向の一定距離
-	FVector End = m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
-
-	//// デバッグ確認用のラインを描画
-	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
-
-	// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-
-	// ヒットした（=コリジョン判定を受けた）オブジェクトを格納する変数
-	FHitResult OutHit;
-
-	// レイを飛ばし、オブジェクトに対してコリジョン判定を行う
-	// isHitは、ヒットした場合にtrueになる
-	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
-
-	// ヒットするオブジェクトがある場合
-	if (isHit)
-	{
-
-	}
 }
 
 // 【入力バインド】銃を撃つ
@@ -264,21 +242,45 @@ void APlayerChara::Input_Shooting()
 	////GetWorld()->SpawnActor<APlayerChara>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 	//m_iGunAmmoCount--;
 
-	if (m_playerFlags.flagBits.isHaveGun == false)
-		return;
 
-	//FHitResult OutHits;
+	//if (m_playerFlags.flagBits.isHaveGun == false)
+	//	return;
 
-	//bool isHit = GetWorld()->LineTraceMultiByObjectType(OutHits, Start, End, FCollisionObjectQueryParams::AllObjects, CollisionParams);
 
-	//FString path = "/Game/BP/BulletBP.BulletBP_C";
-	//TSubclassOf<class AActor> sc = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();
-	//ABullet* SpawnBullet = (ABullet*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/BulletBP.BulletBP_C");
-	//if (SpawnBullet != NULL)
+	// レイを飛ばす
+	// レイの始点はActorの位置
+	FVector Start = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
+	// レイの終点はActorから前方向の一定距離
+	FVector End = m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
+
+	//// デバッグ確認用のラインを描画
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
+
+	// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	//// ヒットした（=コリジョン判定を受けた）オブジェクトを格納する変数
+	//FHitResult OutHit;
+
+	//// レイを飛ばし、オブジェクトに対してコリジョン判定を行う
+	//// isHitは、ヒットした場合にtrueになる
+	//bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
+
+	//// ヒットするオブジェクトがある場合
+	//if (isHit)
 	//{
-	//	//SpawnBullet->SetActorLocation(m_pSpringArm->GetRelativeLocation());
-	//	SpawnBullet->Init(GetActorLocation() + FVector(0.0f, 0.0f, 0.0f), GetLandingPoint());
-	//
+
+	//}
+
+	FString path = "/Game/BP/BulletBP.BulletBP_C";
+	TSubclassOf<class AActor> sc = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();
+	ABullet* SpawnBullet = (ABullet*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Player/BulletBP.BulletBP_C");
+	if (SpawnBullet != NULL)
+	{
+		//SpawnBullet->SetActorLocation(m_pSpringArm->GetRelativeLocation());
+		SpawnBullet->Init(Start, End);
+	}
 }
 
 // 【入力バインド】走り

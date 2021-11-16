@@ -14,7 +14,6 @@ AEnemyChara::AEnemyChara()
 	, m_Player(NULL)
 	, m_Count(0.f)
 	, m_status(ActionStatus::Idle)
-	, m_ReduceOnce(false)
 	, m_SearchArea(0.f)
 {
 
@@ -53,7 +52,10 @@ void AEnemyChara::Tick(float DeltaTime)
 void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (Cast<ABullet>(OtherActor))
-		m_status = ActionStatus::KnockBack;
+	{
+		m_EnemyStatus.hp--;
+		(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
+	}
 }
 
 void AEnemyChara::UpdateAction(float _deltaTime)
@@ -78,6 +80,10 @@ void AEnemyChara::UpdateAction(float _deltaTime)
 
 	case ActionStatus::KnockBack:
 		KnockBack(_deltaTime);
+		break;
+
+	case ActionStatus::Death:
+		Death(_deltaTime);
 		break;
 
 	default:
@@ -142,7 +148,13 @@ void AEnemyChara::Move(float _deltaTime)
 
 void AEnemyChara::Attack(float _deltaTime)
 {
-	m_Player->Damage(m_EnemyStatus.atk);
+	m_Count += _deltaTime;
+
+	if (m_Count > 2.f)	// 2.9fはアニメーションの時間（後で変更）
+	{
+		m_Player->Damage(m_EnemyStatus.atk);
+		m_Count = 0.f;
+	}
 }
 
 void AEnemyChara::Avoid(float _deltaTime)
@@ -154,24 +166,21 @@ void AEnemyChara::KnockBack(float _deltaTime)
 {
 	m_Count += _deltaTime;
 
-	if (m_Count > 2.f)	// 2.fはアニメーションの時間（後で変更）
+	if (m_Count > 2.4f)	// 2.fはアニメーションの時間（後で変更）
 	{
-		m_ReduceOnce = true;
-	}
-
-	if (m_ReduceOnce == true)
-	{
-		m_EnemyStatus.hp--;
-
-		if (m_EnemyStatus.hp <= 0)
-		{
-			// Destroy();
-			m_status = ActionStatus::Death;
-		}
-
-		m_Count = 0.f;
-		m_ReduceOnce = false;
 		m_status = ActionStatus::Move;
+		m_Count = 0.f;
+	}
+}
+
+void AEnemyChara::Death(float _deltaTime)
+{
+	m_Count += _deltaTime;
+
+	if (m_Count > 2.9f)	// 2.9fはアニメーションの時間（後で変更）
+	{
+		Destroy();
+		m_Count = 0.f;
 	}
 }
 
@@ -186,12 +195,11 @@ bool AEnemyChara::ReturnWalk()
 		return true;
 	}
 	return false;
-	
 }
 
-bool AEnemyChara::ReturnDeath()
+bool AEnemyChara::ReturnAttack()
 {
-	if (m_status == ActionStatus::Death)
+	if (m_status == ActionStatus::Attack)
 	{
 		return true;
 	}
@@ -201,6 +209,15 @@ bool AEnemyChara::ReturnDeath()
 bool AEnemyChara::ReturnKnockBack()
 {
 	if (m_status == ActionStatus::KnockBack)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool AEnemyChara::ReturnDeath()
+{
+	if (m_status == ActionStatus::Death)
 	{
 		return true;
 	}
