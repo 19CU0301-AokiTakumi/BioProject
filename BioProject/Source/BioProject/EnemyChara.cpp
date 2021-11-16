@@ -142,7 +142,7 @@ void AEnemyChara::Move(float _deltaTime)
 
 void AEnemyChara::Attack(float _deltaTime)
 {
-
+	m_Player->Damage(m_EnemyStatus.atk);
 }
 
 void AEnemyChara::Avoid(float _deltaTime)
