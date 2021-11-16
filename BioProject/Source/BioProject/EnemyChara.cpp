@@ -12,15 +12,10 @@
 AEnemyChara::AEnemyChara()
 	: m_Mesh(NULL)
 	, m_Player(NULL)
-	, m_Speed(0.f)
 	, m_Count(0.f)
-	, m_HP(0.f)
-	, m_status(Status::Idle)
+	, m_status(ActionStatus::Idle)
 	, m_ReduceOnce(false)
-	, m_SearchArea(0.f)
-	, m_IsWalk(false)
-	, m_IsRunning(false)
-	, m_IsDeath(false)
+	, m_SearchAria(0.f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,6 +23,8 @@ AEnemyChara::AEnemyChara()
 	// メッシュをつける
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("m_EnemyMesh"));
 	m_Mesh->SetupAttachment(RootComponent);
+
+	m_EnemyStatus = { 10, 10, 10, 1000.f };
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +37,8 @@ void AEnemyChara::BeginPlay()
 	{
 		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyChara::OnOverlapBegin);
 	}
+
+	m_Player = Cast<APlayerChara>(UMyGameInstance::GetActorFromTag(this, "Player"));
 }
 
 // Called every frame
@@ -59,30 +58,30 @@ void AEnemyChara::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (Cast<ABullet>(OtherActor))
-		m_status = Status::KnockBack;
+		m_status = ActionStatus::KnockBack;
 }
 
 void AEnemyChara::UpdateAction(float _deltaTime)
 {
 	switch (m_status)
 	{
-	case Status::Idle:
+	case ActionStatus::Idle:
 		Idle(_deltaTime);
 		break;
 
-	case Status::Move:
+	case ActionStatus::Move:
 		Move(_deltaTime);
 		break;
 
-	case Status::Attack:
+	case ActionStatus::Attack:
 		Attack(_deltaTime);
 		break;
 
-	case Status::Avoid:
+	case ActionStatus::Avoid:
 		Avoid(_deltaTime);
 		break;
 
-	case Status::KnockBack:
+	case ActionStatus::KnockBack:
 		KnockBack(_deltaTime);
 		break;
 
@@ -98,15 +97,13 @@ void AEnemyChara::Idle(float _deltaTime)
 	if (m_Count > 5.f)
 	{
 		m_Count = 0.f;
-		m_status = Status::Move;
+		m_status = ActionStatus::Move;
 	}
 }
 
 // 移動処理
 void AEnemyChara::Move(float _deltaTime)
 {
-	m_Player = Cast<APlayerChara>(UMyGameInstance::GetActorFromTag(this, "Player"));
-
 	// 自分とターゲットの距離を取得
 	float TargetDistanceX = m_Player->GetActorLocation().X - GetActorLocation().X;
 	float TargetDistanceY = m_Player->GetActorLocation().Y - GetActorLocation().Y;
@@ -117,19 +114,13 @@ void AEnemyChara::Move(float _deltaTime)
 
 	SetActorRotation(FRotator(0, angleDeg, 0));
 
-	AddActorWorldOffset(GetActorForwardVector() * m_Speed * _deltaTime);
-
-	if (m_status == Status::Move)
-	{
-		m_IsWalk = true;
-	}
-	
+	AddActorWorldOffset(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
 
 	// レイを飛ばす
 	// レイの始点はActorの位置
 	FVector Start = GetActorLocation();
 	// レイの終点はActorから前方向の一定距離
-	FVector End = GetActorLocation() + m_Mesh->GetForwardVector() * m_SearchArea;
+	FVector End = GetActorLocation() + m_Mesh->GetForwardVector() * m_SearchAria;
 
 	//// デバッグ確認用のラインを描画
 	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
@@ -150,13 +141,13 @@ void AEnemyChara::Move(float _deltaTime)
 	{
 		// 今ヒットしたActorが、保存されたヒットActorと違う場合
 		if (OutHit.GetActor()->ActorHasTag("Player"))
-			m_status = Status::Attack;
+			m_status = ActionStatus::Attack;
 	}
 }
 
 void AEnemyChara::Attack(float _deltaTime)
 {
-
+	m_Player->Damage(m_EnemyStatus.atk);
 }
 
 void AEnemyChara::Avoid(float _deltaTime)
@@ -175,27 +166,15 @@ void AEnemyChara::KnockBack(float _deltaTime)
 
 	if (m_ReduceOnce == true)
 	{
-		m_HP--;
+		m_EnemyStatus.hp--;
 
-		if (m_HP <= 0)
+		if (m_EnemyStatus.hp <= 0)
 		{
 			Destroy();
 		}
 
 		m_Count = 0.f;
 		m_ReduceOnce = false;
-		m_status = Status::Move;
+		m_status = ActionStatus::Move;
 	}
-}
-
-//----------------------------------------
-// アニメーション遷移
-//---------------------------------------
-bool AEnemyChara::ReturnWalk()
-{
-	if (m_status == Status::Move)
-	{
-		m_IsWalk = true;
-	}
-	return m_IsWalk;
 }

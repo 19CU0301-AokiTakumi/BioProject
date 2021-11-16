@@ -234,10 +234,16 @@ public:
 	void Input_Inventory();
 
 public:
+	void Damage(int _atk);
+
+public:
 	// アニメーション遷移用Return関数
 	UFUNCTION(BlueprintCallable, CateGory = "Return")
 		EActionStatus GetAnimStatus() { return m_ActionStatus; };
 
 	UFUNCTION(BlueprintCallable, CateGory = "Gun")
 		FVector GetLandingPoint()const { return m_rayLandingPoint; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		bool GetIsDead();
 };

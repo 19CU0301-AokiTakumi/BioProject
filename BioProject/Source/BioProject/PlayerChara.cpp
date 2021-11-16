@@ -217,12 +217,11 @@ void APlayerChara::Input_Hold(float _axisValue)
 {
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
 
-
 	// レイを飛ばす
 	// レイの始点はActorの位置
-	FVector Start = GetActorLocation();
+	FVector Start = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
 	// レイの終点はActorから前方向の一定距離
-	FVector End = GetActorLocation();
+	FVector End = m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
 
 	//// デバッグ確認用のラインを描画
 	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
@@ -340,4 +339,19 @@ void APlayerChara::Input_Inventory()
 {
 	m_playerFlags.flagBits.isOpenMenu = !(m_playerFlags.flagBits.isOpenMenu);
 	m_invenoryState = (m_playerFlags.flagBits.isOpenMenu) ? EInventoryState::Open : EInventoryState::Close;
+}
+
+void APlayerChara::Damage(int _atk)
+{
+	m_playerStatus.hp -= _atk;
+
+	if (m_playerStatus.hp <= 0)
+	{
+		m_playerStatus.hp = 0;
+	}
+}
+
+bool APlayerChara::GetIsDead()
+{
+	return (m_playerStatus.hp <= 0) ? true : false;
 }
