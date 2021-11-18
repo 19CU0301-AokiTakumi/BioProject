@@ -90,4 +90,7 @@ public:
 	// 自身のアイテムデータを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		FItemData GetItemData() { return m_itemData; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		FVector GetCenterPos() const;
 };

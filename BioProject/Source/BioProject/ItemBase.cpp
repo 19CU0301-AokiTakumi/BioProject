@@ -43,6 +43,8 @@ void AItemBase::Tick(float DeltaTime)
 	// プレイヤーが「自身から離れていない」かつ「アクションキーを入力している」場合
 	if (m_pOtherPlayer && m_pOtherPlayer->IsGetItem())
 	{
+		m_pOtherPlayer->SetIsGetItem(false);
+
 		// 自分自身を消す
 		Destroy();
 	}
@@ -61,4 +63,9 @@ void AItemBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* O
 	// プレイヤーと離れたら保管しているプレイヤー情報を初期化
 	if (Cast<APlayerChara>(OtherActor))
 		m_pOtherPlayer = NULL;
+}
+
+FVector AItemBase::GetCenterPos() const 
+{ 
+	return m_pBoxComp->GetComponentLocation(); 
 }

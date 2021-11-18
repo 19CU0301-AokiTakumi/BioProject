@@ -1,14 +1,14 @@
-
+ï»¿
 #include "PlayerChara.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DoorBase.h"
 #include "ItemBase.h"
-#include "DrawDebugHelpers.h"
 #include "Bullet.h"
+#include "DrawDebugHelpers.h"
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 APlayerChara::APlayerChara()
 	: m_pSpringArm(NULL)
 	, m_pCamera(NULL)
@@ -21,29 +21,29 @@ APlayerChara::APlayerChara()
 	, m_OverlapActorPos(FVector::ZeroVector)
 	, m_invenoryState(EInventoryState::Idle)
 {
-	// –ˆƒtƒŒ[ƒ€Tick()ˆ—‚ğŒÄ‚Ô‚©‚Ç‚¤‚©
+	// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ Tick()å‡¦ç†ã‚’å‘¼ã¶ã‹ã©ã†ã‹
 	PrimaryActorTick.bCanEverTick = true;
 
-	//@ƒXƒvƒŠƒ“ƒOƒA[ƒ€‚ÌƒIƒuƒWƒFƒNƒg‚ğ¶¬
+	//ã€€ã‚¹ãƒ—ãƒªãƒ³ã‚°ã‚¢ãƒ¼ãƒ ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆ
 	m_pSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	if (m_pSpringArm)
 	{
 		m_pSpringArm->SetupAttachment(RootComponent);
 
-		//@ƒA[ƒ€‚Ì’·‚³‚ğİ’è
-		//@ƒJƒƒ‰‚ÌƒRƒŠƒWƒ‡ƒ“ƒeƒXƒg‚ğs‚¤‚©‚ğİ’è
+		//ã€€ã‚¢ãƒ¼ãƒ ã®é•·ã•ã‚’è¨­å®š
+		//ã€€ã‚«ãƒ¡ãƒ©ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒ†ã‚¹ãƒˆã‚’è¡Œã†ã‹ã‚’è¨­å®š
 		m_pSpringArm->bDoCollisionTest = false;
-		//@ƒJƒƒ‰’Ç]ƒtƒ‰ƒO‚ğg‚¤‚©‚ğİ’è
+		//ã€€ã‚«ãƒ¡ãƒ©è¿½å¾“ãƒ•ãƒ©ã‚°ã‚’ä½¿ã†ã‹ã‚’è¨­å®š
 		m_pSpringArm->bEnableCameraLag = true;
-		//@ƒJƒƒ‰’Ç]ƒ‰ƒO‚Ì‘¬“x‚ğİ’è
+		//ã€€ã‚«ãƒ¡ãƒ©è¿½å¾“ãƒ©ã‚°ã®é€Ÿåº¦ã‚’è¨­å®š
 		m_pSpringArm->CameraLagSpeed = 25.f;
-		//@ƒJƒƒ‰‚Ì‰ñ“]ƒ‰ƒO‚ğg‚¤‚©‚ğİ’è
+		//ã€€ã‚«ãƒ¡ãƒ©ã®å›è»¢ãƒ©ã‚°ã‚’ä½¿ã†ã‹ã‚’è¨­å®š
 		m_pSpringArm->bEnableCameraRotationLag = true;
-		//@ƒJƒƒ‰‰ñ“]ƒ‰ƒO‚Ì‘¬“x‚ğİ’è
+		//ã€€ã‚«ãƒ¡ãƒ©å›è»¢ãƒ©ã‚°ã®é€Ÿåº¦ã‚’è¨­å®š
 		m_pSpringArm->CameraRotationLagSpeed = 20.f;
 	}
 
-	// ƒJƒƒ‰‚ÌƒIƒuƒWƒFƒNƒg‚ğ¶¬
+	// ã‚«ãƒ¡ãƒ©ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆ
 	m_pCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	if (m_pCamera)
 		m_pCamera->SetupAttachment(m_pSpringArm);
@@ -52,15 +52,15 @@ APlayerChara::APlayerChara()
 	m_statusConst = { 1000.f, 10000000.f };
 }
 
-// ƒQ[ƒ€ŠJnA‚Ü‚½‚Í¶¬‚ÉŒÄ‚Î‚ê‚éˆ—
+// ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã€ã¾ãŸã¯ç”Ÿæˆæ™‚ã«å‘¼ã°ã‚Œã‚‹å‡¦ç†
 void APlayerChara::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//	ƒoƒbƒO‚Ì’†g‚ğ‰Šú‰»
+	//	ãƒãƒƒã‚°ã®ä¸­èº«ã‚’åˆæœŸåŒ–
 	m_ItemDatas.Init(FItemData::NoneData(), m_bagSize);
 
-	// ƒI[ƒo[ƒ‰ƒbƒv‚µ‚½‚çŒÄ‚Î‚ê‚éŠÖ”‚ğ“o˜^
+	// ã‚ªãƒ¼ãƒãƒ¼ãƒ©ãƒƒãƒ—ã—ãŸã‚‰å‘¼ã°ã‚Œã‚‹é–¢æ•°ã‚’ç™»éŒ²
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerChara::OnOverlapBegin);
@@ -68,7 +68,7 @@ void APlayerChara::BeginPlay()
 	}
 }
 
-// –ˆƒtƒŒ[ƒ€XVˆ—
+// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ›´æ–°å‡¦ç†
 void APlayerChara::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -77,39 +77,39 @@ void APlayerChara::Tick(float DeltaTime)
 	UpdateCamera(DeltaTime);
 }
 
-// Še“ü—ÍŠÖŒWƒƒ\ƒbƒh‚Æ‚ÌƒoƒCƒ“ƒhˆ—
+// å„å…¥åŠ›é–¢ä¿‚ãƒ¡ã‚½ãƒƒãƒ‰ã¨ã®ãƒã‚¤ãƒ³ãƒ‰å‡¦ç†
 void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	// ˆÚ“®
+	// ç§»å‹•
 	InputComponent->BindAxis("Move_Forward", this, &APlayerChara::Input_MoveForward);
 	InputComponent->BindAxis("Move_Right", this, &APlayerChara::Input_MoveRight);
 
-	// ƒJƒƒ‰‚Ì‰ñ“]
+	// ã‚«ãƒ¡ãƒ©ã®å›è»¢
 	InputComponent->BindAxis("Camera_Forward", this, &APlayerChara::Input_CameraRotatePitch);
 	InputComponent->BindAxis("Camera_Right", this, &APlayerChara::Input_CameraRotateYaw);
 
-	// ‘–‚è
+	// èµ°ã‚Š
 	InputComponent->BindAction("Run", IE_Pressed, this, &APlayerChara::Input_Run);
 
-	// ƒAƒNƒVƒ‡ƒ“
+	// ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 	InputComponent->BindAction("Action", IE_Pressed, this, &APlayerChara::Input_Action);
 
-	// e‚ğ\‚¦‚é
+	// éŠƒã‚’æ§‹ãˆã‚‹
 	InputComponent->BindAxis("Hold", this, &APlayerChara::Input_Hold);
 
-	// ’e‚ğŒ‚‚Â
+	// ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½
 	InputComponent->BindAction("Shooting", IE_Pressed, this, &APlayerChara::Input_Shooting);
 
-	// ƒŠƒ[ƒh
+	// ãƒªãƒ­ãƒ¼ãƒ‰
 	InputComponent->BindAction("Reload", IE_Pressed, this, &APlayerChara::Input_Reload);
 
-	// ƒCƒ“ƒxƒ“ƒgƒŠ
+	// ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªé–‹é–‰
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &APlayerChara::Input_Inventory);
 }
 
-// ƒI[ƒo[ƒ‰ƒbƒvÚG‚ğ‚µI‚¦‚½‚Æ‚«‚ÉŒÄ‚Î‚ê‚éƒCƒxƒ“ƒgŠÖ”
+// ã‚ªãƒ¼ãƒãƒ¼ãƒ©ãƒƒãƒ—æ¥è§¦ã‚’ã—çµ‚ãˆãŸã¨ãã«å‘¼ã°ã‚Œã‚‹ã‚¤ãƒ™ãƒ³ãƒˆé–¢æ•°
 void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -134,10 +134,10 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	}
 }
 
-// ƒI[ƒo[ƒ‰ƒbƒvÚG‚ğ‚µI‚¦‚½‚Æ‚«‚ÉŒÄ‚Î‚ê‚éƒCƒxƒ“ƒgŠÖ”
+// ã‚ªãƒ¼ãƒãƒ¼ãƒ©ãƒƒãƒ—æ¥è§¦ã‚’ã—çµ‚ãˆãŸã¨ãã«å‘¼ã°ã‚Œã‚‹ã‚¤ãƒ™ãƒ³ãƒˆé–¢æ•°
 void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	// “–‚½‚Á‚Ä‚¢‚½ƒAƒCƒeƒ€‚ğ–³Œø‚É‚·‚é
+	// å½“ãŸã£ã¦ã„ãŸã‚¢ã‚¤ãƒ†ãƒ ã‚’ç„¡åŠ¹ã«ã™ã‚‹
 	m_playerFlags.flagBits.isItemTouch = false;
 
 	if (m_pOverlapActor)
@@ -155,14 +155,14 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 }
 
 
-// ˆÚ“®ˆ—
+// ç§»å‹•å‡¦ç†
 void APlayerChara::UpdateMove(float _deltaTime)
 {
 	if (m_pSpringArm)
 	{
-		//@ƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®
+		//ã€€ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•
 		{
-			// SpringArm‚ªŒü‚­•ûŒü‚ÉA“ü—Í‚É‚æ‚éˆÚ“®—Ê‚ğPawnMovementComponent‚É“n‚·
+			// SpringArmãŒå‘ãæ–¹å‘ã«ã€å…¥åŠ›ã«ã‚ˆã‚‹ç§»å‹•é‡ã‚’PawnMovementComponentã«æ¸¡ã™
 			const FVector forwardVec = m_pSpringArm->GetForwardVector();
 			AddMovementInput(forwardVec, m_CharaMoveInput.Y * m_playerStatus.moveSpeed);
 
@@ -172,106 +172,103 @@ void APlayerChara::UpdateMove(float _deltaTime)
 	}
 }
 
-//@ƒJƒƒ‰‚ÌXVˆ—
+//ã€€ã‚«ãƒ¡ãƒ©ã®æ›´æ–°å‡¦ç†
 void APlayerChara::UpdateCamera(float _deltaTime)
 {
 	if (m_pSpringArm)
 	{
-		//@ƒJƒƒ‰‚ÌV‚µ‚¢Šp“x‚ğ‹‚ß‚é
-		//@Œ»İ‚ÌŠp“x‚ğæ“¾
+		//ã€€ã‚«ãƒ¡ãƒ©ã®æ–°ã—ã„è§’åº¦ã‚’æ±‚ã‚ã‚‹
+		//ã€€ç¾åœ¨ã®è§’åº¦ã‚’å–å¾—
 		FRotator NewRotation = m_pSpringArm->GetRelativeRotation();
 
-		//@Yaw‚Í“ü—Í‚µ‚½•ª‰ñ‚·
+		//ã€€Yawã¯å…¥åŠ›ã—ãŸåˆ†å›ã™
 		NewRotation.Yaw += m_CameraRotationInput.X;
 
-		//@Pitch‚ÉŠÖ‚µ‚Ä‚ÍAã‰º‚Ì§ŒÀŠp“x‚Ì”ÍˆÍ“à‚ÅØ‚é
+		//ã€€Pitchã«é–¢ã—ã¦ã¯ã€ä¸Šä¸‹ã®åˆ¶é™è§’åº¦ã®ç¯„å›²å†…ã§åˆ‡ã‚‹
 		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + m_CameraRotationInput.Y, m_CameraPitchLimit.X, m_CameraPitchLimit.Y);
 
-		//@V‚µ‚¢Šp“x‚ğ”½‰f
+		//ã€€æ–°ã—ã„è§’åº¦ã‚’åæ˜ 
 		m_pSpringArm->SetRelativeRotation(NewRotation);
 	}
 }
 
-//@y“ü—ÍƒoƒCƒ“ƒhzƒLƒƒƒ‰ˆÚ“®F‘OŒã
+//ã€€ã€å…¥åŠ›ãƒã‚¤ãƒ³ãƒ‰ã€‘ã‚­ãƒ£ãƒ©ç§»å‹•ï¼šå‰å¾Œ
 void APlayerChara::Input_MoveForward(float _axisValue)
 {
-	m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
+	if (m_playerFlags.flagBits.isOpenMenu == false)
+		m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 }
 
-//@y“ü—ÍƒoƒCƒ“ƒhzƒLƒƒƒ‰ˆÚ“®¶‰E
+//ã€€ã€å…¥åŠ›ãƒã‚¤ãƒ³ãƒ‰ã€‘ã‚­ãƒ£ãƒ©ç§»å‹•å·¦å³
 void APlayerChara::Input_MoveRight(float _axisValue)
 {
-	m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
+	if (m_playerFlags.flagBits.isOpenMenu == false)
+		m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 }
 
-//@y“ü—ÍƒoƒCƒ“ƒhzƒJƒƒ‰‚Ì‰ñ“]FiY²j
+
+
+//ã€€ã€å…¥åŠ›ãƒã‚¤ãƒ³ãƒ‰ã€‘ã‚«ãƒ¡ãƒ©ã®å›è»¢ï¼šï¼ˆYè»¸ï¼‰
 void APlayerChara::Input_CameraRotatePitch(float _axisValue)
 {
 	m_CameraRotationInput.Y = _axisValue;
 }
 
-//@y“ü—ÍƒoƒCƒ“ƒhzƒJƒƒ‰‰ñ“]FiZ²j
+//ã€€ã€å…¥åŠ›ãƒã‚¤ãƒ³ãƒ‰ã€‘ã‚«ãƒ¡ãƒ©å›è»¢ï¼šï¼ˆZè»¸ï¼‰
 void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 {
 	m_CameraRotationInput.X = _axisValue;
 }
 
-//y“ü—ÍƒoƒCƒ“ƒhze‚ğ\‚¦‚é
+//ã€å…¥åŠ›ãƒã‚¤ãƒ³ãƒ‰ã€‘éŠƒã‚’æ§‹ãˆã‚‹
 void APlayerChara::Input_Hold(float _axisValue)
 {
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
-}
-
-// y“ü—ÍƒoƒCƒ“ƒhze‚ğŒ‚‚Â
-void APlayerChara::Input_Shooting()
-{
-
-	//m_bShootGun = true;
-	//UE_LOG(LogTemp, Log, TEXT("MM"));
-
-	//if (m_iGunAmmoCount < 1)
-	//{
-	//	m_ZeroBullet = true;
-	//}
-
-	//if (!m_bHaveGun && m_iGunAmmoCount >= 0) { return; }
-
-	//FRotator SpawnRotation = GetControlRotation();
-	//FVector SpawnLocation = GetCapsuleComponent()->GetComponentLocation();
-	//FActorSpawnParameters ActorSpawnParams;
-	////GetWorld()->SpawnActor<APlayerChara>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-	//m_iGunAmmoCount--;
 
 
-	//if (m_playerFlags.flagBits.isHaveGun == false)
-	//	return;
+	// ãƒ¬ã‚¤ã‚’é£›ã°ã™
+	// ãƒ¬ã‚¤ã®å§‹ç‚¹ã¯Actorã®ä½ç½®
+	FVector Start = GetActorLocation();
+	// ãƒ¬ã‚¤ã®çµ‚ç‚¹ã¯Actorã‹ã‚‰å‰æ–¹å‘ã®ä¸€å®šè·é›¢
+	FVector End = GetActorLocation();
 
+	//// ãƒ‡ãƒãƒƒã‚°ç¢ºèªç”¨ã®ãƒ©ã‚¤ãƒ³ã‚’æç”»
+	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
 
-	// ƒŒƒC‚ğ”ò‚Î‚·
-	// ƒŒƒC‚Ìn“_‚ÍActor‚ÌˆÊ’u
-	FVector Start = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
-	// ƒŒƒC‚ÌI“_‚ÍActor‚©‚ç‘O•ûŒü‚Ìˆê’è‹——£
-	FVector End = m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
-
-	//// ƒfƒoƒbƒOŠm”F—p‚Ìƒ‰ƒCƒ“‚ğ•`‰æ
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
-
-	// ƒRƒŠƒWƒ‡ƒ“”»’è‚Å–³‹‚·‚é€–Ú‚ğw’èi¡‰ñ‚Í‚±‚ÌActor©•ª©gBthisƒ|ƒCƒ“ƒ^‚Åw’èj
+	// ã‚³ãƒªã‚¸ãƒ§ãƒ³åˆ¤å®šã§ç„¡è¦–ã™ã‚‹é …ç›®ã‚’æŒ‡å®šï¼ˆä»Šå›ã¯ã“ã®Actorè‡ªåˆ†è‡ªèº«ã€‚thisãƒã‚¤ãƒ³ã‚¿ã§æŒ‡å®šï¼‰
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
 
-	//// ƒqƒbƒg‚µ‚½i=ƒRƒŠƒWƒ‡ƒ“”»’è‚ğó‚¯‚½jƒIƒuƒWƒFƒNƒg‚ğŠi”[‚·‚é•Ï”
-	//FHitResult OutHit;
+	// ãƒ’ãƒƒãƒˆã—ãŸï¼ˆ=ã‚³ãƒªã‚¸ãƒ§ãƒ³åˆ¤å®šã‚’å—ã‘ãŸï¼‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+	FHitResult OutHit;
 
-	//// ƒŒƒC‚ğ”ò‚Î‚µAƒIƒuƒWƒFƒNƒg‚É‘Î‚µ‚ÄƒRƒŠƒWƒ‡ƒ“”»’è‚ğs‚¤
-	//// isHit‚ÍAƒqƒbƒg‚µ‚½ê‡‚Étrue‚É‚È‚é
-	//bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
+	// ãƒ¬ã‚¤ã‚’é£›ã°ã—ã€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«å¯¾ã—ã¦ã‚³ãƒªã‚¸ãƒ§ãƒ³åˆ¤å®šã‚’è¡Œã†
+	// isHitã¯ã€ãƒ’ãƒƒãƒˆã—ãŸå ´åˆã«trueã«ãªã‚‹
+	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
 
-	//// ƒqƒbƒg‚·‚éƒIƒuƒWƒFƒNƒg‚ª‚ ‚éê‡
-	//if (isHit)
-	//{
+	// ãƒ’ãƒƒãƒˆã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã‚ã‚‹å ´åˆ
+	if (isHit)
+	{
 
-	//}
+	}
+}
+
+// ã€å…¥åŠ›ãƒã‚¤ãƒ³ãƒ‰ã€‘éŠƒã‚’æ’ƒã¤
+void APlayerChara::Input_Shooting()
+{
+	if (m_playerFlags.flagBits.isHaveGun == false)
+		return;
+
+	// ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Î‚ï¿½
+	// ï¿½ï¿½ï¿½Cï¿½Ìnï¿½_ï¿½ï¿½Actorï¿½ÌˆÊ’u
+	FVector Start = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
+
+	// ï¿½ï¿½ï¿½Cï¿½ÌIï¿½_ï¿½ï¿½Actorï¿½ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½Ìˆï¿½è‹—ï¿½ï¿½
+	FVector End = m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
+
+	// ï¿½Rï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å–ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é€ï¿½Ú‚ï¿½wï¿½ï¿½iï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½ï¿½Actorï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Bthisï¿½|ï¿½Cï¿½ï¿½ï¿½^ï¿½Åwï¿½ï¿½j
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
 
 	FString path = "/Game/BP/BulletBP.BulletBP_C";
 	TSubclassOf<class AActor> sc = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();
@@ -283,15 +280,15 @@ void APlayerChara::Input_Shooting()
 	}
 }
 
-// y“ü—ÍƒoƒCƒ“ƒhz‘–‚è
+// ã€å…¥åŠ›ãƒã‚¤ãƒ³ãƒ‰ã€‘èµ°ã‚Š
 void APlayerChara::Input_Run()
 {
-	// ƒRƒ“ƒgƒ[ƒ‹o—ˆ‚é‚©
+	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å‡ºæ¥ã‚‹ã‹
 	m_playerStatus.moveSpeed = m_statusConst.runSpeed;
 	m_ActionStatus = EActionStatus::Run;
 }
 
-// y“ü—ÍƒoƒCƒ“ƒhzƒAƒNƒVƒ‡ƒ“
+// ã€å…¥åŠ›ãƒã‚¤ãƒ³ãƒ‰ã€‘ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 void APlayerChara::Input_Action()
 {
 	if (m_pOverlapActor == NULL)
@@ -322,6 +319,7 @@ void APlayerChara::Input_Action()
 				}
 				
 				m_playerFlags.flagBits.isItemGet = true;
+				m_playerFlags.flagBits.isItemTouch = false;
 				UE_LOG(LogTemp, Error, TEXT("ItemGet"));
 				break;
 			}
@@ -346,14 +344,59 @@ void APlayerChara::Input_Inventory()
 void APlayerChara::Damage(int _atk)
 {
 	m_playerStatus.hp -= _atk;
-
 	if (m_playerStatus.hp <= 0)
 	{
 		m_playerStatus.hp = 0;
 	}
 }
 
+int APlayerChara::GetCursorIndex(const int _index , const int _moveValue)
+{
+	if (m_playerFlags.flagBits.isOpenMenu == false)
+		return _index;
+
+	// ç§»å‹•å¯èƒ½ã‹ã®ãƒ•ãƒ©ã‚°ã‚’ä¸€æ™‚ä¿ç®¡
+	bool ret = false;
+
+	// ä¸Šä¸‹ã®ã‚«ãƒ¼ã‚½ãƒ«ç§»å‹•
+	if (FMath::Abs(_moveValue) % 4 == 0)
+	{
+		// ä¸Š
+		if (_moveValue < 0)
+			ret = _index >= 4;
+		// ä¸‹
+		else
+			ret = (_index + 4) < m_bagSize;
+	}
+	// å·¦å³ã®ã‚«ãƒ¼ã‚½ãƒ«ç§»å‹•
+	else if (FMath::Abs(_moveValue) == 1)
+	{
+		// ä¸Š
+		if (_moveValue < 0)
+			ret = (_index % 4) != 0;
+		// ä¸‹
+		else
+			ret = (_index % 4) <= 2;
+	}
+
+	// ç§»å‹•å¯èƒ½ã§ã‚ã‚Œã°ç§»å‹•
+	if (ret)
+		return _index + _moveValue;
+
+	return _index;
+}
+
 bool APlayerChara::GetIsDead()
 {
 	return (m_playerStatus.hp <= 0) ? true : false;
+}
+
+void APlayerChara::Heal(const int _index, const int _value)
+{
+	m_playerStatus.hp += _value;
+
+	if (m_playerStatus.hp > m_playerStatus.maxHP)
+		m_playerStatus.hp = m_playerStatus.maxHP;
+
+	m_ItemDatas[_index] = FItemData::NoneData();
 }

@@ -188,6 +188,12 @@ public:
 		TArray<FItemData> GetPlayerBag() const { return m_ItemDatas; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
+		FPlayerStatus GetPlayerStatus() const { return m_playerStatus; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
+		FAmmoData GetAmmoData(const EGunType _ammoType) const { return m_haveAmmoDatas[(int)_ammoType]; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
 		int GetPlayerHP() const { return m_playerStatus.hp; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
@@ -200,9 +206,32 @@ public:
 		AActor* GetOverlapActor() const { return m_pOverlapActor; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "GetBool")
-		EInventoryState GetIsOpenInventory() const { return m_invenoryState; }
-	
+		EInventoryState GetInventoryState() const { return m_invenoryState; }
 
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetInventoryState(const EInventoryState _state) { m_invenoryState = _state; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		int GetCursorIndex(const int _index, const int _moveValue);
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void Heal(const int _index, const int _value = 0);
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void Damage(int _atk);
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetIsGetItem(const bool _isGet) { m_playerFlags.flagBits.isItemGet = _isGet; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		bool GetIsOpenInventory() const { return m_playerFlags.flagBits.isOpenMenu; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		bool GetIsGunHold() const { return m_playerFlags.flagBits.isGunHold; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		bool GetIsDead();
+	
 public:
 	// 【入力バインド】キャラ移動：前後
 	void Input_MoveForward(float _axisValue);
@@ -234,16 +263,10 @@ public:
 	void Input_Inventory();
 
 public:
-	void Damage(int _atk);
-
-public:
 	// アニメーション遷移用Return関数
 	UFUNCTION(BlueprintCallable, CateGory = "Return")
 		EActionStatus GetAnimStatus() { return m_ActionStatus; };
 
 	UFUNCTION(BlueprintCallable, CateGory = "Gun")
 		FVector GetLandingPoint()const { return m_rayLandingPoint; }
-
-	UFUNCTION(BlueprintCallable, CateGory = "GetData")
-		bool GetIsDead();
 };
