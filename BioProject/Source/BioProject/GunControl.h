@@ -9,8 +9,10 @@
 UENUM(BlueprintType)
 enum class EGunType : uint8
 {
+	None,
 	Hand,
 	Shot,
+	Max,
 };
 
 USTRUCT(BlueprintType)

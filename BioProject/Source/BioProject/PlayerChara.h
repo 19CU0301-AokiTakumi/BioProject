@@ -231,6 +231,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsDead();
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetEquipGunData(const FGunData _gunData) { m_playerStatus.equipGunData = _gunData; }
 	
 public:
 	// 【入力バインド】キャラ移動：前後

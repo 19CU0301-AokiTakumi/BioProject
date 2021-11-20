@@ -14,12 +14,15 @@ AItemBase::AItemBase()
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
 
-	// メッシュ生成
-	m_pMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("m_pItemMesh"));
-
 	//	コリジョン判定用ボックスコンポーネント生成
 	m_pBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("m_pItemCollisionComp"));
-	m_pBoxComp->SetupAttachment(m_pMesh);
+	if (m_pBoxComp)
+		RootComponent = m_pBoxComp;
+
+	// メッシュ生成
+	m_pMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("m_pItemMesh"));
+	if (m_pMesh)
+		m_pMesh->SetupAttachment(m_pBoxComp);
 }
 
 // ゲーム開始時、または生成時に呼ばれる処理

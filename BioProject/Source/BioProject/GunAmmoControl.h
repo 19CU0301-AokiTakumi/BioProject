@@ -9,6 +9,7 @@
 UENUM(BlueprintType)
 enum class EAmmoType : uint8
 {
+	None,
 	Hand,
 	Shot,
 	Max,	// êVÇµÇ¢ÇÃÇÕÇ±ÇÍÇÊÇËè„Ç…í«â¡
@@ -19,15 +20,15 @@ struct FAmmoData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") EAmmoType gunType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") EAmmoType ammoType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int ammoStock;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int ammoStockMax;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int atk;
 
 public:
-	FAmmoData(const EAmmoType _gunType = EAmmoType::Hand, const int _ammoStock = 0, const int _ammoStockMax = 0, const int _atk = 0)
+	FAmmoData(const EAmmoType _ammoType = EAmmoType::Hand, const int _ammoStock = 0, const int _ammoStockMax = 0, const int _atk = 0)
 	{
-		gunType = _gunType;
+		ammoType = _ammoType;
 		ammoStock = _ammoStock;
 		ammoStockMax = _ammoStockMax;
 		atk = _atk;
@@ -44,8 +45,10 @@ public:
 	AGunAmmoControl();
 
 private:
-	FAmmoData m_ammoData;
+	UPROPERTY(EditAnywhere, Category = "Data")
+		FAmmoData m_ammoData;
 
 public:
-	FAmmoData GetAmmoData() const { return m_ammoData; }
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		FAmmoData GetAmmoData() const { return m_ammoData; }
 };

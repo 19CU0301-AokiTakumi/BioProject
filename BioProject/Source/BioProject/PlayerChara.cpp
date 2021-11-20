@@ -212,13 +212,15 @@ void APlayerChara::Input_MoveRight(float _axisValue)
 //　【入力バインド】カメラの回転：（Y軸）
 void APlayerChara::Input_CameraRotatePitch(float _axisValue)
 {
-	m_CameraRotationInput.Y = _axisValue;
+	if (m_playerFlags.flagBits.isOpenMenu == false)
+		m_CameraRotationInput.Y = _axisValue;
 }
 
 //　【入力バインド】カメラ回転：（Z軸）
 void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 {
-	m_CameraRotationInput.X = _axisValue;
+	if (m_playerFlags.flagBits.isOpenMenu == false)
+		m_CameraRotationInput.X = _axisValue;
 }
 
 //【入力バインド】銃を構える
@@ -306,6 +308,21 @@ void APlayerChara::Input_Action()
 
 	if (m_playerFlags.flagBits.isItemTouch == true)
 	{
+		if (Cast<AGunAmmoControl>(m_pOverlapActor))
+		{
+			AGunAmmoControl* NewAmmo = Cast<AGunAmmoControl>(m_pOverlapActor);
+			m_haveAmmoDatas[(int)NewAmmo->GetAmmoData().ammoType].ammoStock += NewAmmo->GetAmmoData().ammoStock;
+			UE_LOG(LogTemp, Error, TEXT("index:%d    stock:%d"), (int)NewAmmo->GetAmmoData().ammoType, m_haveAmmoDatas[(int)NewAmmo->GetAmmoData().ammoType].ammoStock);
+			if (m_haveAmmoDatas[(int)NewAmmo->GetAmmoData().ammoType].ammoStock > NewAmmo->GetAmmoData().ammoStockMax)
+			{
+				m_haveAmmoDatas[(int)NewAmmo->GetAmmoData().ammoType].ammoStock = NewAmmo->GetAmmoData().ammoStockMax;
+				return;
+			}
+			
+			m_playerFlags.flagBits.isItemGet = true;
+			m_playerFlags.flagBits.isItemTouch = false;
+			return;
+		}
 		for (int i = 0; i < m_ItemDatas.Num(); i++)
 		{
 			if (m_ItemDatas[i].type == ItemType::None)
@@ -330,7 +347,7 @@ void APlayerChara::Input_Action()
 
 void APlayerChara::Input_Reload()
 {
-	if (Cast<AGunControl>(m_pOverlapActor) == NULL)
+	if (m_playerStatus.equipGunData.gunType == EGunType::None)
 		return;
 
 	//Cast<AGunControl>(m_pOverlapActor)->Reload();
