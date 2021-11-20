@@ -97,7 +97,8 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAction("Action", IE_Pressed, this, &APlayerChara::Input_Action);
 
 	// 銃を構える
-	InputComponent->BindAxis("Hold", this, &APlayerChara::Input_Hold);
+	InputComponent->BindAction("Hold", IE_Pressed, this, &APlayerChara::Input_Hold);
+	InputComponent->BindAction("Hold", IE_Released, this, &APlayerChara::Input_Hold);
 
 	// �e�����
 	InputComponent->BindAction("Shooting", IE_Pressed, this, &APlayerChara::Input_Shooting);
@@ -221,7 +222,7 @@ void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 }
 
 //【入力バインド】銃を構える
-void APlayerChara::Input_Hold(float _axisValue)
+void APlayerChara::Input_Hold()
 {
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
 

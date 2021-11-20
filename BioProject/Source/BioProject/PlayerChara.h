@@ -199,19 +199,19 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
 		int GetPlayerMaxHP() const { return m_playerStatus.maxHP; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "GetBool")
+	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
 		bool GetIsItemTouch()const { return m_playerFlags.flagBits.isItemTouch; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		AActor* GetOverlapActor() const { return m_pOverlapActor; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "GetBool")
+	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
 		EInventoryState GetInventoryState() const { return m_invenoryState; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetInventoryState(const EInventoryState _state) { m_invenoryState = _state; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+	UFUNCTION(BlueprintCallable, CateGory = "SetData", BlueprintPure)
 		int GetCursorIndex(const int _index, const int _moveValue);
 
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
@@ -223,13 +223,13 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetIsGetItem(const bool _isGet) { m_playerFlags.flagBits.isItemGet = _isGet; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsOpenInventory() const { return m_playerFlags.flagBits.isOpenMenu; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsGunHold() const { return m_playerFlags.flagBits.isGunHold; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsDead();
 	
 public:
@@ -246,7 +246,7 @@ public:
 	void Input_CameraRotateYaw(float _axisValue);
 
 	// 【入力バインド】銃を構える
-	void Input_Hold(float _axisValue);
+	void Input_Hold();
 
 	// 【入力バインド】銃を撃つ
 	void Input_Shooting();
@@ -264,9 +264,9 @@ public:
 
 public:
 	// アニメーション遷移用Return関数
-	UFUNCTION(BlueprintCallable, CateGory = "Return")
+	UFUNCTION(BlueprintCallable, CateGory = "Return", BlueprintPure)
 		EActionStatus GetAnimStatus() { return m_ActionStatus; };
 
-	UFUNCTION(BlueprintCallable, CateGory = "Gun")
+	UFUNCTION(BlueprintCallable, CateGory = "Gun", BlueprintPure)
 		FVector GetLandingPoint()const { return m_rayLandingPoint; }
 };

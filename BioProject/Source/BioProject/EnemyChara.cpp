@@ -153,6 +153,7 @@ void AEnemyChara::Attack(float _deltaTime)
 	if (m_Count > 2.f)	// 2.9fはアニメーションの時間（後で変更）
 	{
 		m_Player->Damage(m_EnemyStatus.atk);
+		m_status = ActionStatus::Idle;
 		m_Count = 0.f;
 	}
 }
