@@ -13,6 +13,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 
+// プレイヤーのステータスをまとめた構造体
 USTRUCT(BlueprintType)
 struct FPlayerStatus
 {
@@ -21,19 +22,26 @@ struct FPlayerStatus
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int hp;					// 現在のHP
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int maxHP;				// 最大HP
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float moveSpeed;			// 移動速度
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") FGunData equipGunData;		// 装備している武器のID
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") FGunData equipGunData;	// 装備している武器のデータ
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int equipGunID;			// 装備している武器の番号
 
 public:
-	FPlayerStatus(const int _hp = 0, const int _maxHP = 0, const float _moveSpeed = 0.f, FGunData _equipGunData = FGunData::NoneData())
+	// コンストラクタ
+	FPlayerStatus(const int _hp = 0, const int _maxHP = 0, const float _moveSpeed = 0.f, FGunData _equipGunData = FGunData::NoneData(), int _equipGunID = 0)
 	{
 		hp = _hp;
 		maxHP = _maxHP;
 		moveSpeed = _moveSpeed;
 		equipGunData = _equipGunData;
+		equipGunID = _equipGunID;
 	}
-	static FPlayerStatus ZeroStatus() { return FPlayerStatus(0, 0, 0.f); }
+
+	// 初期化用
+	static FPlayerStatus ZeroStatus() { return FPlayerStatus(); }
 };
 
+
+// アクションの状態管理用の列挙型
 UENUM(BlueprintType)
 enum class EActionStatus : uint8
 {
@@ -45,20 +53,25 @@ enum class EActionStatus : uint8
 	Guard,			// Daisuke
 };
 
+// インベントリの状態管理用の列挙型
 UENUM(BlueprintType)
 enum class EInventoryState : uint8
 {
 	Idle,			// 未操作
-	Open,
-	Close,
+	Open,			// 開いている
+	Close,			// 閉じている
 };
 
+// ステータス変更の際の基準となるデータをまとめた構造体
 USTRUCT(BlueprintType)
 struct FStatusConstant
 {
 	GENERATED_USTRUCT_BODY()
 
+	// 歩きのスピード
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float walkSpeed;
+
+	// 走りのスピード
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float runSpeed;
 };
 
@@ -67,7 +80,7 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 {
 	GENERATED_BODY()
 
-
+	// プレイヤーに関わるフラグをまとめた構造体
 	struct FPlayerFlagBits	// ※16個まで
 	{
 		// アイテムを取得したか
@@ -86,9 +99,13 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 		bool isOpenMenu : 1;	// 5
 	};
 
+	// フラグの管理をしやすくするための共用体
 	union PlayerFlags
 	{
+		// それぞれのフラグ参照用
 		FPlayerFlagBits flagBits;
+
+		// 全てのフラグ初期化用
 		int flagAll;
 	};
 
@@ -144,19 +161,20 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Status", meta = (AllowPrivateAccess = "true"))
 		FPlayerStatus m_playerStatus;
 
+	// ステータスの基準となるデータ
 	UPROPERTY(EditAnywhere, Category = "Status", meta = (AllowPrivateAccess = "true"))
 		FStatusConstant m_statusConst;
 
+	// アクションの状態
 	UPROPERTY(EditAnywhere, Category = "Status")
 		EActionStatus m_ActionStatus;
 
+	// プレイヤーに関わるフラグ
 	PlayerFlags m_playerFlags;
 
 	// Player のカバンの中身を格納
 	UPROPERTY(EditAnywhere, Category = "ItemData")
 		TArray<FItemData> m_ItemDatas;
-
-	FAmmoData m_haveAmmoDatas[(int)EAmmoType::Max];
 
 	// バッグのサイズ
 	UPROPERTY(EditAnywhere, Category = "ItemData")
@@ -168,9 +186,14 @@ private:
 	// オーバーラップしたアクター
 	AActor* m_pOverlapActor;
 
-	FVector m_OverlapActorPos;
-
+	// インベントリの状態
 	EInventoryState m_invenoryState;
+
+	// 所持している銃の保管用
+	TArray<AGunControl*> m_haveGunDatas;
+
+	// 所持している弾薬の保管用
+	FAmmoData m_haveAmmoDatas[(int)EAmmoType::Max];
 
 private:
 	// 移動処理
@@ -187,51 +210,67 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
 		TArray<FItemData> GetPlayerBag() const { return m_ItemDatas; }
 
+	// プレイヤーのステータスを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
 		FPlayerStatus GetPlayerStatus() const { return m_playerStatus; }
 
+	// 所持している弾薬のデータを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
 		FAmmoData GetAmmoData(const EGunType _ammoType) const { return m_haveAmmoDatas[(int)_ammoType]; }
 
+	// プレイヤーのHPを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
 		int GetPlayerHP() const { return m_playerStatus.hp; }
 
+	// プレイヤーの最大HPを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
 		int GetPlayerMaxHP() const { return m_playerStatus.maxHP; }
 
+	// アイテムに触れているかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
 		bool GetIsItemTouch()const { return m_playerFlags.flagBits.isItemTouch; }
 
+	// 触れているアクターを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		AActor* GetOverlapActor() const { return m_pOverlapActor; }
 
+	// インベントリの状態を渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
 		EInventoryState GetInventoryState() const { return m_invenoryState; }
 
+	// インベントリの状態をセットする
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetInventoryState(const EInventoryState _state) { m_invenoryState = _state; }
 
+	// インベントリのカーソル位置を渡す
 	UFUNCTION(BlueprintCallable, CateGory = "SetData", BlueprintPure)
 		int GetCursorIndex(const int _index, const int _moveValue);
 
+	// 回復処理
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void Heal(const int _index, const int _value = 0);
 
+	// 被ダメージ処理
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void Damage(int _atk);
 
+	// アイテムを取得したかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetIsGetItem(const bool _isGet) { m_playerFlags.flagBits.isItemGet = _isGet; }
 
+	// インベントリが開かれているかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsOpenInventory() const { return m_playerFlags.flagBits.isOpenMenu; }
 
+	// 銃を構えているかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsGunHold() const { return m_playerFlags.flagBits.isGunHold; }
 
+	// 死亡したかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsDead();
 
+	// 【デバッグ用】装備している武器情報をBPで変更する
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetEquipGunData(const FGunData _gunData) { m_playerStatus.equipGunData = _gunData; }
 	
@@ -263,7 +302,11 @@ public:
 	// 【入力バインド】リロード処理
 	void Input_Reload();
 
+	// 【入力バインド】インベントリ処理
 	void Input_Inventory();
+
+	// 【入力バインド】銃の切り替え処理
+	void Input_ChangeGun(float _axisValue);
 
 public:
 	// アニメーション遷移用Return関数

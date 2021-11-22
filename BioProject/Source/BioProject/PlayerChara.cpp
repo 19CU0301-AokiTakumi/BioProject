@@ -6,6 +6,7 @@
 #include "DoorBase.h"
 #include "ItemBase.h"
 #include "Bullet.h"
+#include "GunControl.h"
 #include "DrawDebugHelpers.h"
 
 // コンストラクタ
@@ -18,7 +19,6 @@ APlayerChara::APlayerChara()
 	, m_CameraPitchLimit(FVector2D(-80.f, 80.f))
 	, m_bagSize(8)
 	, m_pOverlapActor(NULL)
-	, m_OverlapActorPos(FVector::ZeroVector)
 	, m_invenoryState(EInventoryState::Idle)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
@@ -48,7 +48,8 @@ APlayerChara::APlayerChara()
 	if (m_pCamera)
 		m_pCamera->SetupAttachment(m_pSpringArm);
 
-	m_playerStatus = { 10, 10, 1000.f };
+	// 構造体の初期化
+	m_playerStatus = { 10, 10, 1000.f, FGunData::NoneData(), 0 };
 	m_statusConst = { 1000.f, 10000000.f };
 }
 
@@ -100,7 +101,7 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAction("Hold", IE_Pressed, this, &APlayerChara::Input_Hold);
 	InputComponent->BindAction("Hold", IE_Released, this, &APlayerChara::Input_Hold);
 
-	// �e�����
+	// 銃を撃つ
 	InputComponent->BindAction("Shooting", IE_Pressed, this, &APlayerChara::Input_Shooting);
 
 	// リロード
@@ -108,28 +109,39 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	// インベントリ開閉
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &APlayerChara::Input_Inventory);
+
+	// 銃を切り替える
+	InputComponent->BindAxis("ChangeGun", this, &APlayerChara::Input_ChangeGun);
 }
 
 // オーバーラップ接触をし終えたときに呼ばれるイベント関数
 void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 触れているアクターを保管
 	m_pOverlapActor = OtherActor;
-	m_OverlapActorPos = OtherActor->GetActorLocation();
 
+	// アイテムに触れている時
 	if (Cast<AItemBase>(OtherActor))
 	{
+		// アイテムに触れているフラグを立てる
 		m_playerFlags.flagBits.isItemTouch = true;
 	}
 
+	// 扉に触れている時
 	if (Cast<ADoorBase>(OtherActor))
 	{
+		// いづれの場合もプレイヤーからして奥に開くようにする
+		// 前面に触れている時
 		if (OtherComp->ComponentHasTag("Front"))
 		{
+			// 開く方向を設定
 			Cast<ADoorBase>(OtherActor)->SetOpenReverse(false);
 		}
+		// 背面に触れている時
 		else if (OtherComp->ComponentHasTag("Back"))
 		{
+			// 開く方向を設定
 			Cast<ADoorBase>(OtherActor)->SetOpenReverse(true);
 		}
 	}
@@ -138,19 +150,16 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 // オーバーラップ接触をし終えたときに呼ばれるイベント関数
 void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	// 当たっていたアイテムを無効にする
+	// アイテムに触れているフラグをおろす
 	m_playerFlags.flagBits.isItemTouch = false;
 
-	if (m_pOverlapActor)
-	{
-		m_pOverlapActor = NULL;
-	}
+	// 保管していた触れていたアクターを無効にする
+	m_pOverlapActor = NULL;
+
+	// 扉から離れた時
 	if (Cast<ADoorBase>(OtherActor))
 	{
-		if (Cast<ADoorBase>(OtherActor)->GetIsLock())
-		{
-			m_playerFlags.flagBits.isOpenMenu = false;
-		}
+		// インベントリを閉じる
 		m_playerFlags.flagBits.isOpenMenu = false;
 	}
 }
@@ -226,42 +235,30 @@ void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 //【入力バインド】銃を構える
 void APlayerChara::Input_Hold()
 {
+	// 銃を構えているかのフラグを切り替える
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
-
-
-	// レイを飛ばす
-	// レイの始点はActorの位置
-	FVector Start = GetActorLocation();
-	// レイの終点はActorから前方向の一定距離
-	FVector End = GetActorLocation();
-
-	//// デバッグ確認用のラインを描画
-	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
-
-	// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-
-	// ヒットした（=コリジョン判定を受けた）オブジェクトを格納する変数
-	FHitResult OutHit;
-
-	// レイを飛ばし、オブジェクトに対してコリジョン判定を行う
-	// isHitは、ヒットした場合にtrueになる
-	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
-
-	// ヒットするオブジェクトがある場合
-	if (isHit)
-	{
-
-	}
 }
 
 // 【入力バインド】銃を撃つ
 void APlayerChara::Input_Shooting()
 {
+	// 銃を持っていない場合は処理しない
 	if (m_playerFlags.flagBits.isHaveGun == false)
 		return;
 
+	// 銃に弾が入っていない場合は処理しない
+	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData().ammoStock <= 0)
+		return;
+
+	// 装備している銃の情報を一時保管
+	FGunData NewGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+	
+	// 銃の弾を減らす
+	m_haveGunDatas[m_playerStatus.equipGunID]->SetGunData(FGunData(NewGunData.gunType, NewGunData.ammoStock - 1, NewGunData.ammoStockMax, NewGunData.atk));
+
+	// データを反映
+	m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+		
 	// ���C���΂�
 	// ���C�̎n�_��Actor�̈ʒu
 	FVector Start = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
@@ -286,90 +283,201 @@ void APlayerChara::Input_Shooting()
 // 【入力バインド】走り
 void APlayerChara::Input_Run()
 {
-	// コントロール出来るか
+	// 移動速度を走りの速度に変更
 	m_playerStatus.moveSpeed = m_statusConst.runSpeed;
+
+	// アクションの状態を走り状態に変更
 	m_ActionStatus = EActionStatus::Run;
 }
 
 // 【入力バインド】アクション
 void APlayerChara::Input_Action()
 {
+	// 何にも触れていない場合は処理しない
 	if (m_pOverlapActor == NULL)
 		return;
 
+	// 扉に触れていた場合
 	if (Cast<ADoorBase>(m_pOverlapActor))
 	{
+		// 扉に鍵がかかっていた場合
 		if (Cast<ADoorBase>(m_pOverlapActor)->GetIsLock())
 		{
+			// インベントリを開く
 			m_playerFlags.flagBits.isOpenMenu = true;
 		}
 		return;
 	}
 
+	// アイテムに触れていた時
 	if (m_playerFlags.flagBits.isItemTouch == true)
 	{
+		// 弾薬に触れていた時
 		if (Cast<AGunAmmoControl>(m_pOverlapActor))
 		{
-			AGunAmmoControl* NewAmmo = Cast<AGunAmmoControl>(m_pOverlapActor);
-			m_haveAmmoDatas[(int)NewAmmo->GetAmmoData().ammoType].ammoStock += NewAmmo->GetAmmoData().ammoStock;
-			UE_LOG(LogTemp, Error, TEXT("index:%d    stock:%d"), (int)NewAmmo->GetAmmoData().ammoType, m_haveAmmoDatas[(int)NewAmmo->GetAmmoData().ammoType].ammoStock);
-			if (m_haveAmmoDatas[(int)NewAmmo->GetAmmoData().ammoType].ammoStock > NewAmmo->GetAmmoData().ammoStockMax)
+			// 触れていた弾薬
+			AGunAmmoControl* OverlapAmmo = Cast<AGunAmmoControl>(m_pOverlapActor);
+
+			// 触れていた弾薬を所持しているかを保管
+			bool isHaveTypeAmmo = false;
+
+			// 所持しているかをチェック
+			for (int i = 0; i < (int)EAmmoType::Max; ++i)
 			{
-				m_haveAmmoDatas[(int)NewAmmo->GetAmmoData().ammoType].ammoStock = NewAmmo->GetAmmoData().ammoStockMax;
+				// 持っていない
+				if (m_haveAmmoDatas[i].ammoType == OverlapAmmo->GetAmmoData().ammoType)
+				{
+					isHaveTypeAmmo = true;
+					break;
+				}
+
+			}
+
+			// 取得した弾薬を弾薬管理用の配列に加算
+			m_haveAmmoDatas[(int)OverlapAmmo->GetAmmoData().ammoType].ammoStock += OverlapAmmo->GetAmmoData().ammoStock;
+			m_haveAmmoDatas[(int)OverlapAmmo->GetAmmoData().ammoType].ammoType = OverlapAmmo->GetAmmoData().ammoType;
+			
+			// 弾薬が1スタックの容量を超えていた場合
+			if (m_haveAmmoDatas[(int)OverlapAmmo->GetAmmoData().ammoType].ammoStock > OverlapAmmo->GetAmmoData().ammoStockMax)
+			{
+				// 1スタックの最大値に補完
+				m_haveAmmoDatas[(int)OverlapAmmo->GetAmmoData().ammoType].ammoStock = OverlapAmmo->GetAmmoData().ammoStockMax;
 				return;
 			}
 			
+			// アイテムの取得フラグを立てる
 			m_playerFlags.flagBits.isItemGet = true;
+
+			// アイテムに触れていない状態にする
 			m_playerFlags.flagBits.isItemTouch = false;
-			return;
+
+			
+			if (isHaveTypeAmmo)
+				return;
 		}
+
+		// 銃に触れていた時
+		if (Cast<AGunControl>(m_pOverlapActor))
+		{
+			// 触れている銃を一時保管
+			AGunControl* OverlapGun = Cast<AGunControl>(m_pOverlapActor);
+
+			// 触れている武器を所持している武器に新しく追加
+			m_haveGunDatas.Add(OverlapGun);
+
+			// 銃を初めて手に入れたとき
+			if (m_playerStatus.equipGunData.gunType == EGunType::None)
+			{
+				// 銃の所持フラグを立てる
+				m_playerFlags.flagBits.isHaveGun = true;
+
+				// 装備している銃を更新
+				m_playerStatus.equipGunData = OverlapGun->GetGunData();
+			}
+		}
+		
+		// 鞄の更新処理
 		for (int i = 0; i < m_ItemDatas.Num(); i++)
 		{
+			// 検索した場所が空の時
 			if (m_ItemDatas[i].type == ItemType::None)
 			{
+				// 取得したアイテムの情報を入れる
 				m_ItemDatas[i] = Cast<AItemBase>(m_pOverlapActor)->GetItemData();
-
-				AGunControl* OverlapGun = Cast<AGunControl>(m_pOverlapActor);
-				if (OverlapGun)
-				{
-					m_playerFlags.flagBits.isHaveGun = true;
-					m_playerStatus.equipGunData = Cast<AGunControl>(m_pOverlapActor)->GetGunData();
-				}
 				
+				// アイテム取得フラグを立てる
 				m_playerFlags.flagBits.isItemGet = true;
+
+				// アイテムに触れていない状態にする
 				m_playerFlags.flagBits.isItemTouch = false;
-				UE_LOG(LogTemp, Error, TEXT("ItemGet"));
 				break;
 			}
 		}
 	}
 }
 
+// 【入力バインド】リロード処理
 void APlayerChara::Input_Reload()
 {
+	// 銃を装備していない場合は処理しない
 	if (m_playerStatus.equipGunData.gunType == EGunType::None)
 		return;
 
-	//Cast<AGunControl>(m_pOverlapActor)->Reload();
+	// 装備している銃の種類を数値化
+	int EcuipGunTypeIndex = (int)m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData().gunType;
+
+	// 装備している武器が存在している時
+	if (m_haveGunDatas[m_playerStatus.equipGunID])
+	{
+		// リロード処理
+		m_haveGunDatas[m_playerStatus.equipGunID]->Reload(m_haveAmmoDatas[EcuipGunTypeIndex].ammoStock);
+
+		// 装備している銃を更新
+		m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+	}
+		
 }
 
+// 【入力バインド】インベントリ処理
 void APlayerChara::Input_Inventory()
 {
+	// インベントリの開閉を切り替え
 	m_playerFlags.flagBits.isOpenMenu = !(m_playerFlags.flagBits.isOpenMenu);
+
+	// インベントリの状態を設定
 	m_invenoryState = (m_playerFlags.flagBits.isOpenMenu) ? EInventoryState::Open : EInventoryState::Close;
 }
 
-void APlayerChara::Damage(int _atk)
+// 【入力バインド】銃の切り替え処理
+void APlayerChara::Input_ChangeGun(float _axisValue)
 {
-	m_playerStatus.hp -= _atk;
-	if (m_playerStatus.hp <= 0)
+	// 銃を所持していない場合は処理しない
+	if (m_playerFlags.flagBits.isHaveGun == false)
+		return;
+
+	// 上ホイール
+	if (_axisValue >= 1.f)
 	{
-		m_playerStatus.hp = 0;
+		// 装備中の武器の番号を減らす
+		--m_playerStatus.equipGunID;
+
+		// 0未満の時、補正をかける
+		if (m_playerStatus.equipGunID < 0)
+			m_playerStatus.equipGunID = m_haveGunDatas.Num() - 1;
+
+		// 装備している銃を更新
+		m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+	}
+	// 下したホイール
+	else if (_axisValue <= -1.f)
+	{
+		// 装備中の武器の番号を増やす
+		++m_playerStatus.equipGunID;
+
+		// 所持している銃の種類数を超えたら、補正をかける
+		if (m_playerStatus.equipGunID > m_haveGunDatas.Num() - 1)
+			m_playerStatus.equipGunID = 0;
+
+		// 装備している銃を更新
+		m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
 	}
 }
 
+// 被ダメージ処理
+void APlayerChara::Damage(int _atk)
+{
+	// HPを減らす
+	m_playerStatus.hp -= _atk;
+
+	// 0より小さいとき補完をかける
+	if (m_playerStatus.hp < 0)
+		m_playerStatus.hp = 0;
+}
+
+// インベントリのカーソル位置を渡す
 int APlayerChara::GetCursorIndex(const int _index , const int _moveValue)
 {
+	// インベントリを開いていない場合は処理しない
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		return _index;
 
@@ -379,20 +487,20 @@ int APlayerChara::GetCursorIndex(const int _index , const int _moveValue)
 	// 上下のカーソル移動
 	if (FMath::Abs(_moveValue) % 4 == 0)
 	{
-		// 上
+		// 上入力
 		if (_moveValue < 0)
 			ret = _index >= 4;
-		// 下
+		// 下入力
 		else
 			ret = (_index + 4) < m_bagSize;
 	}
 	// 左右のカーソル移動
 	else if (FMath::Abs(_moveValue) == 1)
 	{
-		// 上
+		// 左入力
 		if (_moveValue < 0)
 			ret = (_index % 4) != 0;
-		// 下
+		// 右入力
 		else
 			ret = (_index % 4) <= 2;
 	}
@@ -404,11 +512,13 @@ int APlayerChara::GetCursorIndex(const int _index , const int _moveValue)
 	return _index;
 }
 
+// 死亡したかを渡す
 bool APlayerChara::GetIsDead()
 {
 	return (m_playerStatus.hp <= 0) ? true : false;
 }
 
+// 回復処理
 void APlayerChara::Heal(const int _index, const int _value)
 {
 	m_playerStatus.hp += _value;
