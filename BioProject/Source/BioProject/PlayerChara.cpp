@@ -8,6 +8,10 @@
 #include "Bullet.h"
 #include "GunControl.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "MotionControllerComponent.h"
+#include "XRMotionControllerBase.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -20,6 +24,7 @@ APlayerChara::APlayerChara()
 	, m_bagSize(8)
 	, m_pOverlapActor(NULL)
 	, m_invenoryState(EInventoryState::Idle)
+	, m_Count(0.f)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -76,6 +81,7 @@ void APlayerChara::Tick(float DeltaTime)
 
 	UpdateMove(DeltaTime);
 	UpdateCamera(DeltaTime);
+
 }
 
 // 各入力関係メソッドとのバインド処理
@@ -170,6 +176,8 @@ void APlayerChara::UpdateMove(float _deltaTime)
 {
 	if (m_pSpringArm)
 	{
+		m_Count += _deltaTime;
+
 		//　キャラクターの移動
 		{
 			// SpringArmが向く方向に、入力による移動量をPawnMovementComponentに渡す
@@ -178,6 +186,24 @@ void APlayerChara::UpdateMove(float _deltaTime)
 
 			const FVector rightVec = m_pSpringArm->GetRightVector();
 			AddMovementInput(rightVec, m_CharaMoveInput.X * m_playerStatus.moveSpeed);
+		}
+
+		// 移動時のカメラの揺れ
+		if (m_Count < 0.5f && m_CharaMoveInput.Y != 0)
+		{
+			if (m_Count < 0.3f)
+			{
+				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z + 0.15));
+			}
+			else
+			{
+				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z - 0.15));
+			}
+		}
+		else if (m_Count > 0.5f && m_CharaMoveInput.Y != 0)
+		{
+			m_Count = 0.f;
+			m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, 0));
 		}
 	}
 }
@@ -468,6 +494,9 @@ void APlayerChara::Damage(int _atk)
 {
 	// HPを減らす
 	m_playerStatus.hp -= _atk;
+
+	// カメラを揺らす
+	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CameraShake, 1.0f);
 
 	// 0より小さいとき補完をかける
 	if (m_playerStatus.hp < 0)

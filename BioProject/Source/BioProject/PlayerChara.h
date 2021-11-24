@@ -7,6 +7,7 @@
 #include "ItemBase.h"
 #include "GunControl.h"
 #include "GunAmmoControl.h"
+#include "PlayerCameraShake.h"
 #include "PlayerChara.generated.h"
 
 // 前方宣言
@@ -141,6 +142,10 @@ private:
 	// カメラ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* m_pCamera;
+
+	//　カメラの揺れ
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UPlayerCameraShake> CameraShake;
 
 private:
 	//　キャラ移動入力量
@@ -315,4 +320,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "Gun", BlueprintPure)
 		FVector GetLandingPoint()const { return m_rayLandingPoint; }
+
+	// 歩きのカメラ振動の継続カウント
+	float m_Count;		
 };
