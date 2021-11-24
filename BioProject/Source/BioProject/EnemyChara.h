@@ -114,7 +114,6 @@ private:
 	void Attack(float _deltaTime);
 	void Avoid(float _deltaTime);
 	void KnockBack(float _deltaTime);
-	void Death(float _deltaTime);
 
 	ActionStatus m_status;
 };

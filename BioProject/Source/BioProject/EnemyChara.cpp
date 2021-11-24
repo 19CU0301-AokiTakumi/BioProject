@@ -92,10 +92,6 @@ void AEnemyChara::UpdateAction(float _deltaTime)
 		KnockBack(_deltaTime);
 		break;
 
-	case ActionStatus::Death:
-		Death(_deltaTime);
-		break;
-
 	default:
 		break;
 	}
@@ -131,7 +127,7 @@ void AEnemyChara::Move(float _deltaTime)
 	// レイの始点はActorの位置
 	FVector Start = GetActorLocation();
 	// レイの終点はActorから前方向の一定距離
-	FVector End = m_Mesh->GetForwardVector() * m_SearchArea;
+	FVector End = GetActorLocation() + m_Mesh->GetForwardVector() * m_SearchArea;
 
 	for (int i = 0; i < 7; i++)
 	{
@@ -199,16 +195,6 @@ void AEnemyChara::KnockBack(float _deltaTime)
 	}
 }
 
-void AEnemyChara::Death(float _deltaTime)
-{
-	m_Count += _deltaTime;
-
-	if (m_Count > 2.9f)	// 2.9fはアニメーションの時間（後で変更）
-	{
-		Destroy();
-		m_Count = 0.f;
-	}
-}
 
 //---------------------------------------
 // アニメーション遷移
