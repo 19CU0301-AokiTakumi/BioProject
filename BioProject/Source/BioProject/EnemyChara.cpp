@@ -131,7 +131,7 @@ void AEnemyChara::Move(float _deltaTime)
 	// レイの始点はActorの位置
 	FVector Start = GetActorLocation();
 	// レイの終点はActorから前方向の一定距離
-	FVector End = GetActorLocation() + m_Mesh->GetForwardVector() * m_SearchArea;
+	FVector End = m_Mesh->GetForwardVector() * m_SearchArea;
 
 	for (int i = 0; i < 7; i++)
 	{
