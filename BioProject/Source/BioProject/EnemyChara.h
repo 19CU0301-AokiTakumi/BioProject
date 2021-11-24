@@ -9,6 +9,7 @@
 class UStaticMeshComponent;
 class UBoxComponent;
 class APlayerChara;
+class UNiagaraSystem;
 
 UENUM(BlueprintType)
 enum class ActionStatus : uint8
@@ -76,6 +77,11 @@ public:
 		FEnemyStatus m_EnemyStatus;
 
 public:
+	// エネミーのステータスを渡す
+	UFUNCTION(BlueprintCallable, CateGory = "EnemyState", BlueprintPure)
+		FEnemyStatus GetEnemyStatus() const { return m_EnemyStatus; }
+
+public:
 	// アニメーション用
 	// 歩きアニメーション
 	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
@@ -95,6 +101,9 @@ public:
 
 private:
 	APlayerChara* m_Player;
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		UNiagaraSystem* m_pDamageEffect;
 
 	float m_Count;
 

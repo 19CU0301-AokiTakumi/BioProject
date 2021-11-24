@@ -7,6 +7,9 @@
 #include "PlayerChara.h"
 #include "Bullet.h"
 #include "DrawDebugHelpers.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 AEnemyChara::AEnemyChara()
@@ -15,6 +18,7 @@ AEnemyChara::AEnemyChara()
 	, m_Count(0.f)
 	, m_status(ActionStatus::Idle)
 	, m_SearchArea(0.f)
+	, m_pDamageEffect(NULL)
 {
 
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -23,6 +27,9 @@ AEnemyChara::AEnemyChara()
 	// メッシュをつける
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("m_EnemyMesh"));
 	m_Mesh->SetupAttachment(RootComponent);
+
+	ConstructorHelpers::FObjectFinder<UNiagaraSystem> DamageEffect(TEXT("/Game/Effect/Blood/BloodSystem_02.BloodSystem_02"));
+	m_pDamageEffect = DamageEffect.Object;
 
 	m_EnemyStatus = { 10,10,10,1000.f };
 }
@@ -53,6 +60,9 @@ void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (Cast<ABullet>(OtherActor))
 	{
+		if (m_pDamageEffect)
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
+
 		m_EnemyStatus.hp--;
 		(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
 	}
@@ -123,26 +133,41 @@ void AEnemyChara::Move(float _deltaTime)
 	// レイの終点はActorから前方向の一定距離
 	FVector End = GetActorLocation() + m_Mesh->GetForwardVector() * m_SearchArea;
 
-	//// デバッグ確認用のラインを描画
-	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
-
-	// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-
-	// ヒットした（=コリジョン判定を受けた）オブジェクトを格納する変数
-	FHitResult OutHit;
-
-	// レイを飛ばし、オブジェクトに対してコリジョン判定を行う
-	// isHitは、ヒットした場合にtrueになる
-	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
-
-	// ヒットするオブジェクトがある場合
-	if (isHit)
+	for (int i = 0; i < 7; i++)
 	{
-		// 今ヒットしたActorが、保存されたヒットActorと違う場合
-		if (OutHit.GetActor()->ActorHasTag("Player"))
-			m_status = ActionStatus::Attack;
+		int fanangle = 30;
+		fanangle -= i * 10;
+
+		if (fanangle <= 0)
+		{
+			fanangle += 360;
+		}
+
+		float radTheta = FMath::DegreesToRadians(fanangle);
+		float X = End.X * cos(radTheta) - End.Y * sin(radTheta);
+		float Y = End.X * sin(radTheta) + End.Y * cos(radTheta);
+		FVector End2 = FVector(X, Y, End.Z) + GetActorLocation();
+
+		DrawDebugLine(GetWorld(), Start, End2, FColor::Blue, false, 1.0f);
+
+		// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+
+		// ヒットした（=コリジョン判定を受けた）オブジェクトを格納する変数
+		FHitResult OutHit;
+
+		// レイを飛ばし、オブジェクトに対してコリジョン判定を行う
+		// isHitは、ヒットした場合にtrueになる
+		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End2, ECC_WorldStatic, CollisionParams);
+
+		// ヒットするオブジェクトがある場合
+		if (isHit)
+		{
+			// 今ヒットしたActorが、保存されたヒットActorと違う場合
+			if (OutHit.GetActor()->ActorHasTag("Player"))
+				m_status = ActionStatus::Attack;
+		}
 	}
 }
 
