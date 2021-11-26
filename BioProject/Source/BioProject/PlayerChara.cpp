@@ -25,6 +25,8 @@ APlayerChara::APlayerChara()
 	, m_pOverlapActor(NULL)
 	, m_invenoryState(EInventoryState::Idle)
 	, m_Count(0.f)
+	, m_ActionStatus(EActionStatus::Idle)
+
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -81,6 +83,32 @@ void APlayerChara::Tick(float DeltaTime)
 
 	UpdateMove(DeltaTime);
 	UpdateCamera(DeltaTime);
+
+	switch (m_ActionStatus)
+	{
+	case EActionStatus::Idle:
+		UE_LOG(LogTemp, Error, TEXT("Idle"));
+		break;
+
+	case EActionStatus::Reload:
+		UE_LOG(LogTemp, Error, TEXT("Reload"));
+		break;
+
+	case EActionStatus::Walk:
+		UE_LOG(LogTemp, Error, TEXT("Walk"));
+		break;
+
+	//case eactionstatus::avoid:
+		//avoid(_deltatime);
+		//break;
+
+	//case eactionstatus::knockback:
+		//knockback(_deltatime);
+		//break;
+
+	default:
+		break;
+	}
 
 }
 
@@ -236,6 +264,7 @@ void APlayerChara::Input_MoveForward(float _axisValue)
 {
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
+
 }
 
 //　【入力バインド】キャラ移動左右
@@ -243,6 +272,7 @@ void APlayerChara::Input_MoveRight(float _axisValue)
 {
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
+
 }
 
 
@@ -438,6 +468,9 @@ void APlayerChara::Input_Reload()
 	// 装備している武器が存在している時
 	if (m_haveGunDatas[m_playerStatus.equipGunID])
 	{
+		// ステータスをリロードに
+		m_ActionStatus = EActionStatus::Reload;
+
 		// リロード処理
 		m_haveGunDatas[m_playerStatus.equipGunID]->Reload(m_haveAmmoDatas[EcuipGunTypeIndex].ammoStock);
 
