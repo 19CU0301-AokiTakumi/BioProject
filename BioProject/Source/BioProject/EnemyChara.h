@@ -7,6 +7,7 @@
 #include "EnemyChara.generated.h"
 
 class UStaticMeshComponent;
+class UCapsuleComponent;
 class UBoxComponent;
 class APlayerChara;
 class UNiagaraSystem;
@@ -66,13 +67,32 @@ private:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* m_Mesh;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_HeadComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_BodyComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_LShoulderComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_RShoulderComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_LArmComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_RArmComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_LThighsComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_RThighsComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_LLegComp;
+	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	//	UCapsuleComponent* m_RLegComp;
 
+private:
 	UPROPERTY(EditAnywhere, Category = "Status")
 		float m_SearchArea;
 
-public:
+private:
 	UPROPERTY(EditAnywhere, Category = "Status", meta = (AllowPrivateAccess = "true"))
 		FEnemyStatus m_EnemyStatus;
 

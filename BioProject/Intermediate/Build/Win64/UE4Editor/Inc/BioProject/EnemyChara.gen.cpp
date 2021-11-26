@@ -13,24 +13,266 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeEnemyChara() {}
 // Cross Module References
+	BIOPROJECT_API UEnum* Z_Construct_UEnum_BioProject_ActionStatus();
+	UPackage* Z_Construct_UPackage__Script_BioProject();
+	BIOPROJECT_API UScriptStruct* Z_Construct_UScriptStruct_FEnemyStatus();
 	BIOPROJECT_API UClass* Z_Construct_UClass_AEnemyChara_NoRegister();
 	BIOPROJECT_API UClass* Z_Construct_UClass_AEnemyChara();
 	ENGINE_API UClass* Z_Construct_UClass_ACharacter();
-	UPackage* Z_Construct_UPackage__Script_BioProject();
+	BIOPROJECT_API UFunction* Z_Construct_UFunction_AEnemyChara_GetEnemyStatus();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_AEnemyChara_OnOverlapBegin();
 	ENGINE_API UScriptStruct* Z_Construct_UScriptStruct_FHitResult();
 	ENGINE_API UClass* Z_Construct_UClass_UPrimitiveComponent_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_AActor_NoRegister();
-	ENGINE_API UClass* Z_Construct_UClass_UStaticMeshComponent_NoRegister();
-	ENGINE_API UClass* Z_Construct_UClass_UBoxComponent_NoRegister();
+	BIOPROJECT_API UFunction* Z_Construct_UFunction_AEnemyChara_ReturnAttack();
+	BIOPROJECT_API UFunction* Z_Construct_UFunction_AEnemyChara_ReturnDeath();
+	BIOPROJECT_API UFunction* Z_Construct_UFunction_AEnemyChara_ReturnKnockBack();
+	BIOPROJECT_API UFunction* Z_Construct_UFunction_AEnemyChara_ReturnWalk();
+	NIAGARA_API UClass* Z_Construct_UClass_UNiagaraSystem_NoRegister();
 // End Cross Module References
+	static UEnum* ActionStatus_StaticEnum()
+	{
+		static UEnum* Singleton = nullptr;
+		if (!Singleton)
+		{
+			Singleton = GetStaticEnum(Z_Construct_UEnum_BioProject_ActionStatus, Z_Construct_UPackage__Script_BioProject(), TEXT("ActionStatus"));
+		}
+		return Singleton;
+	}
+	template<> BIOPROJECT_API UEnum* StaticEnum<ActionStatus>()
+	{
+		return ActionStatus_StaticEnum();
+	}
+	static FCompiledInDeferEnum Z_CompiledInDeferEnum_UEnum_ActionStatus(ActionStatus_StaticEnum, TEXT("/Script/BioProject"), TEXT("ActionStatus"), false, nullptr, nullptr);
+	uint32 Get_Z_Construct_UEnum_BioProject_ActionStatus_Hash() { return 3268565374U; }
+	UEnum* Z_Construct_UEnum_BioProject_ActionStatus()
+	{
+#if WITH_HOT_RELOAD
+		UPackage* Outer = Z_Construct_UPackage__Script_BioProject();
+		static UEnum* ReturnEnum = FindExistingEnumIfHotReloadOrDynamic(Outer, TEXT("ActionStatus"), 0, Get_Z_Construct_UEnum_BioProject_ActionStatus_Hash(), false);
+#else
+		static UEnum* ReturnEnum = nullptr;
+#endif // WITH_HOT_RELOAD
+		if (!ReturnEnum)
+		{
+			static const UE4CodeGen_Private::FEnumeratorParam Enumerators[] = {
+				{ "ActionStatus::Idle", (int64)ActionStatus::Idle },
+				{ "ActionStatus::Move", (int64)ActionStatus::Move },
+				{ "ActionStatus::Attack", (int64)ActionStatus::Attack },
+				{ "ActionStatus::Avoid", (int64)ActionStatus::Avoid },
+				{ "ActionStatus::KnockBack", (int64)ActionStatus::KnockBack },
+				{ "ActionStatus::Death", (int64)ActionStatus::Death },
+			};
+#if WITH_METADATA
+			const UE4CodeGen_Private::FMetaDataPairParam Enum_MetaDataParams[] = {
+				{ "Attack.Comment", "// ?\xda\x93?\n" },
+				{ "Attack.Name", "ActionStatus::Attack" },
+				{ "Attack.ToolTip", "?\xda\x93?" },
+				{ "Avoid.Comment", "// ?U??\n" },
+				{ "Avoid.Name", "ActionStatus::Avoid" },
+				{ "Avoid.ToolTip", "?U??" },
+				{ "BlueprintType", "true" },
+				{ "Death.Comment", "// ????\n// ?m?b?N?o?b?N\n" },
+				{ "Death.Name", "ActionStatus::Death" },
+				{ "Death.ToolTip", "????\n?m?b?N?o?b?N" },
+				{ "Idle.Name", "ActionStatus::Idle" },
+				{ "KnockBack.Comment", "// ????\n" },
+				{ "KnockBack.Name", "ActionStatus::KnockBack" },
+				{ "ModuleRelativePath", "EnemyChara.h" },
+				{ "Move.Comment", "// ?\xd2\x8b@\n" },
+				{ "Move.Name", "ActionStatus::Move" },
+				{ "Move.ToolTip", "?\xd2\x8b@" },
+			};
+#endif
+			static const UE4CodeGen_Private::FEnumParams EnumParams = {
+				(UObject*(*)())Z_Construct_UPackage__Script_BioProject,
+				nullptr,
+				"ActionStatus",
+				"ActionStatus",
+				Enumerators,
+				UE_ARRAY_COUNT(Enumerators),
+				RF_Public|RF_Transient|RF_MarkAsNative,
+				UE4CodeGen_Private::EDynamicType::NotDynamic,
+				(uint8)UEnum::ECppForm::EnumClass,
+				METADATA_PARAMS(Enum_MetaDataParams, UE_ARRAY_COUNT(Enum_MetaDataParams))
+			};
+			UE4CodeGen_Private::ConstructUEnum(ReturnEnum, EnumParams);
+		}
+		return ReturnEnum;
+	}
+class UScriptStruct* FEnemyStatus::StaticStruct()
+{
+	static class UScriptStruct* Singleton = NULL;
+	if (!Singleton)
+	{
+		extern BIOPROJECT_API uint32 Get_Z_Construct_UScriptStruct_FEnemyStatus_Hash();
+		Singleton = GetStaticStruct(Z_Construct_UScriptStruct_FEnemyStatus, Z_Construct_UPackage__Script_BioProject(), TEXT("EnemyStatus"), sizeof(FEnemyStatus), Get_Z_Construct_UScriptStruct_FEnemyStatus_Hash());
+	}
+	return Singleton;
+}
+template<> BIOPROJECT_API UScriptStruct* StaticStruct<FEnemyStatus>()
+{
+	return FEnemyStatus::StaticStruct();
+}
+static FCompiledInDeferStruct Z_CompiledInDeferStruct_UScriptStruct_FEnemyStatus(FEnemyStatus::StaticStruct, TEXT("/Script/BioProject"), TEXT("EnemyStatus"), false, nullptr, nullptr);
+static struct FScriptStruct_BioProject_StaticRegisterNativesFEnemyStatus
+{
+	FScriptStruct_BioProject_StaticRegisterNativesFEnemyStatus()
+	{
+		UScriptStruct::DeferCppStructOps(FName(TEXT("EnemyStatus")),new UScriptStruct::TCppStructOps<FEnemyStatus>);
+	}
+} ScriptStruct_BioProject_StaticRegisterNativesFEnemyStatus;
+	struct Z_Construct_UScriptStruct_FEnemyStatus_Statics
+	{
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Struct_MetaDataParams[];
+#endif
+		static void* NewStructOps();
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_moveSpeed_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_moveSpeed;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_atk_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FUnsizedIntPropertyParams NewProp_atk;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_maxHP_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FUnsizedIntPropertyParams NewProp_maxHP;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_hp_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FUnsizedIntPropertyParams NewProp_hp;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+		static const UE4CodeGen_Private::FStructParams ReturnStructParams;
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FEnemyStatus_Statics::Struct_MetaDataParams[] = {
+		{ "BlueprintType", "true" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+	};
+#endif
+	void* Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewStructOps()
+	{
+		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FEnemyStatus>();
+	}
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_moveSpeed_MetaData[] = {
+		{ "Category", "Data" },
+		{ "Comment", "// ?U??\n" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+		{ "ToolTip", "?U??" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_moveSpeed = { "moveSpeed", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FEnemyStatus, moveSpeed), METADATA_PARAMS(Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_moveSpeed_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_moveSpeed_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_atk_MetaData[] = {
+		{ "Category", "Data" },
+		{ "Comment", "// ?\xc5\x91?HP\n" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+		{ "ToolTip", "?\xc5\x91?HP" },
+	};
+#endif
+	const UE4CodeGen_Private::FUnsizedIntPropertyParams Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_atk = { "atk", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FEnemyStatus, atk), METADATA_PARAMS(Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_atk_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_atk_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_maxHP_MetaData[] = {
+		{ "Category", "Data" },
+		{ "Comment", "// ???\xdd\x82?HP\n" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+		{ "ToolTip", "???\xdd\x82?HP" },
+	};
+#endif
+	const UE4CodeGen_Private::FUnsizedIntPropertyParams Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_maxHP = { "maxHP", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FEnemyStatus, maxHP), METADATA_PARAMS(Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_maxHP_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_maxHP_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_hp_MetaData[] = {
+		{ "Category", "Data" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FUnsizedIntPropertyParams Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_hp = { "hp", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FEnemyStatus, hp), METADATA_PARAMS(Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_hp_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_hp_MetaData)) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FEnemyStatus_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_moveSpeed,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_atk,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_maxHP,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FEnemyStatus_Statics::NewProp_hp,
+	};
+	const UE4CodeGen_Private::FStructParams Z_Construct_UScriptStruct_FEnemyStatus_Statics::ReturnStructParams = {
+		(UObject* (*)())Z_Construct_UPackage__Script_BioProject,
+		nullptr,
+		&NewStructOps,
+		"EnemyStatus",
+		sizeof(FEnemyStatus),
+		alignof(FEnemyStatus),
+		Z_Construct_UScriptStruct_FEnemyStatus_Statics::PropPointers,
+		UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FEnemyStatus_Statics::PropPointers),
+		RF_Public|RF_Transient|RF_MarkAsNative,
+		EStructFlags(0x00000001),
+		METADATA_PARAMS(Z_Construct_UScriptStruct_FEnemyStatus_Statics::Struct_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FEnemyStatus_Statics::Struct_MetaDataParams))
+	};
+	UScriptStruct* Z_Construct_UScriptStruct_FEnemyStatus()
+	{
+#if WITH_HOT_RELOAD
+		extern uint32 Get_Z_Construct_UScriptStruct_FEnemyStatus_Hash();
+		UPackage* Outer = Z_Construct_UPackage__Script_BioProject();
+		static UScriptStruct* ReturnStruct = FindExistingStructIfHotReloadOrDynamic(Outer, TEXT("EnemyStatus"), sizeof(FEnemyStatus), Get_Z_Construct_UScriptStruct_FEnemyStatus_Hash(), false);
+#else
+		static UScriptStruct* ReturnStruct = nullptr;
+#endif
+		if (!ReturnStruct)
+		{
+			UE4CodeGen_Private::ConstructUScriptStruct(ReturnStruct, Z_Construct_UScriptStruct_FEnemyStatus_Statics::ReturnStructParams);
+		}
+		return ReturnStruct;
+	}
+	uint32 Get_Z_Construct_UScriptStruct_FEnemyStatus_Hash() { return 3471978599U; }
 	void AEnemyChara::StaticRegisterNativesAEnemyChara()
 	{
 		UClass* Class = AEnemyChara::StaticClass();
 		static const FNameNativePtrPair Funcs[] = {
+			{ "GetEnemyStatus", &AEnemyChara::execGetEnemyStatus },
 			{ "OnOverlapBegin", &AEnemyChara::execOnOverlapBegin },
+			{ "ReturnAttack", &AEnemyChara::execReturnAttack },
+			{ "ReturnDeath", &AEnemyChara::execReturnDeath },
+			{ "ReturnKnockBack", &AEnemyChara::execReturnKnockBack },
+			{ "ReturnWalk", &AEnemyChara::execReturnWalk },
 		};
 		FNativeFunctionRegistrar::RegisterFunctions(Class, Funcs, UE_ARRAY_COUNT(Funcs));
+	}
+	struct Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics
+	{
+		struct EnemyChara_eventGetEnemyStatus_Parms
+		{
+			FEnemyStatus ReturnValue;
+		};
+		static const UE4CodeGen_Private::FStructPropertyParams NewProp_ReturnValue;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+	const UE4CodeGen_Private::FStructPropertyParams Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UE4CodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(EnemyChara_eventGetEnemyStatus_Parms, ReturnValue), Z_Construct_UScriptStruct_FEnemyStatus, METADATA_PARAMS(nullptr, 0) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::NewProp_ReturnValue,
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::Function_MetaDataParams[] = {
+		{ "Category", "EnemyState" },
+		{ "Comment", "// ?G?l?~?[?\xcc\x83X?e?[?^?X???n??\n" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+		{ "ToolTip", "?G?l?~?[?\xcc\x83X?e?[?^?X???n??" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AEnemyChara, nullptr, "GetEnemyStatus", nullptr, nullptr, sizeof(EnemyChara_eventGetEnemyStatus_Parms), Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_AEnemyChara_GetEnemyStatus()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_AEnemyChara_GetEnemyStatus_Statics::FuncParams);
+		}
+		return ReturnFunction;
 	}
 	struct Z_Construct_UFunction_AEnemyChara_OnOverlapBegin_Statics
 	{
@@ -113,6 +355,166 @@ void EmptyLinkFunctionForGeneratedCodeEnemyChara() {}
 		}
 		return ReturnFunction;
 	}
+	struct Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics
+	{
+		struct EnemyChara_eventReturnAttack_Parms
+		{
+			bool ReturnValue;
+		};
+		static void NewProp_ReturnValue_SetBit(void* Obj);
+		static const UE4CodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+	void Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+	{
+		((EnemyChara_eventReturnAttack_Parms*)Obj)->ReturnValue = 1;
+	}
+	const UE4CodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UE4CodeGen_Private::EPropertyGenFlags::Bool | UE4CodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(EnemyChara_eventReturnAttack_Parms), &Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(nullptr, 0) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::NewProp_ReturnValue,
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::Function_MetaDataParams[] = {
+		{ "Category", "ReturnBool" },
+		{ "Comment", "// ?m?b?N?o?b?N?A?j???[?V????\n" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+		{ "ToolTip", "?m?b?N?o?b?N?A?j???[?V????" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AEnemyChara, nullptr, "ReturnAttack", nullptr, nullptr, sizeof(EnemyChara_eventReturnAttack_Parms), Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_AEnemyChara_ReturnAttack()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_AEnemyChara_ReturnAttack_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
+	struct Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics
+	{
+		struct EnemyChara_eventReturnDeath_Parms
+		{
+			bool ReturnValue;
+		};
+		static void NewProp_ReturnValue_SetBit(void* Obj);
+		static const UE4CodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+	void Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+	{
+		((EnemyChara_eventReturnDeath_Parms*)Obj)->ReturnValue = 1;
+	}
+	const UE4CodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UE4CodeGen_Private::EPropertyGenFlags::Bool | UE4CodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(EnemyChara_eventReturnDeath_Parms), &Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(nullptr, 0) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::NewProp_ReturnValue,
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::Function_MetaDataParams[] = {
+		{ "Category", "ReturnBool" },
+		{ "Comment", "// ???S?A?j???[?V????\n" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+		{ "ToolTip", "???S?A?j???[?V????" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AEnemyChara, nullptr, "ReturnDeath", nullptr, nullptr, sizeof(EnemyChara_eventReturnDeath_Parms), Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_AEnemyChara_ReturnDeath()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_AEnemyChara_ReturnDeath_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
+	struct Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics
+	{
+		struct EnemyChara_eventReturnKnockBack_Parms
+		{
+			bool ReturnValue;
+		};
+		static void NewProp_ReturnValue_SetBit(void* Obj);
+		static const UE4CodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+	void Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+	{
+		((EnemyChara_eventReturnKnockBack_Parms*)Obj)->ReturnValue = 1;
+	}
+	const UE4CodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UE4CodeGen_Private::EPropertyGenFlags::Bool | UE4CodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(EnemyChara_eventReturnKnockBack_Parms), &Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(nullptr, 0) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::NewProp_ReturnValue,
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::Function_MetaDataParams[] = {
+		{ "Category", "ReturnBool" },
+		{ "Comment", "// ?m?b?N?o?b?N?A?j???[?V????\n" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+		{ "ToolTip", "?m?b?N?o?b?N?A?j???[?V????" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AEnemyChara, nullptr, "ReturnKnockBack", nullptr, nullptr, sizeof(EnemyChara_eventReturnKnockBack_Parms), Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_AEnemyChara_ReturnKnockBack()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_AEnemyChara_ReturnKnockBack_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
+	struct Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics
+	{
+		struct EnemyChara_eventReturnWalk_Parms
+		{
+			bool ReturnValue;
+		};
+		static void NewProp_ReturnValue_SetBit(void* Obj);
+		static const UE4CodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+	void Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+	{
+		((EnemyChara_eventReturnWalk_Parms*)Obj)->ReturnValue = 1;
+	}
+	const UE4CodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UE4CodeGen_Private::EPropertyGenFlags::Bool | UE4CodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(EnemyChara_eventReturnWalk_Parms), &Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(nullptr, 0) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::NewProp_ReturnValue,
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::Function_MetaDataParams[] = {
+		{ "Category", "ReturnBool" },
+		{ "Comment", "// ?A?j???[?V?????p\n// ?????A?j???[?V????\n" },
+		{ "ModuleRelativePath", "EnemyChara.h" },
+		{ "ToolTip", "?A?j???[?V?????p\n?????A?j???[?V????" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AEnemyChara, nullptr, "ReturnWalk", nullptr, nullptr, sizeof(EnemyChara_eventReturnWalk_Parms), Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_AEnemyChara_ReturnWalk()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_AEnemyChara_ReturnWalk_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
 	UClass* Z_Construct_UClass_AEnemyChara_NoRegister()
 	{
 		return AEnemyChara::StaticClass();
@@ -125,29 +527,17 @@ void EmptyLinkFunctionForGeneratedCodeEnemyChara() {}
 		static const UE4CodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
 #if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_HP_MetaData[];
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_pDamageEffect_MetaData[];
 #endif
-		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_m_HP;
+		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_m_pDamageEffect;
 #if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_ToTheGround_MetaData[];
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_EnemyStatus_MetaData[];
 #endif
-		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_m_ToTheGround;
+		static const UE4CodeGen_Private::FStructPropertyParams NewProp_m_EnemyStatus;
 #if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_Speed_MetaData[];
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_SearchArea_MetaData[];
 #endif
-		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_m_Speed;
-#if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_EnemyMesh_MetaData[];
-#endif
-		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_m_EnemyMesh;
-#if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_OverLapComp_MetaData[];
-#endif
-		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_m_OverLapComp;
-#if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_BoxBase_MetaData[];
-#endif
-		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_m_BoxBase;
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_m_SearchArea;
 		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UE4CodeGen_Private::FClassParams ClassParams;
@@ -157,7 +547,12 @@ void EmptyLinkFunctionForGeneratedCodeEnemyChara() {}
 		(UObject* (*)())Z_Construct_UPackage__Script_BioProject,
 	};
 	const FClassFunctionLinkInfo Z_Construct_UClass_AEnemyChara_Statics::FuncInfo[] = {
+		{ &Z_Construct_UFunction_AEnemyChara_GetEnemyStatus, "GetEnemyStatus" }, // 998690547
 		{ &Z_Construct_UFunction_AEnemyChara_OnOverlapBegin, "OnOverlapBegin" }, // 3902157103
+		{ &Z_Construct_UFunction_AEnemyChara_ReturnAttack, "ReturnAttack" }, // 3242205262
+		{ &Z_Construct_UFunction_AEnemyChara_ReturnDeath, "ReturnDeath" }, // 4183590293
+		{ &Z_Construct_UFunction_AEnemyChara_ReturnKnockBack, "ReturnKnockBack" }, // 1272334819
+		{ &Z_Construct_UFunction_AEnemyChara_ReturnWalk, "ReturnWalk" }, // 2137283633
 	};
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::Class_MetaDataParams[] = {
@@ -167,60 +562,31 @@ void EmptyLinkFunctionForGeneratedCodeEnemyChara() {}
 	};
 #endif
 #if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_HP_MetaData[] = {
-		{ "Category", "HP" },
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_pDamageEffect_MetaData[] = {
+		{ "Category", "Effects" },
 		{ "ModuleRelativePath", "EnemyChara.h" },
 	};
 #endif
-	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_HP = { "m_HP", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_HP), METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_HP_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_HP_MetaData)) };
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_pDamageEffect = { "m_pDamageEffect", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_pDamageEffect), Z_Construct_UClass_UNiagaraSystem_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_pDamageEffect_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_pDamageEffect_MetaData)) };
 #if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_ToTheGround_MetaData[] = {
-		{ "Category", "speed" },
-		{ "ModuleRelativePath", "EnemyChara.h" },
-	};
-#endif
-	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_ToTheGround = { "m_ToTheGround", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_ToTheGround), METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_ToTheGround_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_ToTheGround_MetaData)) };
-#if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_Speed_MetaData[] = {
-		{ "Category", "speed" },
-		{ "ModuleRelativePath", "EnemyChara.h" },
-	};
-#endif
-	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_Speed = { "m_Speed", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_Speed), METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_Speed_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_Speed_MetaData)) };
-#if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyMesh_MetaData[] = {
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyStatus_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
-		{ "Category", "Gameplay" },
-		{ "EditInline", "true" },
+		{ "Category", "Status" },
 		{ "ModuleRelativePath", "EnemyChara.h" },
 	};
 #endif
-	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyMesh = { "m_EnemyMesh", nullptr, (EPropertyFlags)0x004000000008000d, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_EnemyMesh), Z_Construct_UClass_UStaticMeshComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyMesh_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyMesh_MetaData)) };
+	const UE4CodeGen_Private::FStructPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyStatus = { "m_EnemyStatus", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_EnemyStatus), Z_Construct_UScriptStruct_FEnemyStatus, METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyStatus_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyStatus_MetaData)) };
 #if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_OverLapComp_MetaData[] = {
-		{ "AllowPrivateAccess", "true" },
-		{ "Category", "Gameplay" },
-		{ "EditInline", "true" },
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_SearchArea_MetaData[] = {
+		{ "Category", "Status" },
 		{ "ModuleRelativePath", "EnemyChara.h" },
 	};
 #endif
-	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_OverLapComp = { "m_OverLapComp", nullptr, (EPropertyFlags)0x004000000008000d, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_OverLapComp), Z_Construct_UClass_UBoxComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_OverLapComp_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_OverLapComp_MetaData)) };
-#if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_BoxBase_MetaData[] = {
-		{ "AllowPrivateAccess", "true" },
-		{ "Category", "Gameplay" },
-		{ "EditInline", "true" },
-		{ "ModuleRelativePath", "EnemyChara.h" },
-	};
-#endif
-	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_BoxBase = { "m_BoxBase", nullptr, (EPropertyFlags)0x004000000008000d, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_BoxBase), Z_Construct_UClass_UBoxComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_BoxBase_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_BoxBase_MetaData)) };
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_SearchArea = { "m_SearchArea", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AEnemyChara, m_SearchArea), METADATA_PARAMS(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_SearchArea_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_SearchArea_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AEnemyChara_Statics::PropPointers[] = {
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_HP,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_ToTheGround,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_Speed,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyMesh,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_OverLapComp,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_BoxBase,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_pDamageEffect,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_EnemyStatus,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AEnemyChara_Statics::NewProp_m_SearchArea,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_AEnemyChara_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<AEnemyChara>::IsAbstract,
@@ -249,7 +615,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyChara() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AEnemyChara, 2667940245);
+	IMPLEMENT_CLASS(AEnemyChara, 2233263951);
 	template<> BIOPROJECT_API UClass* StaticClass<AEnemyChara>()
 	{
 		return AEnemyChara::StaticClass();

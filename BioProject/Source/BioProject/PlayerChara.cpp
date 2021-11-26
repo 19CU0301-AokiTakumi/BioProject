@@ -217,6 +217,9 @@ void APlayerChara::UpdateCamera(float _deltaTime)
 		//　現在の角度を取得
 		FRotator NewRotation = m_pSpringArm->GetRelativeRotation();
 
+		// プレイヤーの向いている方向に腕を回転させる
+		GetMesh()->SetRelativeRotation(FRotator(GetMesh()->GetRelativeRotation().Pitch, NewRotation.Yaw - 90.f, GetMesh()->GetRelativeRotation().Roll));
+
 		//　Yawは入力した分回す
 		NewRotation.Yaw += m_CameraRotationInput.X;
 
@@ -285,17 +288,17 @@ void APlayerChara::Input_Shooting()
 	// データを反映
 	m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
 		
-	// ���C���΂�
-	// ���C�̎n�_��Actor�̈ʒu
+	// 弾の発射位置
 	FVector Start = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
 
-	// ���C�̏I�_��Actor����O�����̈�苗��
+	// 弾の弾着位置
 	FVector End = m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
 
-	// �R���W��������Ŗ������鍀�ڂ�w��i����͂���Actor�������g�Bthis�|�C���^�Ŏw��j
+	// 仕事してない。仕事しろ（怒り）
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
 
+	// 弾の情報げっちゅ
 	FString path = "/Game/BP/BulletBP.BulletBP_C";
 	TSubclassOf<class AActor> sc = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();
 	ABullet* SpawnBullet = (ABullet*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Player/BulletBP.BulletBP_C");

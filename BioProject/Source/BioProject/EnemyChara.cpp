@@ -13,8 +13,7 @@
 
 // Sets default values
 AEnemyChara::AEnemyChara()
-	: m_Mesh(NULL)
-	, m_Player(NULL)
+	: m_Player(NULL)
 	, m_Count(0.f)
 	, m_status(ActionStatus::Idle)
 	, m_SearchArea(0.f)
@@ -23,10 +22,6 @@ AEnemyChara::AEnemyChara()
 
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	// メッシュをつける
-	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("m_EnemyMesh"));
-	m_Mesh->SetupAttachment(RootComponent);
 
 	ConstructorHelpers::FObjectFinder<UNiagaraSystem> DamageEffect(TEXT("/Game/Effect/Blood/BloodSystem_02.BloodSystem_02"));
 	m_pDamageEffect = DamageEffect.Object;
@@ -127,17 +122,12 @@ void AEnemyChara::Move(float _deltaTime)
 	// レイの始点はActorの位置
 	FVector Start = GetActorLocation();
 	// レイの終点はActorから前方向の一定距離
-	FVector End = GetActorLocation() + m_Mesh->GetForwardVector() * m_SearchArea;
+	FVector End = GetMesh()->GetForwardVector() *m_SearchArea;
 
 	for (int i = 0; i < 7; i++)
 	{
-		int fanangle = 30;
+		int fanangle = 120;
 		fanangle -= i * 10;
-
-		if (fanangle <= 0)
-		{
-			fanangle += 360;
-		}
 
 		float radTheta = FMath::DegreesToRadians(fanangle);
 		float X = End.X * cos(radTheta) - End.Y * sin(radTheta);
@@ -174,7 +164,7 @@ void AEnemyChara::Attack(float _deltaTime)
 	if (m_Count > 2.f)	// 2.9fはアニメーションの時間（後で変更）
 	{
 		m_Player->Damage(m_EnemyStatus.atk);
-		m_status = ActionStatus::Idle;
+		m_status = ActionStatus::Move;
 		m_Count = 0.f;
 	}
 }
@@ -186,6 +176,8 @@ void AEnemyChara::Avoid(float _deltaTime)
 
 void AEnemyChara::KnockBack(float _deltaTime)
 {
+	UE_LOG(LogTemp, Error, TEXT("aaaaaaaaaa"));
+
 	m_Count += _deltaTime;
 
 	if (m_Count > 2.4f)	// 2.fはアニメーションの時間（後で変更）
