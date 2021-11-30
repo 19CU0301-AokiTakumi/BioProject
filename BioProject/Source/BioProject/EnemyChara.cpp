@@ -60,30 +60,20 @@ void AEnemyChara::Tick(float DeltaTime)
 
 void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//if (Cast<ABullet>(OtherActor))
-	//{
-	//	if (m_pDamageSE)
-	//		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
+	if (Cast<ABullet>(OtherActor))
+	{
+		if (m_pDamageSE)
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
 
-	//	if (m_pDamageEffect)
-	//		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
+		if (m_pDamageEffect)
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
 
-	//	m_EnemyStatus.hp--;
-	//	(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
-	//	Cast<ABullet>(OtherActor)->SetIsDestoy(true);
-	//}
+		Cast<ABullet>(OtherActor)->SetIsDestoy(true);
+	}
 }
 
 void AEnemyChara::Damage(const int _atk, FName _compName)
 {
-	// SE
-	if (m_pDamageSE)
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
-
-	// エフェクト
-	if (m_pDamageEffect)
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
-
 	if (_compName == "Head")
 	{
 		m_EnemyStatus.downPoint -= _atk + m_HeadShotOfSet;
@@ -97,6 +87,8 @@ void AEnemyChara::Damage(const int _atk, FName _compName)
 		(_atk / 2 < 1) ? m_EnemyStatus.downPoint -= 1 : m_EnemyStatus.downPoint -= _atk / 2;
 	}
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("downpoint = %d"), m_EnemyStatus.downPoint));
+
 	if (m_EnemyStatus.downPoint <= 0)
 	{
 		int DamagePoint = -m_EnemyStatus.downPoint / m_EnemyStatus.maxDownPoint;
@@ -106,14 +98,14 @@ void AEnemyChara::Damage(const int _atk, FName _compName)
 
 		m_EnemyStatus.hp -= DamagePoint;
 
+		(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
+
 		int overDownPoint = -m_EnemyStatus.downPoint % m_EnemyStatus.maxDownPoint;
 		m_EnemyStatus.downPoint = m_EnemyStatus.maxDownPoint;
 		m_EnemyStatus.downPoint -= overDownPoint;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("hp = %d,downpoint = %d"), m_EnemyStatus.hp, m_EnemyStatus.downPoint));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("hp = %d,downpoint = %d"), m_EnemyStatus.hp, m_EnemyStatus.downPoint));
 	}
-
-	(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
 }
 
 void AEnemyChara::UpdateAction(float _deltaTime)
