@@ -14,6 +14,7 @@ ABullet::ABullet()
 	, m_pPlayer(NULL)
 	, m_speed(500.f)
 	, m_Time(0.f)
+	, m_Atk(0)
 	, m_DestroyCount(0.f)
 	, m_isDestroy(false)
 	, m_MoveDir(FVector::ZeroVector)
@@ -67,9 +68,16 @@ void ABullet::Tick(float DeltaTime)
 
 void ABullet::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherComp->ComponentHasTag("EnemyComp"))
+	if (Cast<AEnemyChara>(OtherActor))
 	{
-
+		if (OtherComp->ComponentHasTag("EnemyComp"))
+		{
+			if (OtherComp->ComponentTags.Num() >= 2)
+			{
+				FName CompName = OtherComp->ComponentTags[1];
+				Cast<AEnemyChara>(OtherActor)->Damage(m_Atk, CompName);
+			}
+		}
 	}
 }
 

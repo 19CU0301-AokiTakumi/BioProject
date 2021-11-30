@@ -348,6 +348,7 @@ void APlayerChara::Input_Shooting()
 	{
 		//SpawnBullet->SetActorLocation(m_pSpringArm->GetRelativeLocation());
 		SpawnBullet->Init(Start, End);
+		SpawnBullet->SetAtk(m_playerStatus.equipGunData.atk + m_haveAmmoDatas[(int)m_playerStatus.equipGunData.gunType].atk);
 	}
 
 	m_haveGunDatas[m_playerStatus.equipGunID]->SetIsShot(true);

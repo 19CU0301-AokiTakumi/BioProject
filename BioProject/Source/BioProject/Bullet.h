@@ -54,8 +54,12 @@ private:
 
 	bool m_isDestroy;
 
+	int m_Atk;
+
 	void BulletMove(float _deltaTime);
 
 public:
 	void SetIsDestoy(bool _isHit);
+
+	void SetAtk(const int _atk) { m_Atk = _atk; }
 };

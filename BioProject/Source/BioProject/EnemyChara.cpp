@@ -7,6 +7,7 @@
 #include "PlayerChara.h"
 #include "Bullet.h"
 #include "DrawDebugHelpers.h"
+#include "Engine/Engine.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "UObject/ConstructorHelpers.h"
@@ -32,7 +33,7 @@ AEnemyChara::AEnemyChara()
 	ConstructorHelpers::FObjectFinder<USoundBase> DamageSE(TEXT("/Game/Sound/BulletHitSE_Z.BulletHitSE_Z"));
 	m_pDamageSE = DamageSE.Object;
 
-	m_EnemyStatus = { 10,10,10,1000.f };
+	m_EnemyStatus = { 10,5,5,10,1000.f };
 }
 
 // Called when the game starts or when spawned
@@ -59,18 +60,60 @@ void AEnemyChara::Tick(float DeltaTime)
 
 void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (Cast<ABullet>(OtherActor))
+	//if (Cast<ABullet>(OtherActor))
+	//{
+	//	if (m_pDamageSE)
+	//		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
+
+	//	if (m_pDamageEffect)
+	//		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
+
+	//	m_EnemyStatus.hp--;
+	//	(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
+	//	Cast<ABullet>(OtherActor)->SetIsDestoy(true);
+	//}
+}
+
+void AEnemyChara::Damage(const int _atk, FName _compName)
+{
+	// SE
+	if (m_pDamageSE)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
+
+	// エフェクト
+	if (m_pDamageEffect)
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
+
+	if (_compName == "Head")
 	{
-		if (m_pDamageSE)
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
-
-		if (m_pDamageEffect)
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
-
-		m_EnemyStatus.hp--;
-		(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
-		Cast<ABullet>(OtherActor)->SetIsDestoy(true);
+		m_EnemyStatus.downPoint -= _atk + m_HeadShotOfSet;
 	}
+	else if (_compName == "Body")
+	{
+		m_EnemyStatus.downPoint -= _atk;
+	}
+	else
+	{
+		(_atk / 2 < 1) ? m_EnemyStatus.downPoint -= 1 : m_EnemyStatus.downPoint -= _atk / 2;
+	}
+
+	if (m_EnemyStatus.downPoint <= 0)
+	{
+		int DamagePoint = -m_EnemyStatus.downPoint / m_EnemyStatus.maxDownPoint;
+
+		if (DamagePoint <= 0)
+			DamagePoint = 1;
+
+		m_EnemyStatus.hp -= DamagePoint;
+
+		int overDownPoint = -m_EnemyStatus.downPoint % m_EnemyStatus.maxDownPoint;
+		m_EnemyStatus.downPoint = m_EnemyStatus.maxDownPoint;
+		m_EnemyStatus.downPoint -= overDownPoint;
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("hp = %d,downpoint = %d"), m_EnemyStatus.hp, m_EnemyStatus.downPoint));
+	}
+
+	(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
 }
 
 void AEnemyChara::UpdateAction(float _deltaTime)

@@ -30,19 +30,21 @@ struct FEnemyStatus
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int hp;					// 現在のHP
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int maxHP;				// 最大HP
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int maxDownPoint;		// 最大ダウンカウント
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int downPoint;			// ダウンカウント
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int atk;					// 攻撃
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float moveSpeed;			// 移動速度
 
 public:
-	FEnemyStatus(const int _hp = 0, const int _maxHP = 0, const int _atk = 0, const float _moveSpeed = 0.f)
+	FEnemyStatus(const int _hp = 0, const int _maxDownPoint = 0, const int _downPoint = 0, const int _atk = 0, const float _moveSpeed = 0.f)
 	{
 		hp = _hp;
-		maxHP = _maxHP;		
+		maxDownPoint = _maxDownPoint;
+		downPoint = _downPoint;
 		atk = _atk;
 		moveSpeed = _moveSpeed;
 	}
-	static FEnemyStatus ZeroStatus() { return FEnemyStatus(0, 0, 0, 0.f); }
+	static FEnemyStatus ZeroStatus() { return FEnemyStatus(0, 0, 0, 0, 0.f); }
 };
 
 UCLASS()
@@ -125,6 +127,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		UNiagaraSystem* m_pDamageEffect;
 
+	UPROPERTY(EditAnywhere, Category = "Status")
+		int m_HeadShotOfSet;
+
 	float m_Count;
 
 	void UpdateAction(float _deltaTime);
@@ -139,4 +144,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "CharaStatus")
 		USoundBase* m_pDamageSE;
+
+public:
+	void Damage(const int _atk, FName _compName);
 };
