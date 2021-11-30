@@ -10,6 +10,8 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 
 // Sets default values
 AEnemyChara::AEnemyChara()
@@ -18,6 +20,7 @@ AEnemyChara::AEnemyChara()
 	, m_status(ActionStatus::Idle)
 	, m_SearchArea(0.f)
 	, m_pDamageEffect(NULL)
+	, m_pDamageSE(NULL)
 {
 
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -25,6 +28,9 @@ AEnemyChara::AEnemyChara()
 
 	ConstructorHelpers::FObjectFinder<UNiagaraSystem> DamageEffect(TEXT("/Game/Effect/Blood/BloodSystem_02.BloodSystem_02"));
 	m_pDamageEffect = DamageEffect.Object;
+
+	ConstructorHelpers::FObjectFinder<USoundBase> DamageSE(TEXT("/Game/Sound/BulletHitSE_Z.BulletHitSE_Z"));
+	m_pDamageSE = DamageSE.Object;
 
 	m_EnemyStatus = { 10,10,10,1000.f };
 }
@@ -55,11 +61,15 @@ void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (Cast<ABullet>(OtherActor))
 	{
+		if (m_pDamageSE)
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
+
 		if (m_pDamageEffect)
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
 
 		m_EnemyStatus.hp--;
 		(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
+		Cast<ABullet>(OtherActor)->SetIsDestoy(true);
 	}
 }
 

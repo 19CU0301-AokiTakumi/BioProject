@@ -2,17 +2,40 @@
 
 
 #include "GunControl.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 
 // コンストラクタ
 AGunControl::AGunControl()
 	: m_gunData(FGunData::NoneData())
+	, m_pShotSE(NULL)
+	, m_fireRateCount(0.f)
+	, m_bIsShot(false)
 {
+	ConstructorHelpers::FObjectFinder<USoundBase> ShotSE(TEXT("/Game/Sound/HandGunSE.HandGunSE"));
+	m_pShotSE = ShotSE.Object;
+}
+
+// 毎フレーム更新処理
+void AGunControl::CheckFireRate(float _deltaTime)
+{
+	if (m_bIsShot == false)
+		return;
+
+	m_fireRateCount += _deltaTime;
+	if (m_gunData.fireRate <= m_fireRateCount)
+	{
+		m_bIsShot = false;
+		m_fireRateCount = 0.f;
+	}
 }
 
 // 撃つ
 void AGunControl::Shot()
 {
-
+	if (m_pShotSE)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, FVector::ZeroVector);
 }
 
 // リロード処理

@@ -84,6 +84,12 @@ void APlayerChara::Tick(float DeltaTime)
 	UpdateMove(DeltaTime);
 	UpdateCamera(DeltaTime);
 
+	if (m_playerFlags.flagBits.isHaveGun)
+	{
+		m_haveGunDatas[m_playerStatus.equipGunID]->CheckFireRate(DeltaTime);
+	}
+		
+
 	switch (m_ActionStatus)
 	{
 	case EActionStatus::Idle:
@@ -309,11 +315,17 @@ void APlayerChara::Input_Shooting()
 	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData().ammoStock <= 0)
 		return;
 
+	// 銃が既に撃たれている状態の場合処理しない
+	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetIsShot())
+		return;
+
+	m_haveGunDatas[m_playerStatus.equipGunID]->Shot();
+
 	// 装備している銃の情報を一時保管
 	FGunData NewGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
 	
 	// 銃の弾を減らす
-	m_haveGunDatas[m_playerStatus.equipGunID]->SetGunData(FGunData(NewGunData.gunType, NewGunData.ammoStock - 1, NewGunData.ammoStockMax, NewGunData.atk));
+	m_haveGunDatas[m_playerStatus.equipGunID]->RemoveAmmo(1);
 
 	// データを反映
 	m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
@@ -337,6 +349,8 @@ void APlayerChara::Input_Shooting()
 		//SpawnBullet->SetActorLocation(m_pSpringArm->GetRelativeLocation());
 		SpawnBullet->Init(Start, End);
 	}
+
+	m_haveGunDatas[m_playerStatus.equipGunID]->SetIsShot(true);
 }
 
 // 【入力バインド】走り

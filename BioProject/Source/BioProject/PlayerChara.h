@@ -200,6 +200,8 @@ private:
 	// 所持している弾薬の保管用
 	FAmmoData m_haveAmmoDatas[(int)EAmmoType::Max];
 
+	float fireRateCount;
+
 private:
 	// 移動処理
 	void UpdateMove(float _deltaTime);
@@ -321,6 +323,7 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "Gun", BlueprintPure)
 		FVector GetLandingPoint()const { return m_rayLandingPoint; }
 
+public:
 	// 歩きのカメラ振動の継続カウント
 	float m_Count;		
 };

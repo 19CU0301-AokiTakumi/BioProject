@@ -136,4 +136,7 @@ private:
 	void KnockBack(float _deltaTime);
 
 	ActionStatus m_status;
+
+	UPROPERTY(EditAnywhere, Category = "CharaStatus")
+		USoundBase* m_pDamageSE;
 };

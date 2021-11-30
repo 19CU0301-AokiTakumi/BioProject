@@ -52,9 +52,10 @@ private:
 	float m_Time;
 	float m_DestroyCount;
 
-	bool m_Destroy;
+	bool m_isDestroy;
 
 	void BulletMove(float _deltaTime);
 
-	void DestroyThis(float _deltaTime);
+public:
+	void SetIsDestoy(bool _isHit);
 };

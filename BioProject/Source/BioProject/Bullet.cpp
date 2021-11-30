@@ -15,7 +15,7 @@ ABullet::ABullet()
 	, m_speed(500.f)
 	, m_Time(0.f)
 	, m_DestroyCount(0.f)
-	, m_Destroy(false)
+	, m_isDestroy(false)
 	, m_MoveDir(FVector::ZeroVector)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -61,16 +61,12 @@ void ABullet::Tick(float DeltaTime)
 
 	BulletMove(DeltaTime);
 
-	// DestroyThis(DeltaTime);
+	if (m_isDestroy)
+		Destroy();
 }
 
 void ABullet::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (Cast<AEnemyChara>(OtherActor))
-	{
-		m_Destroy = true;
-	}
-
 	if (OtherComp->ComponentHasTag("EnemyComp"))
 	{
 
@@ -90,25 +86,7 @@ void ABullet::BulletMove(float _deltaTime)
 	}
 }
 
-void ABullet::DestroyThis(float _deltaTime)
+void ABullet::SetIsDestoy(bool _isHit)
 {
-	m_DestroyCount += _deltaTime;
-
-	if (m_Destroy)
-	{
-		if (m_DestroyCount >= 0.1f)
-		{
-			// UE_LOG(LogTemp, Error, TEXT("BulletDestroy"));
-			Destroy();
-			m_Destroy = false;
-		}
-	}
-	else
-	{
-		if (m_DestroyCount >= 0.3f)
-		{
-			// UE_LOG(LogTemp, Error, TEXT("Destroy"));
-			Destroy();
-		}
-	}
+	m_isDestroy = _isHit;
 }
