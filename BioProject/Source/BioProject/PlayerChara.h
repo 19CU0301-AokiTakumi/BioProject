@@ -52,6 +52,7 @@ enum class EActionStatus : uint8
 	GunHold,		// 銃を構えている
 	Reload,			// リロード
 	Guard,			// Daisuke
+	Shot,			// 銃を撃つ
 };
 
 // インベントリの状態管理用の列挙型
@@ -325,5 +326,8 @@ public:
 
 public:
 	// 歩きのカメラ振動の継続カウント
-	float m_Count;		
+	float m_Count;	
+
+private:
+		float m_CountTime;
 };

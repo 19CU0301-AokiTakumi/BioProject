@@ -26,6 +26,7 @@ APlayerChara::APlayerChara()
 	, m_invenoryState(EInventoryState::Idle)
 	, m_Count(0.f)
 	, m_ActionStatus(EActionStatus::Idle)
+	, m_CountTime(0.f)
 
 {
 	// 毎フレームTick()処理を呼ぶかどうか
@@ -103,6 +104,15 @@ void APlayerChara::Tick(float DeltaTime)
 	case EActionStatus::Walk:
 		UE_LOG(LogTemp, Error, TEXT("Walk"));
 		break;
+
+	case EActionStatus::Shot:
+		m_ActionStatus = EActionStatus::Idle;
+		m_CountTime += DeltaTime;
+		if (m_CountTime >= 2.f)
+		{
+			UE_LOG(LogTemp, Error, TEXT("BAKA"));
+			m_CountTime = 0.f;
+		}
 
 	//case eactionstatus::avoid:
 		//avoid(_deltatime);
@@ -252,7 +262,7 @@ void APlayerChara::UpdateCamera(float _deltaTime)
 		FRotator NewRotation = m_pSpringArm->GetRelativeRotation();
 
 		// プレイヤーの向いている方向に腕を回転させる
-		GetMesh()->SetRelativeRotation(FRotator(GetMesh()->GetRelativeRotation().Pitch, NewRotation.Yaw - 90.f, GetMesh()->GetRelativeRotation().Roll));
+		GetMesh()->SetRelativeRotation(FRotator(NewRotation.Pitch, NewRotation.Yaw, NewRotation.Roll));
 
 		//　Yawは入力した分回す
 		NewRotation.Yaw += m_CameraRotationInput.X;
@@ -352,6 +362,8 @@ void APlayerChara::Input_Shooting()
 	}
 
 	m_haveGunDatas[m_playerStatus.equipGunID]->SetIsShot(true);
+
+	m_ActionStatus = EActionStatus::Shot;
 }
 
 // 【入力バインド】走り
