@@ -50,6 +50,7 @@ private:
 	FVector m_MoveDir;	// is•ûŒü
 
 	float m_Time;
+	float m_Count;
 	float m_DestroyCount;
 
 	bool m_isDestroy;

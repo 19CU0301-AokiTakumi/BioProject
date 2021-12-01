@@ -14,29 +14,43 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
 
-// Sets default values
+// コンストラクタ
 AEnemyChara::AEnemyChara()
 	: m_Player(NULL)
-	, m_Count(0.f)
-	, m_status(ActionStatus::Idle)
-	, m_SearchArea(0.f)
 	, m_pDamageEffect(NULL)
 	, m_pDamageSE(NULL)
+	, m_AnimCount(0.f)
+	, m_AtkAnimCount(0.f)
+	, m_SearchArea(0.f)
+	, m_AtkStartTime(0.f)
+	, m_AtkEndTime(0.f)
+	, m_bIsAttack(true)
+	, m_status(ActionStatus::Idle)
+	, m_BodyCollisionPos(FVector::ZeroVector)
 {
 
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
 
+	// エフェクト
 	ConstructorHelpers::FObjectFinder<UNiagaraSystem> DamageEffect(TEXT("/Game/Effect/Blood/BloodSystem_02.BloodSystem_02"));
 	m_pDamageEffect = DamageEffect.Object;
 
+	// SE
 	ConstructorHelpers::FObjectFinder<USoundBase> DamageSE(TEXT("/Game/Sound/BulletHitSE_Z.BulletHitSE_Z"));
 	m_pDamageSE = DamageSE.Object;
 
+	// 構造体ステータスの初期化
 	m_EnemyStatus = { 10,5,5,10,1000.f };
+
+	// アニメーションが終わった時間を格納する配列の初期化
+	for (int i = 0; i < (int)ActionStatus::Max; i++)
+	{
+		AnimEndFrame[i] = 0;
+	}
 }
 
-// Called when the game starts or when spawned
+// ゲーム開始時、または生成時に呼ばれる処理
 void AEnemyChara::BeginPlay()
 {
 	Super::BeginPlay();
@@ -47,32 +61,95 @@ void AEnemyChara::BeginPlay()
 		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyChara::OnOverlapBegin);
 	}
 
+	// プレイヤーの情報を格納
 	m_Player = Cast<APlayerChara>(UMyGameInstance::GetActorFromTag(this, "Player"));
 }
 
-// Called every frame
+// 毎フレーム更新処理
 void AEnemyChara::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// ステータスを管理する関数
 	UpdateAction(DeltaTime);
+
+	// レイを飛ばす関数
+	UpdateRay();
+
+	// アタックアニメーションが再生されたら
+	// アニメーションの時間を加算していく関数
+	if(ReturnAttack())
+		AddAtkAnimTime(DeltaTime);
 }
 
 void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 弾が当たっている場合
 	if (Cast<ABullet>(OtherActor))
 	{
-		if (m_pDamageSE)
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
-
+		// エフェクトの生成
 		if (m_pDamageEffect)
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, GetActorLocation(), GetMesh()->GetRelativeRotation());
 
-		Cast<ABullet>(OtherActor)->SetIsDestoy(true);
+		// SEの生成
+		if (m_pDamageSE)
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
 	}
 }
 
-void AEnemyChara::Damage(const int _atk, FName _compName)
+void AEnemyChara::UpdateRay()
+{
+	if (!m_bIsAttack && m_AtkAnimCount > 0.f)
+		return;
+
+	if (m_status == ActionStatus::Death)
+		return;
+
+	// レイの終点はActorから前方向の一定距離
+	FVector End = GetMesh()->GetForwardVector() * m_SearchArea;
+
+	for (int i = 0; i < 7; i++)
+	{
+		int fanangle = 120;
+		fanangle -= i * 10;
+
+		float radTheta = FMath::DegreesToRadians(fanangle);
+		float X = End.X * cos(radTheta) - End.Y * sin(radTheta);
+		float Y = End.X * sin(radTheta) + End.Y * cos(radTheta);
+		FVector End2 = FVector(X, Y, End.Z) + GetActorLocation();
+
+		DrawDebugLine(GetWorld(), m_BodyCollisionPos, End2, FColor::Blue, false, 1.0f);
+
+		// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+
+		// ヒットした（=コリジョン判定を受けた）オブジェクトを格納する変数
+		FHitResult OutHit;
+
+		// レイを飛ばし、オブジェクトに対してコリジョン判定を行う
+		// isHitは、ヒットした場合にtrueになる
+		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, m_BodyCollisionPos, End2, ECC_WorldStatic, CollisionParams);
+
+		// ヒットするオブジェクトがある場合
+		if (isHit)
+		{
+			// 今ヒットしたActorが、保存されたヒットActorと違う場合
+			if (OutHit.GetActor()->ActorHasTag("Player"))
+			{
+				m_status = ActionStatus::Attack;
+				m_bIsAttack = true;
+				break;
+			}
+		}
+		else
+		{
+			m_bIsAttack = false;
+		}
+	}
+}
+
+void AEnemyChara::Damage(AActor* Bullet, const int _atk, FName _compName)
 {
 	if (_compName == "Head")
 	{
@@ -106,6 +183,8 @@ void AEnemyChara::Damage(const int _atk, FName _compName)
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("hp = %d,downpoint = %d"), m_EnemyStatus.hp, m_EnemyStatus.downPoint));
 	}
+
+	Cast<ABullet>(Bullet)->SetIsDestoy(true);
 }
 
 void AEnemyChara::UpdateAction(float _deltaTime)
@@ -113,7 +192,7 @@ void AEnemyChara::UpdateAction(float _deltaTime)
 	switch (m_status)
 	{
 	case ActionStatus::Idle:
-		Idle(_deltaTime);
+		Idle();
 		break;
 
 	case ActionStatus::Move:
@@ -137,15 +216,9 @@ void AEnemyChara::UpdateAction(float _deltaTime)
 	}
 }
 
-void AEnemyChara::Idle(float _deltaTime)
+void AEnemyChara::Idle()
 {
-	m_Count += _deltaTime;
-
-	if (m_Count > 5.f)
-	{
-		m_Count = 0.f;
-		m_status = ActionStatus::Move;
-	}
+	m_status = ActionStatus::Move;
 }
 
 // 移動処理
@@ -162,55 +235,27 @@ void AEnemyChara::Move(float _deltaTime)
 	SetActorRotation(FRotator(0, angleDeg, 0));
 
 	AddActorWorldOffset(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
-
-	// レイを飛ばす
-	// レイの始点はActorの位置
-	FVector Start = GetActorLocation();
-	// レイの終点はActorから前方向の一定距離
-	FVector End = GetMesh()->GetForwardVector() *m_SearchArea;
-
-	for (int i = 0; i < 7; i++)
-	{
-		int fanangle = 120;
-		fanangle -= i * 10;
-
-		float radTheta = FMath::DegreesToRadians(fanangle);
-		float X = End.X * cos(radTheta) - End.Y * sin(radTheta);
-		float Y = End.X * sin(radTheta) + End.Y * cos(radTheta);
-		FVector End2 = FVector(X, Y, End.Z) + GetActorLocation();
-
-		DrawDebugLine(GetWorld(), Start, End2, FColor::Blue, false, 1.0f);
-
-		// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
-		FCollisionQueryParams CollisionParams;
-		CollisionParams.AddIgnoredActor(this);
-
-		// ヒットした（=コリジョン判定を受けた）オブジェクトを格納する変数
-		FHitResult OutHit;
-
-		// レイを飛ばし、オブジェクトに対してコリジョン判定を行う
-		// isHitは、ヒットした場合にtrueになる
-		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End2, ECC_WorldStatic, CollisionParams);
-
-		// ヒットするオブジェクトがある場合
-		if (isHit)
-		{
-			// 今ヒットしたActorが、保存されたヒットActorと違う場合
-			if (OutHit.GetActor()->ActorHasTag("Player"))
-				m_status = ActionStatus::Attack;
-		}
-	}
 }
 
 void AEnemyChara::Attack(float _deltaTime)
 {
-	m_Count += _deltaTime;
-
-	if (m_Count > 2.f)	// 2.9fはアニメーションの時間（後で変更）
+	if (m_AtkAnimCount >= m_AtkStartTime && m_AtkAnimCount <= m_AtkEndTime)
 	{
-		m_Player->Damage(m_EnemyStatus.atk);
+		if (m_bIsAttack)
+		{
+			UE_LOG(LogTemp, Error, TEXT("aaaaaaa"));
+			m_Player->Damage(m_EnemyStatus.atk);
+			m_bIsAttack = false;
+		}
+	}
+
+	m_AnimCount += _deltaTime;
+
+	if (m_AnimCount > AnimEndFrame[(int)ActionStatus::Attack])
+	{
 		m_status = ActionStatus::Move;
-		m_Count = 0.f;
+		m_AtkAnimCount = 0.f;
+		m_AnimCount = 0.f;
 	}
 }
 
@@ -221,17 +266,19 @@ void AEnemyChara::Avoid(float _deltaTime)
 
 void AEnemyChara::KnockBack(float _deltaTime)
 {
-	UE_LOG(LogTemp, Error, TEXT("aaaaaaaaaa"));
+	m_AnimCount += _deltaTime;
 
-	m_Count += _deltaTime;
-
-	if (m_Count > 2.4f)	// 2.fはアニメーションの時間（後で変更）
+	if (m_AnimCount > AnimEndFrame[(int)ActionStatus::KnockBack])
 	{
 		m_status = ActionStatus::Move;
-		m_Count = 0.f;
+		m_AnimCount = 0.f;
 	}
 }
 
+void AEnemyChara::AddAtkAnimTime(float _deltaTime)
+{
+	m_AtkAnimCount += _deltaTime;
+}
 
 //---------------------------------------
 // アニメーション遷移

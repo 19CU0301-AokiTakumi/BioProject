@@ -21,6 +21,7 @@ enum class ActionStatus : uint8
 	Avoid,		// 回避
 	KnockBack,	// ノックバック
 	Death,		// 死亡
+	Max,		// ステータスの数を数える
 };
 
 USTRUCT(BlueprintType)
@@ -53,50 +54,87 @@ class BIOPROJECT_API AEnemyChara : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+	// コンストラクタ
 	AEnemyChara();
 
 protected:
-	// Called when the game starts or when spawned
+	// ゲーム開始時、または生成時に呼ばれる処理
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+	// 毎フレーム呼更新処理
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	// オーバーラップ接触をし始めたときに呼ばれるイベント関数
 	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_HeadComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_BodyComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_LShoulderComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_RShoulderComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_LArmComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_RArmComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_LThighsComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_RThighsComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_LLegComp;
-	//UPROPERTY(EditAnywhere, Category = "Collision", meta = (AllowPrivateAccess = "true"))
-	//	UCapsuleComponent* m_RLegComp;
-
-private:
+	// レイの長さ（扇形当たり判定の長さ）
 	UPROPERTY(EditAnywhere, Category = "Status")
 		float m_SearchArea;
 
-private:
+	// アニメーションの終わる時間を格納
+	UPROPERTY(EditAnywhere, Category = "Status")
+		float AnimEndFrame[(int)ActionStatus::Max];
+
+	// ステータスを保管
 	UPROPERTY(EditAnywhere, Category = "Status", meta = (AllowPrivateAccess = "true"))
 		FEnemyStatus m_EnemyStatus;
+
+	// ヘッドショット倍率
+	UPROPERTY(EditAnywhere, Category = "Status")
+		int m_HeadShotOfSet;
+
+	// アタックアニメーションの当たり判定を始める
+	UPROPERTY(EditAnywhere, Category = "Status")
+		float m_AtkStartTime;
+
+	// アタックアニメーションの当たり判定を終える
+	UPROPERTY(EditAnywhere, Category = "Status")
+		float m_AtkEndTime;
+
+	// レイの始点
+	UPROPERTY(BluePrintReadWrite, meta = (AllowPrivateAccess = "true"))
+		FVector m_BodyCollisionPos;
+
+private:
+	// エフェクト
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		UNiagaraSystem* m_pDamageEffect;
+
+	// SE
+	UPROPERTY(EditAnywhere, Category = "CharaStatus")
+		USoundBase* m_pDamageSE;
+
+private:
+	// オブジェクト
+	APlayerChara* m_Player;	// プレイヤーを格納
+	ActionStatus m_status;	// ステータスを格納
+
+	// 実数
+	float m_AnimCount;			// アニメーションをカウントする
+	float m_AtkAnimCount;		// アタックアニメーションが始まったらカウントする
+
+	// フラグ
+	bool m_bIsAttack;	// 攻撃可能かどうか
+
+	// アップデート関数
+	void UpdateAction(float _deltaTime);	// ステータスを管理する
+	void UpdateRay();						// レイを飛ばす
+
+	// ステータス関数
+	void Idle();						// 待機
+	void Move(float _deltaTime);		// 移動
+	void Attack(float _deltaTime);		// 攻撃
+	void Avoid(float _deltaTime);		// 回避
+	void KnockBack(float _deltaTime);	// ノックバック
+
+	void AddAtkAnimTime(float _deltaTime);	// アタックアニメーションが始まったら呼ばれる関数
+
+public:
+	void Damage(AActor* Bullet, const int _atk, FName _compName);	// ダメージを受ける
 
 public:
 	// エネミーのステータスを渡す
@@ -105,46 +143,15 @@ public:
 
 public:
 	// アニメーション用
-	// 歩きアニメーション
 	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
-		bool ReturnWalk();
+		bool ReturnWalk();			// 歩きアニメーション
 
-	// 死亡アニメーション
 	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
-		bool ReturnDeath();
+		bool ReturnDeath();			// 死亡アニメーション
 
-	// ノックバックアニメーション
 	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
-		bool ReturnKnockBack();
+		bool ReturnKnockBack();		// ノックバックアニメーション
 
-	// ノックバックアニメーション
 	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
-		bool ReturnAttack();
-
-private:
-	APlayerChara* m_Player;
-
-	UPROPERTY(EditAnywhere, Category = "Effects")
-		UNiagaraSystem* m_pDamageEffect;
-
-	UPROPERTY(EditAnywhere, Category = "Status")
-		int m_HeadShotOfSet;
-
-	float m_Count;
-
-	void UpdateAction(float _deltaTime);
-
-	void Move(float _deltaTime);
-	void Idle(float _deltaTime);
-	void Attack(float _deltaTime);
-	void Avoid(float _deltaTime);
-	void KnockBack(float _deltaTime);
-
-	ActionStatus m_status;
-
-	UPROPERTY(EditAnywhere, Category = "CharaStatus")
-		USoundBase* m_pDamageSE;
-
-public:
-	void Damage(const int _atk, FName _compName);
+		bool ReturnAttack();		// アタックアニメーション
 };

@@ -62,12 +62,17 @@ void ABullet::Tick(float DeltaTime)
 
 	BulletMove(DeltaTime);
 
-	if (m_isDestroy)
+	m_Count += DeltaTime;
+
+	if (m_Count > 0.1f)
 		Destroy();
 }
 
 void ABullet::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (m_isDestroy)
+		return;
+
 	if (Cast<AEnemyChara>(OtherActor))
 	{
 		if (OtherComp->ComponentHasTag("EnemyComp"))
@@ -75,7 +80,7 @@ void ABullet::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 			if (OtherComp->ComponentTags.Num() >= 2)
 			{
 				FName CompName = OtherComp->ComponentTags[1];
-				Cast<AEnemyChara>(OtherActor)->Damage(m_Atk, CompName);
+				Cast<AEnemyChara>(OtherActor)->Damage(this, m_Atk, CompName);
 			}
 		}
 	}
