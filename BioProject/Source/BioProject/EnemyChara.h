@@ -38,13 +38,12 @@ public:
 
 public:
 	FEnemyStatus(const int _hp = 0, const int _maxDownPoint = 0, const int _downPoint = 0, const int _atk = 0, const float _moveSpeed = 0.f)
-	{
-		hp = _hp;
-		maxDownPoint = _maxDownPoint;
-		downPoint = _downPoint;
-		atk = _atk;
-		moveSpeed = _moveSpeed;
-	}
+		: hp(_hp)
+		, maxDownPoint(_maxDownPoint)
+		, downPoint(_downPoint)
+		, atk(_atk)
+		, moveSpeed(_moveSpeed)
+	{}
 	static FEnemyStatus ZeroStatus() { return FEnemyStatus(0, 0, 0, 0, 0.f); }
 };
 

@@ -9,7 +9,7 @@
 #include "GunControl.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "Sound/SoundBase.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h"
 
@@ -28,6 +28,7 @@ APlayerChara::APlayerChara()
 	, m_ActionStatus(EActionStatus::Idle)
 	, m_CountTime(0.f)
 	, m_Viewvalue(90.f)
+	, m_pShotSE(NULL)
 
 {
 	// 毎フレームTick()処理を呼ぶかどうか
@@ -338,7 +339,8 @@ void APlayerChara::Input_Shooting()
 	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetIsShot())
 		return;
 
-	m_haveGunDatas[m_playerStatus.equipGunID]->Shot(this);
+	//m_haveGunDatas[m_playerStatus.equipGunID]->Shot(this);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, FVector::ZeroVector);
 
 	// 装備している銃の情報を一時保管
 	FGunData NewGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
@@ -408,6 +410,9 @@ void APlayerChara::Input_Action()
 	// アイテムに触れていた時
 	if (m_playerFlags.flagBits.isItemTouch == true)
 	{
+		// 取得時にメッシュを表示するアイテムかをセット
+		m_playerFlags.flagBits.isShowGetItem = Cast<AItemBase>(m_pOverlapActor)->GetItemData().isShowInventory;
+
 		// 弾薬に触れていた時
 		if (Cast<AGunAmmoControl>(m_pOverlapActor))
 		{

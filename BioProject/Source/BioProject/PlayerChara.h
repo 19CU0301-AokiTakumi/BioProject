@@ -102,6 +102,9 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 
 		// 撃っているかどうか
 		bool isShoot	: 1;    // 6
+
+		// 取得時にアイテムを表示するか
+		bool isShowGetItem : 1;	// 6
 	};
 
 	// フラグの管理をしやすくするための共用体
@@ -210,6 +213,9 @@ private:
 
 	float fireRateCount;
 
+	UPROPERTY(EditAnywhere, Category = "CharaStatus")
+		USoundBase* m_pShotSE;
+
 private:
 	// 移動処理
 	void UpdateMove(float _deltaTime);
@@ -295,6 +301,12 @@ public:
 	// 【デバッグ用】装備している武器情報をBPで変更する
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetEquipGunData(const FGunData _gunData) { m_playerStatus.equipGunData = _gunData; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		bool GetIsShowGetItem() const { return m_playerFlags.flagBits.isShowGetItem; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetIsShowGetItem(const bool _isShowGetItem) { m_playerFlags.flagBits.isShowGetItem = _isShowGetItem; UE_LOG(LogTemp, Error, TEXT("%d"), (int)m_playerFlags.flagBits.isShowGetItem) }
 	
 public:
 	// 【入力バインド】キャラ移動：前後

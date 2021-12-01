@@ -32,15 +32,16 @@ struct FItemData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") FString name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") ItemType type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") FString comment;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") bool isShowInventory;
 
 public:
-	FItemData(const int _id = 0, const FString _name = "", ItemType _type = ItemType::None, FString _comment = "")
-	{
-		id = _id;
-		name = _name;
-		type = _type;
-		comment = _comment;
-	}
+	FItemData(const int _id = 0, const FString _name = "", ItemType _type = ItemType::None, FString _comment = "", bool _isShowInventory = false)
+		: id(_id)
+		, name(_name)
+		, type(_type)
+		, comment(_comment)
+		, isShowInventory(_isShowInventory)
+		{}
 	static FItemData NoneData() { return FItemData(-1, "", ItemType::None, ""); }
 };
 
