@@ -9,6 +9,7 @@
 #include "GunControl.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Sound/SoundBase.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h"
@@ -57,6 +58,9 @@ APlayerChara::APlayerChara()
 	m_pCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	if (m_pCamera)
 		m_pCamera->SetupAttachment(m_pSpringArm);
+
+	ConstructorHelpers::FObjectFinder<USoundBase> ShotSE(TEXT("/Game/Sound/HandGunSE.HandGunSE"));
+	m_pShotSE = ShotSE.Object;
 
 	// 構造体の初期化
 	m_playerStatus = { 10, 10, 1000.f, FGunData::NoneData(), 0 };
