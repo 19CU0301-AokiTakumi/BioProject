@@ -27,6 +27,7 @@ APlayerChara::APlayerChara()
 	, m_Count(0.f)
 	, m_ActionStatus(EActionStatus::Idle)
 	, m_CountTime(0.f)
+	, m_Viewvalue(90.f)
 
 {
 	// 毎フレームTick()処理を呼ぶかどうか
@@ -75,6 +76,10 @@ void APlayerChara::BeginPlay()
 		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerChara::OnOverlapBegin);
 		GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &APlayerChara::OnOverlapEnd);
 	}
+
+	// 画角の初期設定(追加)
+	m_Viewvalue = 90;
+	m_pCamera->SetFieldOfView(m_Viewvalue);
 }
 
 // 毎フレーム更新処理
@@ -84,6 +89,10 @@ void APlayerChara::Tick(float DeltaTime)
 
 	UpdateMove(DeltaTime);
 	UpdateCamera(DeltaTime);
+	ShootCameraShake(DeltaTime);
+
+	// 画角変更
+	Changeview(DeltaTime);
 
 	if (m_playerFlags.flagBits.isHaveGun)
 	{
@@ -237,11 +246,11 @@ void APlayerChara::UpdateMove(float _deltaTime)
 		{
 			if (m_Count < 0.3f)
 			{
-				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z + 0.15));
+				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z + 0.015));
 			}
 			else
 			{
-				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z - 0.15));
+				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z - 0.015));
 			}
 		}
 		else if (m_Count > 0.5f && m_CharaMoveInput.Y != 0)
@@ -329,7 +338,7 @@ void APlayerChara::Input_Shooting()
 	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetIsShot())
 		return;
 
-	m_haveGunDatas[m_playerStatus.equipGunID]->Shot();
+	m_haveGunDatas[m_playerStatus.equipGunID]->Shot(this);
 
 	// 装備している銃の情報を一時保管
 	FGunData NewGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
@@ -356,6 +365,7 @@ void APlayerChara::Input_Shooting()
 	ABullet* SpawnBullet = (ABullet*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Player/BulletBP.BulletBP_C");
 	if (SpawnBullet != NULL)
 	{
+		m_playerFlags.flagBits.isShoot = true;
 		//SpawnBullet->SetActorLocation(m_pSpringArm->GetRelativeLocation());
 		SpawnBullet->Init(Start, End);
 		SpawnBullet->SetAtk(m_playerStatus.equipGunData.atk + m_haveAmmoDatas[(int)m_playerStatus.equipGunData.gunType].atk);
@@ -459,6 +469,11 @@ void APlayerChara::Input_Action()
 
 				// 装備している銃を更新
 				m_playerStatus.equipGunData = OverlapGun->GetGunData();
+
+				FString path = "/Game/BP/HandGunBP.HandGunBP_C";
+				TSubclassOf<class AActor> sc = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();
+				AGunControl* HandGun = (AGunControl*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/HandGunBP.HandGunBP_C");
+				HandGun->SetActorLocation(GetActorLocation());
 			}
 		}
 		
@@ -619,4 +634,51 @@ void APlayerChara::Heal(const int _index, const int _value)
 		m_playerStatus.hp = m_playerStatus.maxHP;
 
 	m_ItemDatas[_index] = FItemData::NoneData();
+}
+
+// 銃を撃った時のカメラの揺れ
+void APlayerChara::ShootCameraShake(int _deltaTime)
+{
+	if (m_playerFlags.flagBits.isShoot == true)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Error!!!"));
+		m_Count += 1;
+
+		if (m_Count < 3.f)
+		{
+
+			m_pCamera->SetRelativeRotation(FRotator(m_pCamera->GetRelativeRotation().Pitch + 0.3f, m_pCamera->GetRelativeRotation().Yaw, m_pCamera->GetRelativeRotation().Roll));
+			UE_LOG(LogTemp, Error, TEXT("Error..."));
+		}
+		else if (m_Count > 3.f)
+		{
+			m_Count = 0.f;
+			m_pCamera->SetRelativeRotation(FRotator(m_pCamera->GetRelativeRotation().Pitch - 0.3, m_pCamera->GetRelativeRotation().Yaw, m_pCamera->GetRelativeRotation().Roll));
+			m_playerFlags.flagBits.isShoot = false;
+		}
+	}
+}
+
+// 画角変更(追加)
+void APlayerChara::Changeview(float _deltaTime)
+{
+	if (m_playerFlags.flagBits.isHaveGun == true)
+	{
+		if (m_playerFlags.flagBits.isGunHold == true)
+		{
+			if (m_Viewvalue > m_SetView)
+			{
+				m_Viewvalue -= 150.f * _deltaTime;
+				m_pCamera->SetFieldOfView(m_Viewvalue);
+			}
+		}
+		else
+		{
+			if (m_Viewvalue < 91.f)								// ☆☆☆☆☆☆☆☆☆☆7/12(月)に追加しました☆☆☆☆☆☆☆☆☆☆☆☆
+			{
+				m_Viewvalue += 50.f * _deltaTime;					// ☆☆☆☆☆☆☆☆☆☆7/12(月)に追加しました☆☆☆☆☆☆☆☆☆☆☆☆
+				m_pCamera->SetFieldOfView(m_Viewvalue);			// ☆☆☆☆☆☆☆☆☆☆7/12(月)に追加しました☆☆☆☆☆☆☆☆☆☆☆☆
+			}
+		}
+	}
 }

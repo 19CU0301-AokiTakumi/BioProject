@@ -32,10 +32,10 @@ void AGunControl::CheckFireRate(float _deltaTime)
 }
 
 // Œ‚‚Â
-void AGunControl::Shot()
+void AGunControl::Shot(AActor* i)
 {
 	if (m_pShotSE)
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, FVector::ZeroVector);
+		UGameplayStatics::PlaySoundAtLocation(i->GetWorld(), m_pShotSE, FVector::ZeroVector);
 }
 
 // ƒŠƒ[ƒhˆ—

@@ -99,6 +99,9 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 
 		// メニューを開いているか
 		bool isOpenMenu : 1;	// 5
+
+		// 撃っているかどうか
+		bool isShoot	: 1;    // 6
 	};
 
 	// フラグの管理をしやすくするための共用体
@@ -175,6 +178,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Status")
 		EActionStatus m_ActionStatus;
 
+	// 画角変更後の値(追加)
+	UPROPERTY(EditAnywhere, Category = "Status")
+		float m_SetView;
+
 	// プレイヤーに関わるフラグ
 	PlayerFlags m_playerFlags;
 
@@ -209,6 +216,9 @@ private:
 
 	// カメラ更新処理
 	void UpdateCamera(float _deltaTime);
+
+	// 画角変更(追加)
+	void Changeview(float _deltaTime);
 
 public:
 	// アイテムを取得したかを渡す
@@ -278,6 +288,10 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsDead();
 
+	// 銃を持ったかどうかを返す
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		bool GetIsHaveGun() const { return m_playerFlags.flagBits.isHaveGun; }
+
 	// 【デバッグ用】装備している武器情報をBPで変更する
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetEquipGunData(const FGunData _gunData) { m_playerStatus.equipGunData = _gunData; }
@@ -327,6 +341,12 @@ public:
 public:
 	// 歩きのカメラ振動の継続カウント
 	float m_Count;	
+
+	// 撃った時に生じるカメラの揺れ
+	void ShootCameraShake(int _deltaTime);
+
+	// 画角の値(追加)
+	float m_Viewvalue;
 
 private:
 		float m_CountTime;

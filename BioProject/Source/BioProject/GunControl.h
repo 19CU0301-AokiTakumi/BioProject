@@ -75,7 +75,7 @@ public:
 	void RemoveAmmo(const int _removeValue) { m_gunData.ammoStock -= _removeValue; }
 
 	// Œ‚‚Â
-	void Shot();
+	void Shot(AActor* i);
 
 	// ƒŠƒ[ƒhˆ—
 	void Reload(int& _ammoStock);
