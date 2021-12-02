@@ -216,6 +216,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "CharaStatus")
 		USoundBase* m_pShotSE;
 
+	UPROPERTY(BluePrintReadWrite, meta = (AllowPrivateAccess = "true"))
+		FVector m_SocketLocation;
+
 private:
 	// ˆÚ“®ˆ—
 	void UpdateMove(float _deltaTime);
@@ -362,4 +365,6 @@ public:
 
 private:
 		float m_CountTime;
+
+		FVector m_GunLocation;
 };

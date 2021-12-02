@@ -54,6 +54,9 @@ public:
 	void CheckFireRate(float _deltaTime);
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
+		USceneComponent* m_BulletLocation;
+
 	// e‚Ìƒf[ƒ^
 	UPROPERTY(EditAnywhere, Category = "Data")
 		FGunData m_gunData;
@@ -83,4 +86,6 @@ public:
 	void SetIsShot(const bool _isShot) { m_bIsShot = _isShot; }
 
 	bool GetIsShot() const { return m_bIsShot; }
+
+	FVector GetBulletLocation()const { return m_BulletLocation->GetRelativeLocation(); }
 };

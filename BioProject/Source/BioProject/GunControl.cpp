@@ -12,9 +12,13 @@ AGunControl::AGunControl()
 	, m_pShotSE(NULL)
 	, m_fireRateCount(0.f)
 	, m_bIsShot(false)
+	, m_BulletLocation(NULL)
 {
 	ConstructorHelpers::FObjectFinder<USoundBase> ShotSE(TEXT("/Game/Sound/HandGunSE.HandGunSE"));
 	m_pShotSE = ShotSE.Object;
+
+	m_BulletLocation = CreateDefaultSubobject<USceneComponent>(TEXT("m_BulletLocation"));
+	m_BulletLocation->SetupAttachment(RootComponent);
 }
 
 // 毎フレーム更新処理

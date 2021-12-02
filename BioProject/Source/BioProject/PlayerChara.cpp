@@ -30,6 +30,8 @@ APlayerChara::APlayerChara()
 	, m_CountTime(0.f)
 	, m_Viewvalue(90.f)
 	, m_pShotSE(NULL)
+	, m_SocketLocation(FVector::ZeroVector)
+	, m_GunLocation(FVector::ZeroVector)
 
 {
 	// 毎フレームTick()処理を呼ぶかどうか
@@ -103,20 +105,17 @@ void APlayerChara::Tick(float DeltaTime)
 	{
 		m_haveGunDatas[m_playerStatus.equipGunID]->CheckFireRate(DeltaTime);
 	}
-		
+
 
 	switch (m_ActionStatus)
 	{
 	case EActionStatus::Idle:
-		UE_LOG(LogTemp, Error, TEXT("Idle"));
 		break;
 
 	case EActionStatus::Reload:
-		UE_LOG(LogTemp, Error, TEXT("Reload"));
 		break;
 
 	case EActionStatus::Walk:
-		UE_LOG(LogTemp, Error, TEXT("Walk"));
 		break;
 
 	case EActionStatus::Shot:
@@ -128,13 +127,13 @@ void APlayerChara::Tick(float DeltaTime)
 			m_CountTime = 0.f;
 		}
 
-	//case eactionstatus::avoid:
-		//avoid(_deltatime);
-		//break;
+		//case eactionstatus::avoid:
+			//avoid(_deltatime);
+			//break;
 
-	//case eactionstatus::knockback:
-		//knockback(_deltatime);
-		//break;
+		//case eactionstatus::knockback:
+			//knockback(_deltatime);
+			//break;
 
 	default:
 		break;
@@ -348,15 +347,17 @@ void APlayerChara::Input_Shooting()
 
 	// 装備している銃の情報を一時保管
 	FGunData NewGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
-	
+
 	// 銃の弾を減らす
 	m_haveGunDatas[m_playerStatus.equipGunID]->RemoveAmmo(1);
 
 	// データを反映
 	m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
-		
+
 	// 弾の発射位置
-	FVector Start = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100.f);
+	//FVector Start = m_GunLocation + m_SocketLocation;
+	FVector Start = m_SocketLocation;
+	/*UE_LOG(LogTemp, Error, TEXT("= %f,= %f,= %f"), m_SocketLocation.X, m_SocketLocation.Y, m_SocketLocation.Z);*/
 
 	// 弾の弾着位置
 	FVector End = m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
@@ -441,7 +442,7 @@ void APlayerChara::Input_Action()
 			// 取得した弾薬を弾薬管理用の配列に加算
 			m_haveAmmoDatas[(int)OverlapAmmo->GetAmmoData().ammoType].ammoStock += OverlapAmmo->GetAmmoData().ammoStock;
 			m_haveAmmoDatas[(int)OverlapAmmo->GetAmmoData().ammoType].ammoType = OverlapAmmo->GetAmmoData().ammoType;
-			
+
 			// 弾薬が1スタックの容量を超えていた場合
 			if (m_haveAmmoDatas[(int)OverlapAmmo->GetAmmoData().ammoType].ammoStock > OverlapAmmo->GetAmmoData().ammoStockMax)
 			{
@@ -449,14 +450,14 @@ void APlayerChara::Input_Action()
 				m_haveAmmoDatas[(int)OverlapAmmo->GetAmmoData().ammoType].ammoStock = OverlapAmmo->GetAmmoData().ammoStockMax;
 				return;
 			}
-			
+
 			// アイテムの取得フラグを立てる
 			m_playerFlags.flagBits.isItemGet = true;
 
 			// アイテムに触れていない状態にする
 			m_playerFlags.flagBits.isItemTouch = false;
 
-			
+
 			if (isHaveTypeAmmo)
 				return;
 		}
@@ -483,9 +484,10 @@ void APlayerChara::Input_Action()
 				TSubclassOf<class AActor> sc = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();
 				AGunControl* HandGun = (AGunControl*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/HandGunBP.HandGunBP_C");
 				HandGun->SetActorLocation(GetActorLocation());
+				m_GunLocation = HandGun->GetBulletLocation();
 			}
 		}
-		
+
 		// 鞄の更新処理
 		for (int i = 0; i < m_ItemDatas.Num(); i++)
 		{
@@ -494,7 +496,7 @@ void APlayerChara::Input_Action()
 			{
 				// 取得したアイテムの情報を入れる
 				m_ItemDatas[i] = Cast<AItemBase>(m_pOverlapActor)->GetItemData();
-				
+
 				// アイテム取得フラグを立てる
 				m_playerFlags.flagBits.isItemGet = true;
 
@@ -528,7 +530,7 @@ void APlayerChara::Input_Reload()
 		// 装備している銃を更新
 		m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
 	}
-		
+
 }
 
 // 【入力バインド】インベントリ処理
@@ -591,7 +593,7 @@ void APlayerChara::Damage(int _atk)
 }
 
 // インベントリのカーソル位置を渡す
-int APlayerChara::GetCursorIndex(const int _index , const int _moveValue)
+int APlayerChara::GetCursorIndex(const int _index, const int _moveValue)
 {
 	// インベントリを開いていない場合は処理しない
 	if (m_playerFlags.flagBits.isOpenMenu == false)
