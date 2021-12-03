@@ -661,21 +661,7 @@ void APlayerChara::ShootCameraShake(int _deltaTime)
 {
 	if (m_playerFlags.flagBits.isShoot == true)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Error!!!"));
-		m_Count += 1;
-
-		if (m_Count < 3.f)
-		{
-
-			m_pCamera->SetRelativeRotation(FRotator(m_pCamera->GetRelativeRotation().Pitch + 0.3f, m_pCamera->GetRelativeRotation().Yaw, m_pCamera->GetRelativeRotation().Roll));
-			UE_LOG(LogTemp, Error, TEXT("Error..."));
-		}
-		else if (m_Count > 3.f)
-		{
-			m_Count = 0.f;
-			m_pCamera->SetRelativeRotation(FRotator(m_pCamera->GetRelativeRotation().Pitch - 0.3, m_pCamera->GetRelativeRotation().Yaw, m_pCamera->GetRelativeRotation().Roll));
-			m_playerFlags.flagBits.isShoot = false;
-		}
+		m_playerFlags.flagBits.isShoot = false;
 	}
 }
 
@@ -688,7 +674,7 @@ void APlayerChara::Changeview(float _deltaTime)
 		{
 			if (m_Viewvalue > m_SetView)
 			{
-				m_Viewvalue -= 150.f * _deltaTime;
+				m_Viewvalue -= 200.f * _deltaTime;
 				m_pCamera->SetFieldOfView(m_Viewvalue);
 			}
 		}
@@ -696,7 +682,7 @@ void APlayerChara::Changeview(float _deltaTime)
 		{
 			if (m_Viewvalue < 91.f)
 			{
-				m_Viewvalue += 50.f * _deltaTime;
+				m_Viewvalue += 200.f * _deltaTime;
 				m_pCamera->SetFieldOfView(m_Viewvalue);
 			}
 		}
