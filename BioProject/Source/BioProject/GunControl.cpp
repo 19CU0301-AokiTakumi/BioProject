@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
+#include "Components/BoxComponent.h"
 
 // コンストラクタ
 AGunControl::AGunControl()
@@ -71,4 +72,10 @@ void AGunControl::Reload(int& _ammoStock)
 		// 弾薬数が0未満にならないよう補完
 		_ammoStock = 0;
 	}
+}
+
+void AGunControl::SetCollisionEnabled(const bool _isEnable)
+{
+	if (m_pBoxComp)
+		(_isEnable) ? m_pBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly) : m_pBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

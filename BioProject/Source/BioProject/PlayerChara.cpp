@@ -13,6 +13,7 @@
 #include "Sound/SoundBase.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -325,6 +326,7 @@ void APlayerChara::Input_Hold()
 {
 	// 銃を構えているかのフラグを切り替える
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
+	m_playerStatus.moveSpeed = (m_playerFlags.flagBits.isGunHold) ? m_statusConst.gunHoldSpeed : m_statusConst.walkSpeed;
 }
 
 // 【入力バインド】銃を撃つ
@@ -336,7 +338,11 @@ void APlayerChara::Input_Shooting()
 
 	// 銃に弾が入っていない場合は処理しない
 	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData().ammoStock <= 0)
+	{
+		if (m_haveAmmoDatas[(int)m_playerStatus.equipGunData.gunType].ammoStock > 0)
+			Input_Reload();
 		return;
+	}
 
 	// 銃が既に撃たれている状態の場合処理しない
 	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetIsShot())
@@ -356,12 +362,13 @@ void APlayerChara::Input_Shooting()
 
 	// 弾の発射位置
 	//FVector Start = m_GunLocation + m_SocketLocation;
-	FVector Start = m_SocketLocation;
+	FVector Start = GetMesh()->GetRelativeLocation() + m_SocketLocation;
 	/*UE_LOG(LogTemp, Error, TEXT("= %f,= %f,= %f"), m_SocketLocation.X, m_SocketLocation.Y, m_SocketLocation.Z);*/
 
 	// 弾の弾着位置
-	FVector End = m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
-
+	FVector EndOffset = FVector(0.f, 0.f, 50.f);
+	FVector End = GetActorLocation() + EndOffset + m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
+	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
 	// 仕事してない。仕事しろ（怒り）
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
@@ -480,11 +487,13 @@ void APlayerChara::Input_Action()
 				// 装備している銃を更新
 				m_playerStatus.equipGunData = OverlapGun->GetGunData();
 
-				FString path = "/Game/BP/HandGunBP.HandGunBP_C";
-				TSubclassOf<class AActor> sc = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();
+				
 				AGunControl* HandGun = (AGunControl*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/HandGunBP.HandGunBP_C");
+				HandGun->SetCollisionEnabled(false);
+				HandGun->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Middle1_Socket");
 				HandGun->SetActorLocation(GetActorLocation());
 				m_GunLocation = HandGun->GetBulletLocation();
+				
 			}
 		}
 
@@ -563,7 +572,7 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 		// 装備している銃を更新
 		m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
 	}
-	// 下したホイール
+	// 下ホイール
 	else if (_axisValue <= -1.f)
 	{
 		// 装備中の武器の番号を増やす
@@ -685,10 +694,10 @@ void APlayerChara::Changeview(float _deltaTime)
 		}
 		else
 		{
-			if (m_Viewvalue < 91.f)								// ☆☆☆☆☆☆☆☆☆☆7/12(月)に追加しました☆☆☆☆☆☆☆☆☆☆☆☆
+			if (m_Viewvalue < 91.f)
 			{
-				m_Viewvalue += 50.f * _deltaTime;					// ☆☆☆☆☆☆☆☆☆☆7/12(月)に追加しました☆☆☆☆☆☆☆☆☆☆☆☆
-				m_pCamera->SetFieldOfView(m_Viewvalue);			// ☆☆☆☆☆☆☆☆☆☆7/12(月)に追加しました☆☆☆☆☆☆☆☆☆☆☆☆
+				m_Viewvalue += 50.f * _deltaTime;
+				m_pCamera->SetFieldOfView(m_Viewvalue);
 			}
 		}
 	}

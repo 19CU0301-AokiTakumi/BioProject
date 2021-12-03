@@ -6,7 +6,8 @@
 
 // コンストラクタ
 AItemBase::AItemBase()
-	: m_pBoxComp(NULL)
+	: m_pBase(NULL)
+	, m_pBoxComp(NULL)
 	, m_pMesh(NULL)
 	, m_pOtherPlayer(NULL)
 	, m_itemData(FItemData::NoneData())
@@ -14,15 +15,18 @@ AItemBase::AItemBase()
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
 
+	m_pBase = CreateDefaultSubobject<USceneComponent>(TEXT("m_pBase"));
+	RootComponent = m_pBase;
+
 	//	コリジョン判定用ボックスコンポーネント生成
 	m_pBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("m_pItemCollisionComp"));
 	if (m_pBoxComp)
-		RootComponent = m_pBoxComp;
+		m_pBoxComp->SetupAttachment(RootComponent);
 
 	// メッシュ生成
 	m_pMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("m_pItemMesh"));
 	if (m_pMesh)
-		m_pMesh->SetupAttachment(m_pBoxComp);
+		m_pMesh->SetupAttachment(RootComponent);
 }
 
 // ゲーム開始時、または生成時に呼ばれる処理

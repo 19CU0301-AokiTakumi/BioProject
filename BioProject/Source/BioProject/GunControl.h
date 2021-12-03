@@ -87,5 +87,7 @@ public:
 
 	bool GetIsShot() const { return m_bIsShot; }
 
+	void SetCollisionEnabled(const bool _isEnable);
+
 	FVector GetBulletLocation()const { return m_BulletLocation->GetRelativeLocation(); }
 };

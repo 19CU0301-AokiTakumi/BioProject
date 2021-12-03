@@ -75,6 +75,8 @@ struct FStatusConstant
 
 	// 走りのスピード
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float runSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float gunHoldSpeed;
 };
 
 UCLASS()

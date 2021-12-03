@@ -71,7 +71,10 @@ private:
 	UFUNCTION() void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
-private:
+protected:
+	UPROPERTY()
+		USceneComponent* m_pBase;
+
 	// “–‚½‚è”»’è‚Ì’Ç‰Á
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* m_pBoxComp;
@@ -94,4 +97,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		FVector GetCenterPos() const;
+
+	UStaticMeshComponent* GetMesh() const { return m_pMesh; }
 };

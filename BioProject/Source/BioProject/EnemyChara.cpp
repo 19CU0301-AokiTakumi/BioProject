@@ -112,7 +112,7 @@ void AEnemyChara::UpdateRay()
 	if (!m_bIsAttack && m_AtkAnimCount > 0.f)
 		return;
 
-	if (m_status == ActionStatus::Death)
+	if (m_status != ActionStatus::Move && m_status != ActionStatus::Attack)
 		return;
 
 	// レイの終点はActorから前方向の一定距離
@@ -253,7 +253,6 @@ void AEnemyChara::Attack(float _deltaTime)
 	{
 		if (m_bIsAttack)
 		{
-			UE_LOG(LogTemp, Error, TEXT("aaaaaaa"));
 			m_Player->Damage(m_EnemyStatus.atk);
 			m_bIsAttack = false;
 		}
@@ -282,6 +281,9 @@ void AEnemyChara::KnockBack(float _deltaTime)
 	{
 		m_status = ActionStatus::Move;
 		m_AnimCount = 0.f;
+
+		if (m_AtkAnimCount > 0.f)
+			m_AtkAnimCount = 0.f;
 	}
 }
 
