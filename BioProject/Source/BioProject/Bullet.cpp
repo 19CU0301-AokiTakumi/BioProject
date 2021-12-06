@@ -10,7 +10,7 @@
 // Sets default values
 ABullet::ABullet()
 	: m_pBoxComp(NULL)
-	, m_pMesh(NULL)
+	, m_pAllBlockComp(NULL)
 	, m_pPlayer(NULL)
 	, m_speed(500.f)
 	, m_Time(0.f)
@@ -19,17 +19,15 @@ ABullet::ABullet()
 	, m_isDestroy(false)
 	, m_MoveDir(FVector::ZeroVector)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	//	コリジョン判定用ボックスコンポーネント生成
 	m_pBoxComp = CreateDefaultSubobject<USphereComponent>(TEXT("m_pCollisionComp"));
 	RootComponent = m_pBoxComp;
 
-	// メッシュ生成
-	m_pMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("m_pDoorMesh"));
-	m_pMesh->SetupAttachment(RootComponent);
-
+	m_pAllBlockComp = CreateDefaultSubobject<USphereComponent>(TEXT("m_pAllBlockComp"));
+	m_pAllBlockComp->SetupAttachment(RootComponent);
 }
 // Called when the game starts or when spawned
 void ABullet::Init(FVector startPoint, FVector endPoint)
@@ -53,6 +51,8 @@ void ABullet::BeginPlay()
 	{
 		m_pBoxComp->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
 	}
+
+	m_pAllBlockComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called every frame
@@ -63,6 +63,9 @@ void ABullet::Tick(float DeltaTime)
 	BulletMove(DeltaTime);
 
 	m_Count += DeltaTime;
+
+	if (m_Count < 0.01f)
+		m_pAllBlockComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	if (m_Count > 0.1f)
 		Destroy();
@@ -92,6 +95,7 @@ void ABullet::BulletMove(float _deltaTime)
 	//SetActorLocation(FVector(GetActorLocation().X - m_Time, GetActorLocation().Y, GetActorLocation().Z));
 
 	m_pPlayer = Cast<APlayerChara>(UMyGameInstance::GetActorFromTag(this, "Player"));
+
 	if (m_pPlayer != NULL)
 	{
 		// 進行方向に自分自身を移動させる

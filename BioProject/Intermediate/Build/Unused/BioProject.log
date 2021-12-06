@@ -1,39 +1,14 @@
-﻿  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0001.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0003.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0005.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0007.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0008.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0009.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0011.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0015.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0017.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0018.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0024.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0028.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Binaries\Win64\UE4Editor-BioProject-0030.dll
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0001.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0003.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0005.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0007.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0008.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0009.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0011.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0015.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0017.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0018.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0024.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0028.lib
-  Deleted hot-reload file: D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0030.lib
-  Building BioProjectEditor...
-  Using Visual Studio 2019 14.28.29334 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333) and Windows 10.0.18362.0 SDK (C:\Program Files (x86)\Windows Kits\10).
-  Building 4 actions with 8 processes...
-    [1/4] Bullet.cpp
-D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Source\BioProject\Bullet.cpp(14): warning C5038: �f�[�^ �����o�[ 'ABullet::m_pPlayer' �́A�f�[�^ �����o�[ 'ABullet::m_speed' �̌�ɏ���������܂�
-D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Source\BioProject\Bullet.cpp(18): warning C5038: �f�[�^ �����o�[ 'ABullet::m_Destroy' �́A�f�[�^ �����o�[ 'ABullet::m_MoveDir' �̌�ɏ���������܂�
-    [2/4] UE4Editor-BioProject.lib
-       ���C�u���� D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject.lib �ƃI�u�W�F�N�g D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject.exp ��쐬��
-    [3/4] UE4Editor-BioProject.dll
-       ���C�u���� D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject.suppressed.lib �ƃI�u�W�F�N�g D:\TeamProduction_New\BioProject\Old\BioProject_Aoki\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject.suppressed.exp ��쐬��
+﻿  Building BioProjectEditor...
+  Using Visual Studio 2019 14.28.29913 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+  Building 4 actions with 6 processes...
+    [1/4] PlayerChara.cpp
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\PlayerChara.cpp(29): warning C5038: �f�[�^ �����o�[ 'APlayerChara::m_Count' �́A�f�[�^ �����o�[ 'APlayerChara::m_ActionStatus' �̌�ɏ���������܂�
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\PlayerChara.cpp(31): warning C5038: �f�[�^ �����o�[ 'APlayerChara::m_CountTime' �́A�f�[�^ �����o�[ 'APlayerChara::m_Viewvalue' �̌�ɏ���������܂�
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\PlayerChara.cpp(32): warning C5038: �f�[�^ �����o�[ 'APlayerChara::m_Viewvalue' �́A�f�[�^ �����o�[ 'APlayerChara::m_pShotSE' �̌�ɏ���������܂�
+    [2/4] UE4Editor-BioProject-0010.lib
+       ���C�u���� D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0010.lib �ƃI�u�W�F�N�g D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0010.exp ��쐬��
+    [3/4] UE4Editor-BioProject-0010.dll
+       ���C�u���� D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0010.suppressed.lib �ƃI�u�W�F�N�g D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\UE4Editor-BioProject-0010.suppressed.exp ��쐬��
     [4/4] BioProjectEditor.target
-  Total time in Parallel executor: 22.60 seconds
-  Total execution time: 23.19 seconds
+  Total time in Parallel executor: 1.76 seconds
+  Total execution time: 2.30 seconds

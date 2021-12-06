@@ -38,9 +38,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 		USphereComponent* m_pBoxComp;
 
-	// ÉÅÉbÉVÉÖÇÃí«â¡
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* m_pMesh;
+		USphereComponent* m_pAllBlockComp;
 
 	UPROPERTY(EditAnywhere, Category = "State")
 		float m_speed;

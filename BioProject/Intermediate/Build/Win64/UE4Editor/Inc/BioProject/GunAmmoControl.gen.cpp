@@ -324,7 +324,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFAmmoData
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AGunAmmoControl, 2162790665);
+	IMPLEMENT_CLASS(AGunAmmoControl, 3176438752);
 	template<> BIOPROJECT_API UClass* StaticClass<AGunAmmoControl>()
 	{
 		return AGunAmmoControl::StaticClass();

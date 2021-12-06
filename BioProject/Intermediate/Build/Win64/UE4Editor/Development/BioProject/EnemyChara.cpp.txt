@@ -1,28 +1,28 @@
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\Definitions.BioProject.h
-D:\TeamProduction_New\Data\BioProject\Source\BioProject\EnemyChara.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\Definitions.BioProject.h
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\EnemyChara.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\GameFramework/Character.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\GameFramework/RootMotionSource.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\RootMotionSource.generated.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Character.generated.h
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\EnemyChara.generated.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\EnemyChara.generated.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/CapsuleComponent.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/ShapeComponent.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ShapeComponent.generated.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\CapsuleComponent.generated.h
-D:\TeamProduction_New\Data\BioProject\Source\BioProject\PlayerChara.h
-D:\TeamProduction_New\Data\BioProject\Source\BioProject\MyGameInstance.h
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\MyGameInstance.generated.h
-D:\TeamProduction_New\Data\BioProject\Source\BioProject\ItemBase.h
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\ItemBase.generated.h
-D:\TeamProduction_New\Data\BioProject\Source\BioProject\GunControl.h
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\GunControl.generated.h
-D:\TeamProduction_New\Data\BioProject\Source\BioProject\GunAmmoControl.h
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\GunAmmoControl.generated.h
-D:\TeamProduction_New\Data\BioProject\Source\BioProject\PlayerCameraShake.h
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\PlayerCameraShake.generated.h
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\PlayerChara.generated.h
-D:\TeamProduction_New\Data\BioProject\Source\BioProject\Bullet.h
-D:\TeamProduction_New\Data\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\Bullet.generated.h
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\PlayerChara.h
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\MyGameInstance.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\MyGameInstance.generated.h
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\ItemBase.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\ItemBase.generated.h
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\GunControl.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\GunControl.generated.h
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\GunAmmoControl.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\GunAmmoControl.generated.h
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\PlayerCameraShake.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\PlayerCameraShake.generated.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\PlayerChara.generated.h
+D:\19cu0337\bio\1206\BioProject\Source\BioProject\Bullet.h
+D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\Bullet.generated.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Public\DrawDebugHelpers.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Plugins\FX\Niagara\Source\Niagara\Public\NiagaraComponent.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Plugins\FX\Niagara\Source\Niagara\Public\NiagaraCommon.h
@@ -91,3 +91,13 @@ C:\Program Files\Epic Games\UE_4.24\Engine\Plugins\FX\Niagara\Intermediate\Build
 C:\Program Files\Epic Games\UE_4.24\Engine\Plugins\FX\Niagara\Intermediate\Build\Win64\UE4Editor\Inc\Niagara\NiagaraComponent.generated.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Plugins\FX\Niagara\Source\Niagara\Public\NiagaraFunctionLibrary.h
 C:\Program Files\Epic Games\UE_4.24\Engine\Plugins\FX\Niagara\Intermediate\Build\Win64\UE4Editor\Inc\Niagara\NiagaraFunctionLibrary.generated.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Kismet/GameplayStatics.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Kismet/KismetSystemLibrary.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Engine/CollisionProfile.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\CollisionProfile.generated.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\KismetSystemLibrary.generated.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Sound/DialogueTypes.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\DialogueTypes.generated.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Kismet\GameplayStaticsTypes.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameplayStaticsTypes.generated.h
+C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameplayStatics.generated.h

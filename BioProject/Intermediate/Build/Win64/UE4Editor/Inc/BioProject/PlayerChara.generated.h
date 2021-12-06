@@ -24,7 +24,7 @@ struct FHitResult;
 #endif
 #define BIOPROJECT_PlayerChara_generated_h
 
-#define BioProject_Source_BioProject_PlayerChara_h_70_GENERATED_BODY \
+#define BioProject_Source_BioProject_PlayerChara_h_71_GENERATED_BODY \
 	friend struct Z_Construct_UScriptStruct_FStatusConstant_Statics; \
 	BIOPROJECT_API static class UScriptStruct* StaticStruct();
 
@@ -38,8 +38,8 @@ template<> BIOPROJECT_API UScriptStruct* StaticStruct<struct FStatusConstant>();
 
 template<> BIOPROJECT_API UScriptStruct* StaticStruct<struct FPlayerStatus>();
 
-#define BioProject_Source_BioProject_PlayerChara_h_82_SPARSE_DATA
-#define BioProject_Source_BioProject_PlayerChara_h_82_RPC_WRAPPERS \
+#define BioProject_Source_BioProject_PlayerChara_h_85_SPARSE_DATA
+#define BioProject_Source_BioProject_PlayerChara_h_85_RPC_WRAPPERS \
  \
 	DECLARE_FUNCTION(execGetLandingPoint) \
 	{ \
@@ -57,12 +57,37 @@ template<> BIOPROJECT_API UScriptStruct* StaticStruct<struct FPlayerStatus>();
 		P_NATIVE_END; \
 	} \
  \
+	DECLARE_FUNCTION(execSetIsShowGetItem) \
+	{ \
+		P_GET_UBOOL(Z_Param__isShowGetItem); \
+		P_FINISH; \
+		P_NATIVE_BEGIN; \
+		P_THIS->SetIsShowGetItem(Z_Param__isShowGetItem); \
+		P_NATIVE_END; \
+	} \
+ \
+	DECLARE_FUNCTION(execGetIsShowGetItem) \
+	{ \
+		P_FINISH; \
+		P_NATIVE_BEGIN; \
+		*(bool*)Z_Param__Result=P_THIS->GetIsShowGetItem(); \
+		P_NATIVE_END; \
+	} \
+ \
 	DECLARE_FUNCTION(execSetEquipGunData) \
 	{ \
 		P_GET_STRUCT(FGunData,Z_Param__gunData); \
 		P_FINISH; \
 		P_NATIVE_BEGIN; \
 		P_THIS->SetEquipGunData(Z_Param__gunData); \
+		P_NATIVE_END; \
+	} \
+ \
+	DECLARE_FUNCTION(execGetIsHaveGun) \
+	{ \
+		P_FINISH; \
+		P_NATIVE_BEGIN; \
+		*(bool*)Z_Param__Result=P_THIS->GetIsHaveGun(); \
 		P_NATIVE_END; \
 	} \
  \
@@ -229,7 +254,7 @@ template<> BIOPROJECT_API UScriptStruct* StaticStruct<struct FPlayerStatus>();
 	}
 
 
-#define BioProject_Source_BioProject_PlayerChara_h_82_RPC_WRAPPERS_NO_PURE_DECLS \
+#define BioProject_Source_BioProject_PlayerChara_h_85_RPC_WRAPPERS_NO_PURE_DECLS \
  \
 	DECLARE_FUNCTION(execGetLandingPoint) \
 	{ \
@@ -247,12 +272,37 @@ template<> BIOPROJECT_API UScriptStruct* StaticStruct<struct FPlayerStatus>();
 		P_NATIVE_END; \
 	} \
  \
+	DECLARE_FUNCTION(execSetIsShowGetItem) \
+	{ \
+		P_GET_UBOOL(Z_Param__isShowGetItem); \
+		P_FINISH; \
+		P_NATIVE_BEGIN; \
+		P_THIS->SetIsShowGetItem(Z_Param__isShowGetItem); \
+		P_NATIVE_END; \
+	} \
+ \
+	DECLARE_FUNCTION(execGetIsShowGetItem) \
+	{ \
+		P_FINISH; \
+		P_NATIVE_BEGIN; \
+		*(bool*)Z_Param__Result=P_THIS->GetIsShowGetItem(); \
+		P_NATIVE_END; \
+	} \
+ \
 	DECLARE_FUNCTION(execSetEquipGunData) \
 	{ \
 		P_GET_STRUCT(FGunData,Z_Param__gunData); \
 		P_FINISH; \
 		P_NATIVE_BEGIN; \
 		P_THIS->SetEquipGunData(Z_Param__gunData); \
+		P_NATIVE_END; \
+	} \
+ \
+	DECLARE_FUNCTION(execGetIsHaveGun) \
+	{ \
+		P_FINISH; \
+		P_NATIVE_BEGIN; \
+		*(bool*)Z_Param__Result=P_THIS->GetIsHaveGun(); \
 		P_NATIVE_END; \
 	} \
  \
@@ -419,7 +469,7 @@ template<> BIOPROJECT_API UScriptStruct* StaticStruct<struct FPlayerStatus>();
 	}
 
 
-#define BioProject_Source_BioProject_PlayerChara_h_82_INCLASS_NO_PURE_DECLS \
+#define BioProject_Source_BioProject_PlayerChara_h_85_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAPlayerChara(); \
 	friend struct Z_Construct_UClass_APlayerChara_Statics; \
@@ -428,7 +478,7 @@ public: \
 	DECLARE_SERIALIZER(APlayerChara)
 
 
-#define BioProject_Source_BioProject_PlayerChara_h_82_INCLASS \
+#define BioProject_Source_BioProject_PlayerChara_h_85_INCLASS \
 private: \
 	static void StaticRegisterNativesAPlayerChara(); \
 	friend struct Z_Construct_UClass_APlayerChara_Statics; \
@@ -437,7 +487,7 @@ public: \
 	DECLARE_SERIALIZER(APlayerChara)
 
 
-#define BioProject_Source_BioProject_PlayerChara_h_82_STANDARD_CONSTRUCTORS \
+#define BioProject_Source_BioProject_PlayerChara_h_85_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API APlayerChara(const FObjectInitializer& ObjectInitializer); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(APlayerChara) \
@@ -450,7 +500,7 @@ private: \
 public:
 
 
-#define BioProject_Source_BioProject_PlayerChara_h_82_ENHANCED_CONSTRUCTORS \
+#define BioProject_Source_BioProject_PlayerChara_h_85_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API APlayerChara(APlayerChara&&); \
@@ -461,7 +511,7 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(APlayerChara); \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(APlayerChara)
 
 
-#define BioProject_Source_BioProject_PlayerChara_h_82_PRIVATE_PROPERTY_OFFSET \
+#define BioProject_Source_BioProject_PlayerChara_h_85_PRIVATE_PROPERTY_OFFSET \
 	FORCEINLINE static uint32 __PPO__m_pSpringArm() { return STRUCT_OFFSET(APlayerChara, m_pSpringArm); } \
 	FORCEINLINE static uint32 __PPO__m_pCamera() { return STRUCT_OFFSET(APlayerChara, m_pCamera); } \
 	FORCEINLINE static uint32 __PPO__CameraShake() { return STRUCT_OFFSET(APlayerChara, CameraShake); } \
@@ -470,31 +520,34 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(APlayerChara); \
 	FORCEINLINE static uint32 __PPO__m_playerStatus() { return STRUCT_OFFSET(APlayerChara, m_playerStatus); } \
 	FORCEINLINE static uint32 __PPO__m_statusConst() { return STRUCT_OFFSET(APlayerChara, m_statusConst); } \
 	FORCEINLINE static uint32 __PPO__m_ActionStatus() { return STRUCT_OFFSET(APlayerChara, m_ActionStatus); } \
+	FORCEINLINE static uint32 __PPO__m_SetView() { return STRUCT_OFFSET(APlayerChara, m_SetView); } \
 	FORCEINLINE static uint32 __PPO__m_ItemDatas() { return STRUCT_OFFSET(APlayerChara, m_ItemDatas); } \
-	FORCEINLINE static uint32 __PPO__m_bagSize() { return STRUCT_OFFSET(APlayerChara, m_bagSize); }
+	FORCEINLINE static uint32 __PPO__m_bagSize() { return STRUCT_OFFSET(APlayerChara, m_bagSize); } \
+	FORCEINLINE static uint32 __PPO__m_pShotSE() { return STRUCT_OFFSET(APlayerChara, m_pShotSE); } \
+	FORCEINLINE static uint32 __PPO__m_SocketLocation() { return STRUCT_OFFSET(APlayerChara, m_SocketLocation); }
 
 
-#define BioProject_Source_BioProject_PlayerChara_h_79_PROLOG
-#define BioProject_Source_BioProject_PlayerChara_h_82_GENERATED_BODY_LEGACY \
+#define BioProject_Source_BioProject_PlayerChara_h_82_PROLOG
+#define BioProject_Source_BioProject_PlayerChara_h_85_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	BioProject_Source_BioProject_PlayerChara_h_82_PRIVATE_PROPERTY_OFFSET \
-	BioProject_Source_BioProject_PlayerChara_h_82_SPARSE_DATA \
-	BioProject_Source_BioProject_PlayerChara_h_82_RPC_WRAPPERS \
-	BioProject_Source_BioProject_PlayerChara_h_82_INCLASS \
-	BioProject_Source_BioProject_PlayerChara_h_82_STANDARD_CONSTRUCTORS \
+	BioProject_Source_BioProject_PlayerChara_h_85_PRIVATE_PROPERTY_OFFSET \
+	BioProject_Source_BioProject_PlayerChara_h_85_SPARSE_DATA \
+	BioProject_Source_BioProject_PlayerChara_h_85_RPC_WRAPPERS \
+	BioProject_Source_BioProject_PlayerChara_h_85_INCLASS \
+	BioProject_Source_BioProject_PlayerChara_h_85_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define BioProject_Source_BioProject_PlayerChara_h_82_GENERATED_BODY \
+#define BioProject_Source_BioProject_PlayerChara_h_85_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	BioProject_Source_BioProject_PlayerChara_h_82_PRIVATE_PROPERTY_OFFSET \
-	BioProject_Source_BioProject_PlayerChara_h_82_SPARSE_DATA \
-	BioProject_Source_BioProject_PlayerChara_h_82_RPC_WRAPPERS_NO_PURE_DECLS \
-	BioProject_Source_BioProject_PlayerChara_h_82_INCLASS_NO_PURE_DECLS \
-	BioProject_Source_BioProject_PlayerChara_h_82_ENHANCED_CONSTRUCTORS \
+	BioProject_Source_BioProject_PlayerChara_h_85_PRIVATE_PROPERTY_OFFSET \
+	BioProject_Source_BioProject_PlayerChara_h_85_SPARSE_DATA \
+	BioProject_Source_BioProject_PlayerChara_h_85_RPC_WRAPPERS_NO_PURE_DECLS \
+	BioProject_Source_BioProject_PlayerChara_h_85_INCLASS_NO_PURE_DECLS \
+	BioProject_Source_BioProject_PlayerChara_h_85_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -519,7 +572,8 @@ template<> BIOPROJECT_API UEnum* StaticEnum<EInventoryState>();
 	op(EActionStatus::Run) \
 	op(EActionStatus::GunHold) \
 	op(EActionStatus::Reload) \
-	op(EActionStatus::Guard) 
+	op(EActionStatus::Guard) \
+	op(EActionStatus::Shot) 
 
 enum class EActionStatus : uint8;
 template<> BIOPROJECT_API UEnum* StaticEnum<EActionStatus>();

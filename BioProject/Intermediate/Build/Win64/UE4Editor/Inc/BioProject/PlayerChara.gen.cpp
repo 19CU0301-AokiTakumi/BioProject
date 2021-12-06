@@ -31,8 +31,10 @@ void EmptyLinkFunctionForGeneratedCodePlayerChara() {}
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetInventoryState();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetIsDead();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetIsGunHold();
+	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetIsHaveGun();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetIsItemTouch();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetIsOpenInventory();
+	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetIsShowGetItem();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetLandingPoint();
 	COREUOBJECT_API UScriptStruct* Z_Construct_UScriptStruct_FVector();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_GetOverlapActor();
@@ -50,6 +52,8 @@ void EmptyLinkFunctionForGeneratedCodePlayerChara() {}
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_SetEquipGunData();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_SetInventoryState();
 	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_SetIsGetItem();
+	BIOPROJECT_API UFunction* Z_Construct_UFunction_APlayerChara_SetIsShowGetItem();
+	ENGINE_API UClass* Z_Construct_UClass_USoundBase_NoRegister();
 	COREUOBJECT_API UScriptStruct* Z_Construct_UScriptStruct_FVector2D();
 	COREUOBJECT_API UClass* Z_Construct_UClass_UClass();
 	BIOPROJECT_API UClass* Z_Construct_UClass_UPlayerCameraShake_NoRegister();
@@ -130,7 +134,7 @@ void EmptyLinkFunctionForGeneratedCodePlayerChara() {}
 		return EActionStatus_StaticEnum();
 	}
 	static FCompiledInDeferEnum Z_CompiledInDeferEnum_UEnum_EActionStatus(EActionStatus_StaticEnum, TEXT("/Script/BioProject"), TEXT("EActionStatus"), false, nullptr, nullptr);
-	uint32 Get_Z_Construct_UEnum_BioProject_EActionStatus_Hash() { return 47971065U; }
+	uint32 Get_Z_Construct_UEnum_BioProject_EActionStatus_Hash() { return 2043618683U; }
 	UEnum* Z_Construct_UEnum_BioProject_EActionStatus()
 	{
 #if WITH_HOT_RELOAD
@@ -148,6 +152,7 @@ void EmptyLinkFunctionForGeneratedCodePlayerChara() {}
 				{ "EActionStatus::GunHold", (int64)EActionStatus::GunHold },
 				{ "EActionStatus::Reload", (int64)EActionStatus::Reload },
 				{ "EActionStatus::Guard", (int64)EActionStatus::Guard },
+				{ "EActionStatus::Shot", (int64)EActionStatus::Shot },
 			};
 #if WITH_METADATA
 			const UE4CodeGen_Private::FMetaDataPairParam Enum_MetaDataParams[] = {
@@ -165,6 +170,9 @@ void EmptyLinkFunctionForGeneratedCodePlayerChara() {}
 				{ "Reload.ToolTip", "??????\n????\n????\n?e???\\???\xc4\x82???" },
 				{ "Run.Comment", "// ??????\n// ????\n" },
 				{ "Run.Name", "EActionStatus::Run" },
+				{ "Shot.Comment", "// Daisuke\n" },
+				{ "Shot.Name", "EActionStatus::Shot" },
+				{ "Shot.ToolTip", "Daisuke" },
 				{ "ToolTip", "?A?N?V?????\xcc\x8f??\xd4\x8a\xc7\x97??p?\xcc\x97\xf1\x8b\x93\x8c^" },
 				{ "Walk.Comment", "// ??????\n" },
 				{ "Walk.Name", "EActionStatus::Walk" },
@@ -215,6 +223,10 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFStatusConstant
 #endif
 		static void* NewStructOps();
 #if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_gunHoldSpeed_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_gunHoldSpeed;
+#if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_runSpeed_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_runSpeed;
@@ -238,6 +250,13 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFStatusConstant
 		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FStatusConstant>();
 	}
 #if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_gunHoldSpeed_MetaData[] = {
+		{ "Category", "Data" },
+		{ "ModuleRelativePath", "PlayerChara.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_gunHoldSpeed = { "gunHoldSpeed", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FStatusConstant, gunHoldSpeed), METADATA_PARAMS(Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_gunHoldSpeed_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_gunHoldSpeed_MetaData)) };
+#if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_runSpeed_MetaData[] = {
 		{ "Category", "Data" },
 		{ "Comment", "// ?????\xcc\x83X?s?[?h\n" },
@@ -256,6 +275,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFStatusConstant
 #endif
 	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_walkSpeed = { "walkSpeed", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FStatusConstant, walkSpeed), METADATA_PARAMS(Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_walkSpeed_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_walkSpeed_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FStatusConstant_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_gunHoldSpeed,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_runSpeed,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FStatusConstant_Statics::NewProp_walkSpeed,
 	};
@@ -287,7 +307,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFStatusConstant
 		}
 		return ReturnStruct;
 	}
-	uint32 Get_Z_Construct_UScriptStruct_FStatusConstant_Hash() { return 2345283792U; }
+	uint32 Get_Z_Construct_UScriptStruct_FStatusConstant_Hash() { return 66885815U; }
 class UScriptStruct* FPlayerStatus::StaticStruct()
 {
 	static class UScriptStruct* Singleton = NULL;
@@ -441,8 +461,10 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 			{ "GetInventoryState", &APlayerChara::execGetInventoryState },
 			{ "GetIsDead", &APlayerChara::execGetIsDead },
 			{ "GetIsGunHold", &APlayerChara::execGetIsGunHold },
+			{ "GetIsHaveGun", &APlayerChara::execGetIsHaveGun },
 			{ "GetIsItemTouch", &APlayerChara::execGetIsItemTouch },
 			{ "GetIsOpenInventory", &APlayerChara::execGetIsOpenInventory },
+			{ "GetIsShowGetItem", &APlayerChara::execGetIsShowGetItem },
 			{ "GetLandingPoint", &APlayerChara::execGetLandingPoint },
 			{ "GetOverlapActor", &APlayerChara::execGetOverlapActor },
 			{ "GetPlayerBag", &APlayerChara::execGetPlayerBag },
@@ -455,6 +477,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 			{ "SetEquipGunData", &APlayerChara::execSetEquipGunData },
 			{ "SetInventoryState", &APlayerChara::execSetInventoryState },
 			{ "SetIsGetItem", &APlayerChara::execSetIsGetItem },
+			{ "SetIsShowGetItem", &APlayerChara::execSetIsShowGetItem },
 		};
 		FNativeFunctionRegistrar::RegisterFunctions(Class, Funcs, UE_ARRAY_COUNT(Funcs));
 	}
@@ -758,6 +781,46 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 		}
 		return ReturnFunction;
 	}
+	struct Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics
+	{
+		struct PlayerChara_eventGetIsHaveGun_Parms
+		{
+			bool ReturnValue;
+		};
+		static void NewProp_ReturnValue_SetBit(void* Obj);
+		static const UE4CodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+	void Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+	{
+		((PlayerChara_eventGetIsHaveGun_Parms*)Obj)->ReturnValue = 1;
+	}
+	const UE4CodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UE4CodeGen_Private::EPropertyGenFlags::Bool | UE4CodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(PlayerChara_eventGetIsHaveGun_Parms), &Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(nullptr, 0) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::NewProp_ReturnValue,
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::Function_MetaDataParams[] = {
+		{ "Category", "GetData" },
+		{ "Comment", "// ?e???????????\xc7\x82??????\xd4\x82?\n" },
+		{ "ModuleRelativePath", "PlayerChara.h" },
+		{ "ToolTip", "?e???????????\xc7\x82??????\xd4\x82?" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_APlayerChara, nullptr, "GetIsHaveGun", nullptr, nullptr, sizeof(PlayerChara_eventGetIsHaveGun_Parms), Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_APlayerChara_GetIsHaveGun()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_APlayerChara_GetIsHaveGun_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
 	struct Z_Construct_UFunction_APlayerChara_GetIsItemTouch_Statics
 	{
 		struct PlayerChara_eventGetIsItemTouch_Parms
@@ -835,6 +898,44 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 		if (!ReturnFunction)
 		{
 			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_APlayerChara_GetIsOpenInventory_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
+	struct Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics
+	{
+		struct PlayerChara_eventGetIsShowGetItem_Parms
+		{
+			bool ReturnValue;
+		};
+		static void NewProp_ReturnValue_SetBit(void* Obj);
+		static const UE4CodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+	void Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+	{
+		((PlayerChara_eventGetIsShowGetItem_Parms*)Obj)->ReturnValue = 1;
+	}
+	const UE4CodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UE4CodeGen_Private::EPropertyGenFlags::Bool | UE4CodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(PlayerChara_eventGetIsShowGetItem_Parms), &Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(nullptr, 0) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::NewProp_ReturnValue,
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::Function_MetaDataParams[] = {
+		{ "Category", "GetData" },
+		{ "ModuleRelativePath", "PlayerChara.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_APlayerChara, nullptr, "GetIsShowGetItem", nullptr, nullptr, sizeof(PlayerChara_eventGetIsShowGetItem_Parms), Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_APlayerChara_GetIsShowGetItem()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_APlayerChara_GetIsShowGetItem_Statics::FuncParams);
 		}
 		return ReturnFunction;
 	}
@@ -1387,6 +1488,52 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 		}
 		return ReturnFunction;
 	}
+	struct Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics
+	{
+		struct PlayerChara_eventSetIsShowGetItem_Parms
+		{
+			bool _isShowGetItem;
+		};
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp__isShowGetItem_MetaData[];
+#endif
+		static void NewProp__isShowGetItem_SetBit(void* Obj);
+		static const UE4CodeGen_Private::FBoolPropertyParams NewProp__isShowGetItem;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::NewProp__isShowGetItem_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif
+	void Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::NewProp__isShowGetItem_SetBit(void* Obj)
+	{
+		((PlayerChara_eventSetIsShowGetItem_Parms*)Obj)->_isShowGetItem = 1;
+	}
+	const UE4CodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::NewProp__isShowGetItem = { "_isShowGetItem", nullptr, (EPropertyFlags)0x0010000000000082, UE4CodeGen_Private::EPropertyGenFlags::Bool | UE4CodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(PlayerChara_eventSetIsShowGetItem_Parms), &Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::NewProp__isShowGetItem_SetBit, METADATA_PARAMS(Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::NewProp__isShowGetItem_MetaData, UE_ARRAY_COUNT(Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::NewProp__isShowGetItem_MetaData)) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::NewProp__isShowGetItem,
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::Function_MetaDataParams[] = {
+		{ "Category", "SetData" },
+		{ "ModuleRelativePath", "PlayerChara.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_APlayerChara, nullptr, "SetIsShowGetItem", nullptr, nullptr, sizeof(PlayerChara_eventSetIsShowGetItem_Parms), Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_APlayerChara_SetIsShowGetItem()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_APlayerChara_SetIsShowGetItem_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
 	UClass* Z_Construct_UClass_APlayerChara_NoRegister()
 	{
 		return APlayerChara::StaticClass();
@@ -1399,6 +1546,14 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 		static const UE4CodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
 #if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_SocketLocation_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FStructPropertyParams NewProp_m_SocketLocation;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_pShotSE_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_m_pShotSE;
+#if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_bagSize_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FUnsizedIntPropertyParams NewProp_m_bagSize;
@@ -1407,6 +1562,10 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 #endif
 		static const UE4CodeGen_Private::FArrayPropertyParams NewProp_m_ItemDatas;
 		static const UE4CodeGen_Private::FStructPropertyParams NewProp_m_ItemDatas_Inner;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_SetView_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_m_SetView;
 #if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_ActionStatus_MetaData[];
 #endif
@@ -1456,8 +1615,10 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 		{ &Z_Construct_UFunction_APlayerChara_GetInventoryState, "GetInventoryState" }, // 3529943451
 		{ &Z_Construct_UFunction_APlayerChara_GetIsDead, "GetIsDead" }, // 2101020249
 		{ &Z_Construct_UFunction_APlayerChara_GetIsGunHold, "GetIsGunHold" }, // 3869676710
+		{ &Z_Construct_UFunction_APlayerChara_GetIsHaveGun, "GetIsHaveGun" }, // 3489801833
 		{ &Z_Construct_UFunction_APlayerChara_GetIsItemTouch, "GetIsItemTouch" }, // 1257226073
 		{ &Z_Construct_UFunction_APlayerChara_GetIsOpenInventory, "GetIsOpenInventory" }, // 4142243934
+		{ &Z_Construct_UFunction_APlayerChara_GetIsShowGetItem, "GetIsShowGetItem" }, // 3425004283
 		{ &Z_Construct_UFunction_APlayerChara_GetLandingPoint, "GetLandingPoint" }, // 3134137772
 		{ &Z_Construct_UFunction_APlayerChara_GetOverlapActor, "GetOverlapActor" }, // 2770926758
 		{ &Z_Construct_UFunction_APlayerChara_GetPlayerBag, "GetPlayerBag" }, // 3185049530
@@ -1470,6 +1631,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 		{ &Z_Construct_UFunction_APlayerChara_SetEquipGunData, "SetEquipGunData" }, // 1698143967
 		{ &Z_Construct_UFunction_APlayerChara_SetInventoryState, "SetInventoryState" }, // 2236854109
 		{ &Z_Construct_UFunction_APlayerChara_SetIsGetItem, "SetIsGetItem" }, // 630411286
+		{ &Z_Construct_UFunction_APlayerChara_SetIsShowGetItem, "SetIsShowGetItem" }, // 2514385186
 	};
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APlayerChara_Statics::Class_MetaDataParams[] = {
@@ -1478,6 +1640,21 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 		{ "ModuleRelativePath", "PlayerChara.h" },
 	};
 #endif
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SocketLocation_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "PlayerChara" },
+		{ "ModuleRelativePath", "PlayerChara.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FStructPropertyParams Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SocketLocation = { "m_SocketLocation", nullptr, (EPropertyFlags)0x0040000000000004, UE4CodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(APlayerChara, m_SocketLocation), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SocketLocation_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SocketLocation_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APlayerChara_Statics::NewProp_m_pShotSE_MetaData[] = {
+		{ "Category", "CharaStatus" },
+		{ "ModuleRelativePath", "PlayerChara.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APlayerChara_Statics::NewProp_m_pShotSE = { "m_pShotSE", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(APlayerChara, m_pShotSE), Z_Construct_UClass_USoundBase_NoRegister, METADATA_PARAMS(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_pShotSE_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_pShotSE_MetaData)) };
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APlayerChara_Statics::NewProp_m_bagSize_MetaData[] = {
 		{ "Category", "ItemData" },
@@ -1497,6 +1674,15 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 #endif
 	const UE4CodeGen_Private::FArrayPropertyParams Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ItemDatas = { "m_ItemDatas", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(APlayerChara, m_ItemDatas), METADATA_PARAMS(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ItemDatas_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ItemDatas_MetaData)) };
 	const UE4CodeGen_Private::FStructPropertyParams Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ItemDatas_Inner = { "m_ItemDatas", nullptr, (EPropertyFlags)0x0000000000000000, UE4CodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, 1, 0, Z_Construct_UScriptStruct_FItemData, METADATA_PARAMS(nullptr, 0) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SetView_MetaData[] = {
+		{ "Category", "Status" },
+		{ "Comment", "// ???p?\xcf\x8dX???\xcc\x92l(?\xc7\x89?)\n" },
+		{ "ModuleRelativePath", "PlayerChara.h" },
+		{ "ToolTip", "???p?\xcf\x8dX???\xcc\x92l(?\xc7\x89?)" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SetView = { "m_SetView", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(APlayerChara, m_SetView), METADATA_PARAMS(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SetView_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SetView_MetaData)) };
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ActionStatus_MetaData[] = {
 		{ "Category", "Status" },
@@ -1579,9 +1765,12 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APlayerChara_Statics::NewProp_m_pSpringArm = { "m_pSpringArm", nullptr, (EPropertyFlags)0x00400000000a001d, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(APlayerChara, m_pSpringArm), Z_Construct_UClass_USpringArmComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_pSpringArm_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_APlayerChara_Statics::NewProp_m_pSpringArm_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_APlayerChara_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SocketLocation,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_pShotSE,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_bagSize,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ItemDatas,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ItemDatas_Inner,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_SetView,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ActionStatus,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_ActionStatus_Underlying,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerChara_Statics::NewProp_m_statusConst,
@@ -1619,7 +1808,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFPlayerStatus
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(APlayerChara, 1742199119);
+	IMPLEMENT_CLASS(APlayerChara, 3690192150);
 	template<> BIOPROJECT_API UClass* StaticClass<APlayerChara>()
 	{
 		return APlayerChara::StaticClass();

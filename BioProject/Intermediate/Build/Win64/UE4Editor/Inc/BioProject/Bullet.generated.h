@@ -95,7 +95,7 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(ABullet); \
 
 #define BioProject_Source_BioProject_Bullet_h_16_PRIVATE_PROPERTY_OFFSET \
 	FORCEINLINE static uint32 __PPO__m_pBoxComp() { return STRUCT_OFFSET(ABullet, m_pBoxComp); } \
-	FORCEINLINE static uint32 __PPO__m_pMesh() { return STRUCT_OFFSET(ABullet, m_pMesh); } \
+	FORCEINLINE static uint32 __PPO__m_pAllBlockComp() { return STRUCT_OFFSET(ABullet, m_pAllBlockComp); } \
 	FORCEINLINE static uint32 __PPO__m_speed() { return STRUCT_OFFSET(ABullet, m_speed); }
 
 

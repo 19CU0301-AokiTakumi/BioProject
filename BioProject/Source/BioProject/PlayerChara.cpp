@@ -50,7 +50,7 @@ APlayerChara::APlayerChara()
 		//　カメラ追従フラグを使うかを設定
 		m_pSpringArm->bEnableCameraLag = true;
 		//　カメラ追従ラグの速度を設定
-		m_pSpringArm->CameraLagSpeed = 25.f;
+		m_pSpringArm->CameraLagSpeed = 50.f;
 		//　カメラの回転ラグを使うかを設定
 		m_pSpringArm->bEnableCameraRotationLag = true;
 		//　カメラ回転ラグの速度を設定
@@ -348,6 +348,9 @@ void APlayerChara::Input_Shooting()
 	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetIsShot())
 		return;
 
+	if (!m_playerFlags.flagBits.isGunHold)
+		return;
+
 	//m_haveGunDatas[m_playerStatus.equipGunID]->Shot(this);
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, FVector::ZeroVector);
 
@@ -362,11 +365,11 @@ void APlayerChara::Input_Shooting()
 
 	// 弾の発射位置
 	//FVector Start = m_GunLocation + m_SocketLocation;
-	FVector Start = GetMesh()->GetRelativeLocation() + m_SocketLocation;
+	FVector Start = m_pSpringArm->GetRelativeLocation()+GetActorLocation();
 	/*UE_LOG(LogTemp, Error, TEXT("= %f,= %f,= %f"), m_SocketLocation.X, m_SocketLocation.Y, m_SocketLocation.Z);*/
 
 	// 弾の弾着位置
-	FVector EndOffset = FVector(0.f, 0.f, 50.f);
+	FVector EndOffset = FVector(0.f, 0.f, 0.f);
 	FVector End = GetActorLocation() + EndOffset + m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
 	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
 	// 仕事してない。仕事しろ（怒り）
@@ -530,8 +533,11 @@ void APlayerChara::Input_Reload()
 	// 装備している武器が存在している時
 	if (m_haveGunDatas[m_playerStatus.equipGunID])
 	{
-		// ステータスをリロードに
-		m_ActionStatus = EActionStatus::Reload;
+		if (m_haveAmmoDatas[EcuipGunTypeIndex].ammoStock)
+		{
+			// ステータスをリロードに
+			m_ActionStatus = EActionStatus::Reload;
+		}
 
 		// リロード処理
 		m_haveGunDatas[m_playerStatus.equipGunID]->Reload(m_haveAmmoDatas[EcuipGunTypeIndex].ammoStock);

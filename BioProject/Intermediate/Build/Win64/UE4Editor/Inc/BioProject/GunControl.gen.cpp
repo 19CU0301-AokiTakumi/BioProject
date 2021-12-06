@@ -19,6 +19,8 @@ void EmptyLinkFunctionForGeneratedCodeGunControl() {}
 	BIOPROJECT_API UClass* Z_Construct_UClass_AGunControl_NoRegister();
 	BIOPROJECT_API UClass* Z_Construct_UClass_AGunControl();
 	BIOPROJECT_API UClass* Z_Construct_UClass_AItemBase();
+	ENGINE_API UClass* Z_Construct_UClass_USoundBase_NoRegister();
+	ENGINE_API UClass* Z_Construct_UClass_USceneComponent_NoRegister();
 // End Cross Module References
 	static UEnum* EGunType_StaticEnum()
 	{
@@ -113,6 +115,10 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFGunData
 #endif
 		static void* NewStructOps();
 #if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_fireRate_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_fireRate;
+#if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_atk_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FUnsizedIntPropertyParams NewProp_atk;
@@ -145,6 +151,13 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFGunData
 		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FGunData>();
 	}
 #if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FGunData_Statics::NewProp_fireRate_MetaData[] = {
+		{ "Category", "Data" },
+		{ "ModuleRelativePath", "GunControl.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UScriptStruct_FGunData_Statics::NewProp_fireRate = { "fireRate", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FGunData, fireRate), METADATA_PARAMS(Z_Construct_UScriptStruct_FGunData_Statics::NewProp_fireRate_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FGunData_Statics::NewProp_fireRate_MetaData)) };
+#if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FGunData_Statics::NewProp_atk_MetaData[] = {
 		{ "Category", "Data" },
 		{ "ModuleRelativePath", "GunControl.h" },
@@ -174,6 +187,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFGunData
 	const UE4CodeGen_Private::FEnumPropertyParams Z_Construct_UScriptStruct_FGunData_Statics::NewProp_gunType = { "gunType", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FGunData, gunType), Z_Construct_UEnum_BioProject_EGunType, METADATA_PARAMS(Z_Construct_UScriptStruct_FGunData_Statics::NewProp_gunType_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FGunData_Statics::NewProp_gunType_MetaData)) };
 	const UE4CodeGen_Private::FBytePropertyParams Z_Construct_UScriptStruct_FGunData_Statics::NewProp_gunType_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UE4CodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, 1, 0, nullptr, METADATA_PARAMS(nullptr, 0) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FGunData_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FGunData_Statics::NewProp_fireRate,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FGunData_Statics::NewProp_atk,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FGunData_Statics::NewProp_ammoStockMax,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FGunData_Statics::NewProp_ammoStock,
@@ -208,7 +222,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFGunData
 		}
 		return ReturnStruct;
 	}
-	uint32 Get_Z_Construct_UScriptStruct_FGunData_Hash() { return 2758834809U; }
+	uint32 Get_Z_Construct_UScriptStruct_FGunData_Hash() { return 3215136939U; }
 	void AGunControl::StaticRegisterNativesAGunControl()
 	{
 	}
@@ -223,9 +237,17 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFGunData
 		static const UE4CodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
 #if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_pShotSE_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_m_pShotSE;
+#if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_gunData_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FStructPropertyParams NewProp_m_gunData;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_m_BulletLocation_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_m_BulletLocation;
 		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UE4CodeGen_Private::FClassParams ClassParams;
@@ -241,6 +263,13 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFGunData
 	};
 #endif
 #if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AGunControl_Statics::NewProp_m_pShotSE_MetaData[] = {
+		{ "Category", "CharaStatus" },
+		{ "ModuleRelativePath", "GunControl.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGunControl_Statics::NewProp_m_pShotSE = { "m_pShotSE", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AGunControl, m_pShotSE), Z_Construct_UClass_USoundBase_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AGunControl_Statics::NewProp_m_pShotSE_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AGunControl_Statics::NewProp_m_pShotSE_MetaData)) };
+#if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AGunControl_Statics::NewProp_m_gunData_MetaData[] = {
 		{ "Category", "Data" },
 		{ "Comment", "// ?e?\xcc\x83""f?[?^\n" },
@@ -249,8 +278,19 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFGunData
 	};
 #endif
 	const UE4CodeGen_Private::FStructPropertyParams Z_Construct_UClass_AGunControl_Statics::NewProp_m_gunData = { "m_gunData", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AGunControl, m_gunData), Z_Construct_UScriptStruct_FGunData, METADATA_PARAMS(Z_Construct_UClass_AGunControl_Statics::NewProp_m_gunData_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AGunControl_Statics::NewProp_m_gunData_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AGunControl_Statics::NewProp_m_BulletLocation_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Gameplay" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "GunControl.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGunControl_Statics::NewProp_m_BulletLocation = { "m_BulletLocation", nullptr, (EPropertyFlags)0x004000000008000d, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AGunControl, m_BulletLocation), Z_Construct_UClass_USceneComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AGunControl_Statics::NewProp_m_BulletLocation_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AGunControl_Statics::NewProp_m_BulletLocation_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AGunControl_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGunControl_Statics::NewProp_m_pShotSE,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGunControl_Statics::NewProp_m_gunData,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGunControl_Statics::NewProp_m_BulletLocation,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_AGunControl_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<AGunControl>::IsAbstract,
@@ -279,7 +319,7 @@ static struct FScriptStruct_BioProject_StaticRegisterNativesFGunData
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AGunControl, 3816845165);
+	IMPLEMENT_CLASS(AGunControl, 2846102329);
 	template<> BIOPROJECT_API UClass* StaticClass<AGunControl>()
 	{
 		return AGunControl::StaticClass();

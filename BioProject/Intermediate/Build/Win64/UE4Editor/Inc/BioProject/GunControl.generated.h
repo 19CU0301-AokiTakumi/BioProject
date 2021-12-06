@@ -20,10 +20,10 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 template<> BIOPROJECT_API UScriptStruct* StaticStruct<struct FGunData>();
 
-#define BioProject_Source_BioProject_GunControl_h_44_SPARSE_DATA
-#define BioProject_Source_BioProject_GunControl_h_44_RPC_WRAPPERS
-#define BioProject_Source_BioProject_GunControl_h_44_RPC_WRAPPERS_NO_PURE_DECLS
-#define BioProject_Source_BioProject_GunControl_h_44_INCLASS_NO_PURE_DECLS \
+#define BioProject_Source_BioProject_GunControl_h_46_SPARSE_DATA
+#define BioProject_Source_BioProject_GunControl_h_46_RPC_WRAPPERS
+#define BioProject_Source_BioProject_GunControl_h_46_RPC_WRAPPERS_NO_PURE_DECLS
+#define BioProject_Source_BioProject_GunControl_h_46_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAGunControl(); \
 	friend struct Z_Construct_UClass_AGunControl_Statics; \
@@ -32,7 +32,7 @@ public: \
 	DECLARE_SERIALIZER(AGunControl)
 
 
-#define BioProject_Source_BioProject_GunControl_h_44_INCLASS \
+#define BioProject_Source_BioProject_GunControl_h_46_INCLASS \
 private: \
 	static void StaticRegisterNativesAGunControl(); \
 	friend struct Z_Construct_UClass_AGunControl_Statics; \
@@ -41,7 +41,7 @@ public: \
 	DECLARE_SERIALIZER(AGunControl)
 
 
-#define BioProject_Source_BioProject_GunControl_h_44_STANDARD_CONSTRUCTORS \
+#define BioProject_Source_BioProject_GunControl_h_46_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API AGunControl(const FObjectInitializer& ObjectInitializer); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(AGunControl) \
@@ -54,7 +54,7 @@ private: \
 public:
 
 
-#define BioProject_Source_BioProject_GunControl_h_44_ENHANCED_CONSTRUCTORS \
+#define BioProject_Source_BioProject_GunControl_h_46_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API AGunControl(AGunControl&&); \
@@ -65,31 +65,33 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(AGunControl); \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(AGunControl)
 
 
-#define BioProject_Source_BioProject_GunControl_h_44_PRIVATE_PROPERTY_OFFSET \
-	FORCEINLINE static uint32 __PPO__m_gunData() { return STRUCT_OFFSET(AGunControl, m_gunData); }
+#define BioProject_Source_BioProject_GunControl_h_46_PRIVATE_PROPERTY_OFFSET \
+	FORCEINLINE static uint32 __PPO__m_BulletLocation() { return STRUCT_OFFSET(AGunControl, m_BulletLocation); } \
+	FORCEINLINE static uint32 __PPO__m_gunData() { return STRUCT_OFFSET(AGunControl, m_gunData); } \
+	FORCEINLINE static uint32 __PPO__m_pShotSE() { return STRUCT_OFFSET(AGunControl, m_pShotSE); }
 
 
-#define BioProject_Source_BioProject_GunControl_h_41_PROLOG
-#define BioProject_Source_BioProject_GunControl_h_44_GENERATED_BODY_LEGACY \
+#define BioProject_Source_BioProject_GunControl_h_43_PROLOG
+#define BioProject_Source_BioProject_GunControl_h_46_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	BioProject_Source_BioProject_GunControl_h_44_PRIVATE_PROPERTY_OFFSET \
-	BioProject_Source_BioProject_GunControl_h_44_SPARSE_DATA \
-	BioProject_Source_BioProject_GunControl_h_44_RPC_WRAPPERS \
-	BioProject_Source_BioProject_GunControl_h_44_INCLASS \
-	BioProject_Source_BioProject_GunControl_h_44_STANDARD_CONSTRUCTORS \
+	BioProject_Source_BioProject_GunControl_h_46_PRIVATE_PROPERTY_OFFSET \
+	BioProject_Source_BioProject_GunControl_h_46_SPARSE_DATA \
+	BioProject_Source_BioProject_GunControl_h_46_RPC_WRAPPERS \
+	BioProject_Source_BioProject_GunControl_h_46_INCLASS \
+	BioProject_Source_BioProject_GunControl_h_46_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define BioProject_Source_BioProject_GunControl_h_44_GENERATED_BODY \
+#define BioProject_Source_BioProject_GunControl_h_46_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	BioProject_Source_BioProject_GunControl_h_44_PRIVATE_PROPERTY_OFFSET \
-	BioProject_Source_BioProject_GunControl_h_44_SPARSE_DATA \
-	BioProject_Source_BioProject_GunControl_h_44_RPC_WRAPPERS_NO_PURE_DECLS \
-	BioProject_Source_BioProject_GunControl_h_44_INCLASS_NO_PURE_DECLS \
-	BioProject_Source_BioProject_GunControl_h_44_ENHANCED_CONSTRUCTORS \
+	BioProject_Source_BioProject_GunControl_h_46_PRIVATE_PROPERTY_OFFSET \
+	BioProject_Source_BioProject_GunControl_h_46_SPARSE_DATA \
+	BioProject_Source_BioProject_GunControl_h_46_RPC_WRAPPERS_NO_PURE_DECLS \
+	BioProject_Source_BioProject_GunControl_h_46_INCLASS_NO_PURE_DECLS \
+	BioProject_Source_BioProject_GunControl_h_46_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
