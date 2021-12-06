@@ -115,6 +115,9 @@ void AEnemyChara::UpdateRay()
 	if (m_status != ActionStatus::Move && m_status != ActionStatus::Attack)
 		return;
 
+	if (m_Player->GetIsDead())
+		return;
+
 	// レイの終点はActorから前方向の一定距離
 	FVector End = GetMesh()->GetForwardVector() * m_SearchArea;
 

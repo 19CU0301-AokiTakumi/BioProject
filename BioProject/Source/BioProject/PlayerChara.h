@@ -198,6 +198,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "ItemData")
 		int m_bagSize;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Status", meta = (AllowPrivateAccess = "true"))
+		bool m_afterDead;
+
 	// レイが当たった座標(銃弾用)
 	FVector m_rayLandingPoint;
 
@@ -230,6 +233,8 @@ private:
 
 	// 画角変更(追加)
 	void Changeview(float _deltaTime);
+
+	void AfterDeath(float _deltaTime);
 
 public:
 	// アイテムを取得したかを渡す

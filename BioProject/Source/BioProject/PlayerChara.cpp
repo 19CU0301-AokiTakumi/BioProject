@@ -33,7 +33,7 @@ APlayerChara::APlayerChara()
 	, m_pShotSE(NULL)
 	, m_SocketLocation(FVector::ZeroVector)
 	, m_GunLocation(FVector::ZeroVector)
-
+	, m_afterDead(false)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -649,6 +649,22 @@ int APlayerChara::GetCursorIndex(const int _index, const int _moveValue)
 bool APlayerChara::GetIsDead()
 {
 	return (m_playerStatus.hp <= 0) ? true : false;
+}
+
+void APlayerChara::AfterDeath(float _deltaTime)
+{
+	m_CountTime += _deltaTime;
+
+	FRotator camRot = m_pCamera->GetRelativeRotation();
+	float camPitchdown = camRot.Pitch + 5.f * m_CountTime;
+	m_pCamera->SetRelativeRotation(FRotator(camPitchdown, camRot.Yaw, camRot.Roll));
+
+	FVector camLoc = m_pCamera->GetRelativeLocation();
+	float camZdown = camLoc.Z - 10.f * m_CountTime;
+	m_pCamera->SetRelativeLocation(FVector(camLoc.X, camLoc.Y, camZdown));
+
+	if (m_CountTime > 2.f)
+		m_afterDead = true;
 }
 
 // 回復処理
