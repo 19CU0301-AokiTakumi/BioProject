@@ -22,22 +22,24 @@ struct FGunData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") EGunType gunType;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int ammoStock;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int ammoStockMax;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int atk;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float fireRate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") EGunType gunType;	// éÌóﬁ
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int ammoStock;		// åªç›ÇÃëïíeêî
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int ammoStockMax;	// ç≈ëÂëïíeêî
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int atk;				// çUåÇóÕ
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float fireRate;		// î≠éÀÉåÅ[Ég
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float reloadTime;	// ÉäÉçÅ[ÉhÇ…Ç©Ç©ÇÈéûä‘
 
 public:
-	FGunData(const EGunType _gunType = EGunType::None, const int _ammoStock = 0, const int _ammoStockMax = 0, const int _atk = 0, const float _fireRate = 0.f)
+	FGunData(const EGunType _gunType = EGunType::None, const int _ammoStock = 0, const int _ammoStockMax = 0, const int _atk = 0, const float _fireRate = 0.f, const float _relordTime = 0.f)
 		: gunType(_gunType)
 		, ammoStock(_ammoStock)
 		, ammoStockMax(_ammoStockMax)
 		, atk(_atk)
 		, fireRate(_fireRate)
+		, reloadTime(_relordTime)
 	{
 	}
-	static FGunData NoneData() { return FGunData(); }
+	static FGunData NoneData() { return FGunData(EGunType::None, 0, 0, 0, 0.f, 0.f); }
 };
 
 UCLASS()
