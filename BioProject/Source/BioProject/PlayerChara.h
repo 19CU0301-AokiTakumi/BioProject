@@ -370,8 +370,13 @@ public:
 	// ‰æŠp‚Ì’l(’Ç‰Á)
 	float m_Viewvalue;
 
+	UPROPERTY(EditAnywhere, Category = "View")
+		float m_DefaultViewvalue;
+
 private:
 		float m_CountTime;
 
 		FVector m_GunLocation;
+
+		float m_prevAxisValue;
 };

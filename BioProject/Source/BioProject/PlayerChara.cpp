@@ -34,6 +34,9 @@ APlayerChara::APlayerChara()
 	, m_SocketLocation(FVector::ZeroVector)
 	, m_GunLocation(FVector::ZeroVector)
 	, m_afterDead(false)
+	, m_SetView(0.f)
+	, m_DefaultViewvalue(91.f)
+	, m_prevAxisValue(0.f)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -86,8 +89,8 @@ void APlayerChara::BeginPlay()
 	}
 
 	// 画角の初期設定(追加)
-	m_Viewvalue = 90;
-	m_pCamera->SetFieldOfView(m_Viewvalue);
+	//m_Viewvalue = 90.f;
+	m_pCamera->SetFieldOfView(m_DefaultViewvalue);
 }
 
 // 毎フレーム更新処理
@@ -365,11 +368,12 @@ void APlayerChara::Input_Shooting()
 
 	// 弾の発射位置
 	//FVector Start = m_GunLocation + m_SocketLocation;
-	FVector Start = m_pSpringArm->GetRelativeLocation()+GetActorLocation();
+	//FVector Start = m_pSpringArm->GetRelativeLocation()+GetActorLocation();
+	FVector Start = GetMesh()->GetRelativeLocation() + m_SocketLocation;
 	/*UE_LOG(LogTemp, Error, TEXT("= %f,= %f,= %f"), m_SocketLocation.X, m_SocketLocation.Y, m_SocketLocation.Z);*/
 
 	// 弾の弾着位置
-	FVector EndOffset = FVector(0.f, 0.f, 0.f);
+	FVector EndOffset = FVector(0.f, 0.f, 50.f);
 	FVector End = GetActorLocation() + EndOffset + m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
 	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
 	// 仕事してない。仕事しろ（怒り）
@@ -565,6 +569,9 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 	if (m_playerFlags.flagBits.isHaveGun == false)
 		return;
 
+	if (_axisValue == m_prevAxisValue)
+		return;
+
 	// 上ホイール
 	if (_axisValue >= 1.f)
 	{
@@ -702,7 +709,7 @@ void APlayerChara::Changeview(float _deltaTime)
 		}
 		else
 		{
-			if (m_Viewvalue < 91.f)
+			if (m_Viewvalue < m_DefaultViewvalue)
 			{
 				m_Viewvalue += 200.f * _deltaTime;
 				m_pCamera->SetFieldOfView(m_Viewvalue);
