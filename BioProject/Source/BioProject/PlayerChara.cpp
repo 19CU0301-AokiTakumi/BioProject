@@ -8,6 +8,7 @@
 #include "Bullet.h"
 #include "GunControl.h"
 #include "DrawDebugHelpers.h"
+#include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Sound/SoundBase.h"
@@ -71,6 +72,12 @@ APlayerChara::APlayerChara()
 	// 構造体の初期化
 	m_playerStatus = { 10, 10, 1000.f, FGunData::NoneData(), 0 };
 	m_statusConst = { 1000.f, 10000000.f };
+
+	// アニメーションが終わった時間を格納する配列の初期化
+	for (int i = 0; i < (int)EActionStatus::Max; i++)
+	{
+		AnimEndFrame[i] = 0;
+	}
 }
 
 // ゲーム開始時、または生成時に呼ばれる処理
@@ -91,6 +98,9 @@ void APlayerChara::BeginPlay()
 	// 画角の初期設定(追加)
 	//m_Viewvalue = 90.f;
 	m_pCamera->SetFieldOfView(m_DefaultViewvalue);
+
+	// アニメーション初期化
+	m_PrevStatus = m_ActionStatus;
 }
 
 // 毎フレーム更新処理
@@ -101,6 +111,8 @@ void APlayerChara::Tick(float DeltaTime)
 	UpdateMove(DeltaTime);
 	UpdateCamera(DeltaTime);
 	ShootCameraShake(DeltaTime);
+
+	CountTime(DeltaTime);
 
 	// 画角変更
 	Changeview(DeltaTime);
@@ -129,6 +141,10 @@ void APlayerChara::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Error, TEXT("BAKA"));
 			m_CountTime = 0.f;
+
+	case EActionStatus::Aim:
+		UE_LOG(LogTemp, Error, TEXT("aim"));
+		break;
 		}
 
 		//case eactionstatus::avoid:
@@ -701,6 +717,8 @@ void APlayerChara::Changeview(float _deltaTime)
 	{
 		if (m_playerFlags.flagBits.isGunHold == true)
 		{
+			// ここを変える
+			m_ActionStatus = EActionStatus::Aim;
 			if (m_Viewvalue > m_SetView)
 			{
 				m_Viewvalue -= 200.f * _deltaTime;
@@ -715,5 +733,58 @@ void APlayerChara::Changeview(float _deltaTime)
 				m_pCamera->SetFieldOfView(m_Viewvalue);
 			}
 		}
+	}
+}
+void APlayerChara::CountTime(float _deltaTime)
+{
+	if (m_PrevStatus == m_ActionStatus)
+		return;
+
+	m_CountTime += _deltaTime;
+
+
+	switch (m_ActionStatus)
+	{
+	case EActionStatus::Reload:
+		if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Reload])
+		{
+			m_ActionStatus = EActionStatus::Idle;
+			m_CountTime = 0.f;
+
+			m_PrevStatus = m_ActionStatus;
+		}
+		break;
+
+	case EActionStatus::Shot:
+		if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Shot])
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Aho"), m_ActionStatus));
+			if (m_playerFlags.flagBits.isShoot == true)
+			{
+				m_ActionStatus = EActionStatus::Idle;
+				m_CountTime = 0.f;
+
+				m_PrevStatus = m_ActionStatus;
+			}
+		}
+		break;
+
+	case EActionStatus::Aim:
+	{
+		if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Aim])
+		{
+			m_ActionStatus = EActionStatus::Idle;
+			m_CountTime = 0.f;
+
+			m_PrevStatus = m_ActionStatus;
+		}
+
+		break;
+	}
+
+	default:
+		UE_LOG(LogTemp, Error, TEXT("mogu"));
+		m_PrevStatus = m_ActionStatus;
+		break;
 	}
 }

@@ -49,10 +49,11 @@ enum class EActionStatus : uint8
 	Idle,			// 未操作
 	Walk,			// 歩き
 	Run,			// 走り
-	GunHold,		// 銃を構えている
 	Reload,			// リロード
 	Guard,			// Daisuke
 	Shot,			// 銃を撃つ
+	Aim,			// 銃を覗く
+	Max,			// Max用
 };
 
 // インベントリの状態管理用の列挙型
@@ -200,6 +201,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Status", meta = (AllowPrivateAccess = "true"))
 		bool m_afterDead;
+
+	// アニメーションの終わる時間を格納
+	UPROPERTY(EditAnywhere, Category = "Status")
+		float AnimEndFrame[(int)EActionStatus::Max];
 
 	// レイが当たった座標(銃弾用)
 	FVector m_rayLandingPoint;
@@ -379,4 +384,9 @@ private:
 		FVector m_GunLocation;
 
 		float m_prevAxisValue;
+
+		// アニメーション用
+		void CountTime(float _deltaTime);
+
+		EActionStatus m_PrevStatus;
 };
