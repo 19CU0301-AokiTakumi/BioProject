@@ -62,9 +62,9 @@ public:
 	// 毎フレーム呼更新処理
 	virtual void Tick(float DeltaTime) override;
 
-private:
+protected:
 	// オーバーラップ接触をし始めたときに呼ばれるイベント関数
-	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	UFUNCTION() virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	// オーバーラップ接触をし終えたときに呼ばれるイベント関数
@@ -89,6 +89,11 @@ protected:
 
 	// 自身が触れているプレイヤーを保管
 	APlayerChara* m_pOtherPlayer;
+
+public:
+	virtual void SetCollisionEnabled(const bool _isEnable) {};
+
+	void SetItemData(const FItemData _itemData) { m_itemData = _itemData; }
 
 public:
 	// 自身のアイテムデータを渡す

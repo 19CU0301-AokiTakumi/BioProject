@@ -37,4 +37,5 @@ ARopeDoor::ARopeDoor()
 void ARopeDoor::HitKnife()
 {
 	m_RopeMesh->SetVisibility(false);
+	m_RopeComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

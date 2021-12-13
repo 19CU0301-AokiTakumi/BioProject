@@ -6,6 +6,7 @@
 #include "MyGameInstance.h"
 #include "ItemBase.h"
 #include "GunControl.h"
+#include "KnifeControl.h"
 #include "GunAmmoControl.h"
 #include "PlayerCameraShake.h"
 #include "PlayerChara.generated.h"
@@ -23,17 +24,15 @@ struct FPlayerStatus
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int hp;					// 現在のHP
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int maxHP;				// 最大HP
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float moveSpeed;			// 移動速度
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") FGunData equipGunData;	// 装備している武器のデータ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int equipGunID;			// 装備している武器の番号
 
 public:
 	// コンストラクタ
-	FPlayerStatus(const int _hp = 0, const int _maxHP = 0, const float _moveSpeed = 0.f, FGunData _equipGunData = FGunData::NoneData(), int _equipGunID = 0)
+	FPlayerStatus(const int _hp = 0, const int _maxHP = 0, const float _moveSpeed = 0.f, int _equipGunID = 0)
 	{
 		hp = _hp;
 		maxHP = _maxHP;
 		moveSpeed = _moveSpeed;
-		equipGunData = _equipGunData;
 		equipGunID = _equipGunID;
 	}
 
@@ -49,9 +48,11 @@ enum class EActionStatus : uint8
 	Idle,			// 未操作
 	Walk,			// 歩き
 	Run,			// 走り
+	GunHold,		// 銃を構えている
 	Reload,			// リロード
 	Guard,			// Daisuke
 	Shot,			// 銃を撃つ
+	KnifeAttack,
 	Aim,			// 銃を覗く
 	Max,			// Max用
 };
@@ -72,12 +73,12 @@ struct FStatusConstant
 	GENERATED_USTRUCT_BODY()
 
 	// 歩きのスピード
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float walkSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (Clampmin = 0.f, Clampmax = 1.f)) float walkSpeed;
 
 	// 走りのスピード
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float runSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (Clampmin = 0.f, Clampmax = 1.f)) float runSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float gunHoldSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (Clampmin = 0.f, Clampmax = 1.f)) float gunHoldSpeed;
 };
 
 UCLASS()
@@ -210,13 +211,15 @@ private:
 	FVector m_rayLandingPoint;
 
 	// オーバーラップしたアクター
-	AActor* m_pOverlapActor;
+	UPROPERTY(EditAnywhere, Category = "CharaStatus")
+		AActor* m_pOverlapActor;
 
 	// インベントリの状態
 	EInventoryState m_invenoryState;
 
 	// 所持している銃の保管用
-	TArray<AGunControl*> m_haveGunDatas;
+	UPROPERTY(EditAnywhere, Category = "CharaStatus")
+		TArray<AItemBase*> m_haveGunDatas;
 
 	// 所持している弾薬の保管用
 	FAmmoData m_haveAmmoDatas[(int)EAmmoType::Max];
@@ -228,6 +231,8 @@ private:
 
 	UPROPERTY(BluePrintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FVector m_SocketLocation;
+
+	AItemBase* m_pAttachObject;
 
 private:
 	// 移動処理
@@ -313,16 +318,19 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsHaveGun() const { return m_playerFlags.flagBits.isHaveGun; }
 
-	// 【デバッグ用】装備している武器情報をBPで変更する
-	UFUNCTION(BlueprintCallable, CateGory = "SetData")
-		void SetEquipGunData(const FGunData _gunData) { m_playerStatus.equipGunData = _gunData; }
+	//// 【デバッグ用】装備している武器情報をBPで変更する
+	//UFUNCTION(BlueprintCallable, CateGory = "SetData")
+	//	void SetEquipGunData(const FGunData _gunData) { m_playerStatus.equipGunData->GetGunData() = _gunData; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "GetData")
 		bool GetIsShowGetItem() const { return m_playerFlags.flagBits.isShowGetItem; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
-		void SetIsShowGetItem(const bool _isShowGetItem) { m_playerFlags.flagBits.isShowGetItem = _isShowGetItem; UE_LOG(LogTemp, Error, TEXT("%d"), (int)m_playerFlags.flagBits.isShowGetItem) }
-	
+		void SetIsShowGetItem(const bool _isShowGetItem) { m_playerFlags.flagBits.isShowGetItem = _isShowGetItem; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		FGunData GetEquipGunData() const;
+
 public:
 	// 【入力バインド】キャラ移動：前後
 	void Input_MoveForward(float _axisValue);
@@ -389,4 +397,8 @@ private:
 		void CountTime(float _deltaTime);
 
 		EActionStatus m_PrevStatus;
+
+		AKnifeControl* m_pTempKnife;
+
+		AGunControl* m_pTempGun;
 };

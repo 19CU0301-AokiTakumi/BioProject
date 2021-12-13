@@ -55,6 +55,8 @@ public:
 	// 更新処理
 	void CheckFireRate(float _deltaTime);
 
+	void SetCollisionEnabled(const bool _isEnable) override;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 		USceneComponent* m_BulletLocation;
@@ -72,7 +74,8 @@ private:
 
 public:
 	// 銃のデータを渡す
-	FGunData GetGunData() const { return m_gunData; }
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		FGunData GetGunData() const { return m_gunData; }
 
 	// 銃のデータをセットする
 	void SetGunData(const FGunData _gunData) { m_gunData = _gunData; }
@@ -88,8 +91,6 @@ public:
 	void SetIsShot(const bool _isShot) { m_bIsShot = _isShot; }
 
 	bool GetIsShot() const { return m_bIsShot; }
-
-	void SetCollisionEnabled(const bool _isEnable);
 
 	FVector GetBulletLocation()const { return m_BulletLocation->GetRelativeLocation(); }
 };

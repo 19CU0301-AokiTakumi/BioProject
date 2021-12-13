@@ -8,13 +8,13 @@
 #include "Bullet.h"
 #include "GunControl.h"
 #include "DrawDebugHelpers.h"
-#include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Sound/SoundBase.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Engine/Engine.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -38,6 +38,9 @@ APlayerChara::APlayerChara()
 	, m_SetView(0.f)
 	, m_DefaultViewvalue(91.f)
 	, m_prevAxisValue(0.f)
+	, m_pAttachObject(NULL)
+	, m_pTempKnife(NULL)
+	, m_pTempGun(NULL)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -70,7 +73,7 @@ APlayerChara::APlayerChara()
 	m_pShotSE = ShotSE.Object;
 
 	// 構造体の初期化
-	m_playerStatus = { 10, 10, 1000.f, FGunData::NoneData(), 0 };
+	m_playerStatus = { 10, 10, 1000.f, 0 };
 	m_statusConst = { 1000.f, 10000000.f };
 
 	// アニメーションが終わった時間を格納する配列の初期化
@@ -99,6 +102,8 @@ void APlayerChara::BeginPlay()
 	//m_Viewvalue = 90.f;
 	m_pCamera->SetFieldOfView(m_DefaultViewvalue);
 
+	m_playerStatus.moveSpeed = m_statusConst.walkSpeed;
+
 	// アニメーション初期化
 	m_PrevStatus = m_ActionStatus;
 }
@@ -117,11 +122,18 @@ void APlayerChara::Tick(float DeltaTime)
 	// 画角変更
 	Changeview(DeltaTime);
 
-	if (m_playerFlags.flagBits.isHaveGun)
+	if (m_haveGunDatas.Num() > 0 && Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 	{
-		m_haveGunDatas[m_playerStatus.equipGunID]->CheckFireRate(DeltaTime);
+		Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID])->CheckFireRate(DeltaTime);
 	}
-
+	
+	UE_LOG(LogTemp, Error, TEXT("------------------------------------------"));
+	UE_LOG(LogTemp, Error, TEXT("EquipID = %d"), m_playerStatus.equipGunID);
+	for (int i = 0; i < m_haveGunDatas.Num(); ++i)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No. %d Name = %s"), i, *m_haveGunDatas[i]->GetItemData().name);
+	}
+	UE_LOG(LogTemp, Error, TEXT("------------------------------------------"));
 
 	switch (m_ActionStatus)
 	{
@@ -141,11 +153,12 @@ void APlayerChara::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Error, TEXT("BAKA"));
 			m_CountTime = 0.f;
+		}
 
 	case EActionStatus::Aim:
 		UE_LOG(LogTemp, Error, TEXT("aim"));
 		break;
-		}
+	
 
 		//case eactionstatus::avoid:
 			//avoid(_deltatime);
@@ -158,7 +171,6 @@ void APlayerChara::Tick(float DeltaTime)
 	default:
 		break;
 	}
-
 }
 
 // 各入力関係メソッドとのバインド処理
@@ -201,14 +213,16 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// 触れているアクターを保管
-	m_pOverlapActor = OtherActor;
+	
 
 	// アイテムに触れている時
-	if (Cast<AItemBase>(OtherActor))
+	if (Cast<AItemBase>(OtherActor) && !OtherComp->ComponentHasTag("Blade"))
 	{
 		// アイテムに触れているフラグを立てる
 		m_playerFlags.flagBits.isItemTouch = true;
+
+		// 触れているアクターを保管
+		m_pOverlapActor = OtherActor;
 	}
 
 	// 扉に触れている時
@@ -227,6 +241,9 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 			// 開く方向を設定
 			Cast<ADoorBase>(OtherActor)->SetOpenReverse(true);
 		}
+
+		// 触れているアクターを保管
+		m_pOverlapActor = OtherActor;
 	}
 }
 
@@ -237,7 +254,7 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 	m_playerFlags.flagBits.isItemTouch = false;
 
 	// 保管していた触れていたアクターを無効にする
-	m_pOverlapActor = NULL;
+	//m_pOverlapActor = NULL;
 
 	// 扉から離れた時
 	if (Cast<ADoorBase>(OtherActor))
@@ -308,6 +325,16 @@ void APlayerChara::UpdateCamera(float _deltaTime)
 	}
 }
 
+FGunData APlayerChara::GetEquipGunData() const
+{ 
+	
+	if (m_haveGunDatas.Num() > 0)
+		if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+			return  Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID])->GetGunData();
+
+	return FGunData::NoneData();
+}
+
 //　【入力バインド】キャラ移動：前後
 void APlayerChara::Input_MoveForward(float _axisValue)
 {
@@ -343,6 +370,9 @@ void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 //【入力バインド】銃を構える
 void APlayerChara::Input_Hold()
 {
+	if (m_haveGunDatas.Num() <= 0 || m_haveGunDatas[m_playerStatus.equipGunID] == NULL)
+		return;
+
 	// 銃を構えているかのフラグを切り替える
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
 	m_playerStatus.moveSpeed = (m_playerFlags.flagBits.isGunHold) ? m_statusConst.gunHoldSpeed : m_statusConst.walkSpeed;
@@ -351,21 +381,42 @@ void APlayerChara::Input_Hold()
 // 【入力バインド】銃を撃つ
 void APlayerChara::Input_Shooting()
 {
-	// 銃を持っていない場合は処理しない
-	if (m_playerFlags.flagBits.isHaveGun == false)
+	// 武器を持っていない場合は処理しない
+	if (m_haveGunDatas.Num() <= 0)
+		return;
+
+	// 装備している武器がナイフの時
+	if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+	{
+		// ナイフの刀身のコリジョン判定を有効にする
+		Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(true);
+
+		// ナイフ攻撃状態にする
+		m_ActionStatus = EActionStatus::KnifeAttack;
+		return;
+	}
+		
+	if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]) == NULL)
+		return;
+
+	AGunControl* GunControl = Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]);
+
+	if (GunControl == NULL)
+		return;
+
+	// 銃が既に撃たれている状態の場合処理しない
+	if (GunControl->GetIsShot())
 		return;
 
 	// 銃に弾が入っていない場合は処理しない
-	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData().ammoStock <= 0)
+	if (GunControl->GetGunData().ammoStock <= 0)
 	{
-		if (m_haveAmmoDatas[(int)m_playerStatus.equipGunData.gunType].ammoStock > 0)
+		if (m_haveAmmoDatas[(int)GunControl->GetGunData().gunType].ammoStock > 0)
 			Input_Reload();
 		return;
 	}
 
-	// 銃が既に撃たれている状態の場合処理しない
-	if (m_haveGunDatas[m_playerStatus.equipGunID]->GetIsShot())
-		return;
+	
 
 	if (!m_playerFlags.flagBits.isGunHold)
 		return;
@@ -374,23 +425,23 @@ void APlayerChara::Input_Shooting()
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, FVector::ZeroVector);
 
 	// 装備している銃の情報を一時保管
-	FGunData NewGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+	FGunData NewGunData = GunControl->GetGunData();
 
 	// 銃の弾を減らす
-	m_haveGunDatas[m_playerStatus.equipGunID]->RemoveAmmo(1);
+	GunControl->RemoveAmmo(1);
 
 	// データを反映
-	m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+	//m_playerStatus.equipGunData = Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]);
 
 	// 弾の発射位置
 	//FVector Start = m_GunLocation + m_SocketLocation;
 	//FVector Start = m_pSpringArm->GetRelativeLocation()+GetActorLocation();
-	FVector Start = GetMesh()->GetRelativeLocation() + m_SocketLocation;
+	FVector Start = GetActorLocation() + m_pSpringArm->GetRelativeLocation();
 	/*UE_LOG(LogTemp, Error, TEXT("= %f,= %f,= %f"), m_SocketLocation.X, m_SocketLocation.Y, m_SocketLocation.Z);*/
 
 	// 弾の弾着位置
-	FVector EndOffset = FVector(0.f, 0.f, 50.f);
-	FVector End = GetActorLocation() + EndOffset + m_pCamera->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
+	FVector EndOffset = FVector(0.f, 0.f, 0.f);
+	FVector End = GetActorLocation() + EndOffset + m_pCamera->GetRelativeLocation() + m_pSpringArm->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
 	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
 	// 仕事してない。仕事しろ（怒り）
 	FCollisionQueryParams CollisionParams;
@@ -405,10 +456,10 @@ void APlayerChara::Input_Shooting()
 		m_playerFlags.flagBits.isShoot = true;
 		//SpawnBullet->SetActorLocation(m_pSpringArm->GetRelativeLocation());
 		SpawnBullet->Init(Start, End);
-		SpawnBullet->SetAtk(m_playerStatus.equipGunData.atk + m_haveAmmoDatas[(int)m_playerStatus.equipGunData.gunType].atk);
+		SpawnBullet->SetAtk(GunControl->GetGunData().atk + m_haveAmmoDatas[(int)GunControl->GetGunData().gunType].atk);
 	}
 
-	m_haveGunDatas[m_playerStatus.equipGunID]->SetIsShot(true);
+	GunControl->SetIsShot(true);
 
 	m_ActionStatus = EActionStatus::Shot;
 }
@@ -443,7 +494,7 @@ void APlayerChara::Input_Action()
 	}
 
 	// アイテムに触れていた時
-	if (m_playerFlags.flagBits.isItemTouch == true)
+	if (m_playerFlags.flagBits.isItemTouch == true && Cast<AItemBase>(m_pOverlapActor))
 	{
 		// 取得時にメッシュを表示するアイテムかをセット
 		m_playerFlags.flagBits.isShowGetItem = Cast<AItemBase>(m_pOverlapActor)->GetItemData().isShowInventory;
@@ -495,28 +546,68 @@ void APlayerChara::Input_Action()
 		// 銃に触れていた時
 		if (Cast<AGunControl>(m_pOverlapActor))
 		{
-			// 触れている銃を一時保管
-			AGunControl* OverlapGun = Cast<AGunControl>(m_pOverlapActor);
-
 			// 触れている武器を所持している武器に新しく追加
-			m_haveGunDatas.Add(OverlapGun);
+			if (m_pTempGun)
+				m_pTempGun = nullptr;
+			m_pTempGun = NewObject<AGunControl>();
+			m_pTempGun->SetItemData(Cast<AItemBase>(m_pOverlapActor)->GetItemData());
+			m_pTempGun->SetGunData(Cast<AGunControl>(m_pOverlapActor)->GetGunData());
+			m_haveGunDatas.Add(m_pTempGun);
+			
 
 			// 銃を初めて手に入れたとき
-			if (m_playerStatus.equipGunData.gunType == EGunType::None)
+			if (m_haveGunDatas.Num() > 0 || m_haveGunDatas[m_playerStatus.equipGunID])
 			{
 				// 銃の所持フラグを立てる
 				m_playerFlags.flagBits.isHaveGun = true;
 
 				// 装備している銃を更新
-				m_playerStatus.equipGunData = OverlapGun->GetGunData();
+				//m_haveGunDatas[m_playerStatus.equipGunID] = Cast<AGunControl>(m_haveGunDatas[m_haveGunDatas.Num() - 1]);
+				if (m_pAttachObject)
+				{
+					m_pAttachObject->GetMesh()->SetVisibility(false);
+					m_pAttachObject = NULL;
+				}
+				m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/HandGunBP.HandGunBP_C");
+				Cast<AGunControl>(m_pAttachObject)->SetCollisionEnabled(false);
+				Cast<AGunControl>(m_pAttachObject)->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Middle1_Socket");
+				Cast<AGunControl>(m_pAttachObject)->SetActorLocation(GetActorLocation());
+				m_GunLocation = Cast<AGunControl>(m_pAttachObject)->GetBulletLocation();
+				m_playerStatus.equipGunID = m_haveGunDatas.Num() - 1;
+			}
+		}
 
-				
-				AGunControl* HandGun = (AGunControl*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/HandGunBP.HandGunBP_C");
-				HandGun->SetCollisionEnabled(false);
-				HandGun->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Middle1_Socket");
-				HandGun->SetActorLocation(GetActorLocation());
-				m_GunLocation = HandGun->GetBulletLocation();
-				
+		if (Cast<AKnifeControl>(m_pOverlapActor))
+		{
+			// 触れている武器を所持している武器に新しく追加
+			if (m_pTempKnife)
+				m_pTempKnife = nullptr;
+			m_pTempKnife = NewObject<AKnifeControl>();
+			m_pTempKnife->SetItemData(Cast<AItemBase>(m_pOverlapActor)->GetItemData());
+			m_pTempKnife->SetKnifeData(Cast<AKnifeControl>(m_pOverlapActor)->GetKnifeData());
+			m_haveGunDatas.Add(m_pTempKnife);
+			
+
+			// 銃を初めて手に入れたとき
+			if (m_haveGunDatas.Num() > 0 || m_haveGunDatas[m_playerStatus.equipGunID])
+			{
+				// 銃の所持フラグを立てる
+				m_playerFlags.flagBits.isHaveGun = false;
+
+				// 装備している銃を更新
+				//m_haveGunDatas[m_playerStatus.equipGunID] = Cast<AKnifeControl>(m_haveGunDatas[m_haveGunDatas.Num() - 1]);
+				if (m_pAttachObject)
+				{
+					m_pAttachObject->GetMesh()->SetVisibility(false);
+					if (Cast<AKnifeControl>(m_pAttachObject))
+						Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
+					m_pAttachObject = NULL;
+				}
+				m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Knife.Knife_C");
+				Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
+				Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
+				Cast<AKnifeControl>(m_pAttachObject)->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Knife_Socket");
+				m_playerStatus.equipGunID = m_haveGunDatas.Num() - 1;
 			}
 		}
 
@@ -544,11 +635,16 @@ void APlayerChara::Input_Action()
 void APlayerChara::Input_Reload()
 {
 	// 銃を装備していない場合は処理しない
-	if (m_playerStatus.equipGunData.gunType == EGunType::None)
+	if (m_haveGunDatas.Num() <= 0 || m_haveGunDatas[m_playerStatus.equipGunID] == NULL)
+		return;
+
+	AGunControl* GunControl = Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]);
+
+	if (GunControl->GetIsShot())
 		return;
 
 	// 装備している銃の種類を数値化
-	int EcuipGunTypeIndex = (int)m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData().gunType;
+	int EcuipGunTypeIndex = (int)GunControl->GetGunData().gunType;
 
 	// 装備している武器が存在している時
 	if (m_haveGunDatas[m_playerStatus.equipGunID])
@@ -560,10 +656,10 @@ void APlayerChara::Input_Reload()
 		}
 
 		// リロード処理
-		m_haveGunDatas[m_playerStatus.equipGunID]->Reload(m_haveAmmoDatas[EcuipGunTypeIndex].ammoStock);
+		GunControl->Reload(m_haveAmmoDatas[EcuipGunTypeIndex].ammoStock);
 
 		// 装備している銃を更新
-		m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+		//m_playerStatus.equipGunData = GunControl;
 	}
 
 }
@@ -581,11 +677,10 @@ void APlayerChara::Input_Inventory()
 // 【入力バインド】銃の切り替え処理
 void APlayerChara::Input_ChangeGun(float _axisValue)
 {
-	// 銃を所持していない場合は処理しない
-	if (m_playerFlags.flagBits.isHaveGun == false)
+	if (_axisValue == m_prevAxisValue)
 		return;
 
-	if (_axisValue == m_prevAxisValue)
+	if (m_haveGunDatas.Num() <= 1)
 		return;
 
 	// 上ホイール
@@ -599,7 +694,7 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 			m_playerStatus.equipGunID = m_haveGunDatas.Num() - 1;
 
 		// 装備している銃を更新
-		m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+		//m_playerStatus.equipGunData = m_playerStatus.equipGunData;
 	}
 	// 下ホイール
 	else if (_axisValue <= -1.f)
@@ -612,8 +707,31 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 			m_playerStatus.equipGunID = 0;
 
 		// 装備している銃を更新
-		m_playerStatus.equipGunData = m_haveGunDatas[m_playerStatus.equipGunID]->GetGunData();
+		//m_playerStatus.equipGunData = m_playerStatus.equipGunData;
 	}
+
+	if (m_pAttachObject)
+	{
+		m_pAttachObject->GetMesh()->SetVisibility(false);
+		m_pAttachObject = nullptr;
+	}
+
+	if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+	{
+		m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Knife.Knife_C");
+		Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
+		Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
+		Cast<AKnifeControl>(m_pAttachObject)->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Knife_Socket");
+		m_playerFlags.flagBits.isHaveGun = false;
+	}
+	else if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+	{
+		m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/HandGunBP.HandGunBP_C");
+		Cast<AGunControl>(m_pAttachObject)->SetCollisionEnabled(false);
+		Cast<AGunControl>(m_pAttachObject)->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Middle1_Socket");
+		m_playerFlags.flagBits.isHaveGun = true;
+	}
+	m_ActionStatus = EActionStatus::Idle;
 }
 
 // 被ダメージ処理
@@ -713,8 +831,7 @@ void APlayerChara::ShootCameraShake(int _deltaTime)
 // 画角変更(追加)
 void APlayerChara::Changeview(float _deltaTime)
 {
-	if (m_playerFlags.flagBits.isHaveGun == true)
-	{
+
 		if (m_playerFlags.flagBits.isGunHold == true)
 		{
 			// ここを変える
@@ -733,8 +850,9 @@ void APlayerChara::Changeview(float _deltaTime)
 				m_pCamera->SetFieldOfView(m_Viewvalue);
 			}
 		}
-	}
+	
 }
+
 void APlayerChara::CountTime(float _deltaTime)
 {
 	if (m_PrevStatus == m_ActionStatus)
@@ -745,46 +863,46 @@ void APlayerChara::CountTime(float _deltaTime)
 
 	switch (m_ActionStatus)
 	{
-	case EActionStatus::Reload:
-		if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Reload])
-		{
-			m_ActionStatus = EActionStatus::Idle;
-			m_CountTime = 0.f;
-
-			m_PrevStatus = m_ActionStatus;
-		}
-		break;
-
-	case EActionStatus::Shot:
-		if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Shot])
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Aho"), m_ActionStatus));
-			if (m_playerFlags.flagBits.isShoot == true)
+		case EActionStatus::Reload:
+			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Reload])
 			{
 				m_ActionStatus = EActionStatus::Idle;
 				m_CountTime = 0.f;
 
 				m_PrevStatus = m_ActionStatus;
 			}
-		}
-		break;
+			break;
 
-	case EActionStatus::Aim:
-	{
-		if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Aim])
+		case EActionStatus::Shot:
+			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Shot])
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Aho"), m_ActionStatus));
+				if (m_playerFlags.flagBits.isShoot == true)
+				{
+					m_ActionStatus = EActionStatus::Idle;
+					m_CountTime = 0.f;
+
+					m_PrevStatus = m_ActionStatus;
+				}
+			}
+			break;
+
+		case EActionStatus::Aim:
 		{
-			m_ActionStatus = EActionStatus::Idle;
-			m_CountTime = 0.f;
+			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Aim])
+			{
+				m_ActionStatus = EActionStatus::Idle;
+				m_CountTime = 0.f;
 
-			m_PrevStatus = m_ActionStatus;
+				m_PrevStatus = m_ActionStatus;
+			}
+
+			break;
 		}
 
-		break;
-	}
-
-	default:
-		UE_LOG(LogTemp, Error, TEXT("mogu"));
-		m_PrevStatus = m_ActionStatus;
-		break;
+		default:
+			UE_LOG(LogTemp, Error, TEXT("mogu"));
+			m_PrevStatus = m_ActionStatus;
+			break;
 	}
 }
