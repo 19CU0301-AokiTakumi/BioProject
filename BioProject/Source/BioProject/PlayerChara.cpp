@@ -568,7 +568,7 @@ void APlayerChara::Input_Action()
 					m_pAttachObject->GetMesh()->SetVisibility(false);
 					m_pAttachObject = NULL;
 				}
-				m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/HandGunBP.HandGunBP_C");
+				m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Gun/HandGunBP.HandGunBP_C");
 				Cast<AGunControl>(m_pAttachObject)->SetCollisionEnabled(false);
 				Cast<AGunControl>(m_pAttachObject)->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Middle1_Socket");
 				Cast<AGunControl>(m_pAttachObject)->SetActorLocation(GetActorLocation());
@@ -603,7 +603,7 @@ void APlayerChara::Input_Action()
 						Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
 					m_pAttachObject = NULL;
 				}
-				m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Knife.Knife_C");
+				m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Weapon/Knife.Knife_C");
 				Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
 				Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
 				Cast<AKnifeControl>(m_pAttachObject)->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Knife_Socket");
@@ -718,7 +718,7 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 
 	if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 	{
-		m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Knife.Knife_C");
+		m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Weapon/Knife.Knife_C");
 		Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
 		Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
 		Cast<AKnifeControl>(m_pAttachObject)->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Knife_Socket");
@@ -726,7 +726,7 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 	}
 	else if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 	{
-		m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/HandGunBP.HandGunBP_C");
+		m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Gun/HandGunBP.HandGunBP_C");
 		Cast<AGunControl>(m_pAttachObject)->SetCollisionEnabled(false);
 		Cast<AGunControl>(m_pAttachObject)->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Middle1_Socket");
 		m_playerFlags.flagBits.isHaveGun = true;
