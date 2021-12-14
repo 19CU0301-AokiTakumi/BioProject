@@ -57,7 +57,7 @@ APlayerChara::APlayerChara()
 		//　カメラ追従フラグを使うかを設定
 		m_pSpringArm->bEnableCameraLag = true;
 		//　カメラ追従ラグの速度を設定
-		m_pSpringArm->CameraLagSpeed = 50.f;
+		m_pSpringArm->CameraLagSpeed = 0.f;
 		//　カメラの回転ラグを使うかを設定
 		m_pSpringArm->bEnableCameraRotationLag = true;
 		//　カメラ回転ラグの速度を設定
@@ -138,22 +138,27 @@ void APlayerChara::Tick(float DeltaTime)
 	switch (m_ActionStatus)
 	{
 	case EActionStatus::Idle:
+		UE_LOG(LogTemp, Error, TEXT("Idle"));
 		break;
 
 	case EActionStatus::Reload:
+		UE_LOG(LogTemp, Error, TEXT("Reload"));
 		break;
 
 	case EActionStatus::Walk:
+		UE_LOG(LogTemp, Error, TEXT("Walk"));
 		break;
 
 	case EActionStatus::Shot:
+		UE_LOG(LogTemp, Error, TEXT("Shot"));
 		m_ActionStatus = EActionStatus::Idle;
 		m_CountTime += DeltaTime;
 		if (m_CountTime >= 2.f)
 		{
-			UE_LOG(LogTemp, Error, TEXT("BAKA"));
 			m_CountTime = 0.f;
 		}
+
+		break;
 
 	case EActionStatus::Aim:
 		UE_LOG(LogTemp, Error, TEXT("aim"));
@@ -461,7 +466,11 @@ void APlayerChara::Input_Shooting()
 
 	GunControl->SetIsShot(true);
 
-	m_ActionStatus = EActionStatus::Shot;
+	if (m_ActionStatus == EActionStatus::Aim)
+	{
+		m_ActionStatus = EActionStatus::Shot;
+	}
+	
 }
 
 // 【入力バインド】走り
@@ -834,8 +843,12 @@ void APlayerChara::Changeview(float _deltaTime)
 
 		if (m_playerFlags.flagBits.isGunHold == true)
 		{
-			// ここを変える
-			m_ActionStatus = EActionStatus::Aim;
+			if (m_ActionStatus != EActionStatus::Shot)
+			{
+				// ここを変える
+				m_ActionStatus = EActionStatus::Aim;
+			}
+			
 			if (m_Viewvalue > m_SetView)
 			{
 				m_Viewvalue -= 200.f * _deltaTime;
