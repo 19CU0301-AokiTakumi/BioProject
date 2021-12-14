@@ -25,10 +25,10 @@ AEnemyChara::AEnemyChara()
 	, m_AtkStartTime(0.f)
 	, m_AtkEndTime(0.f)
 	, m_bIsAttack(true)
+	, m_IsDown(false)
 	, m_status(ActionStatus::Idle)
 	, m_BodyCollisionPos(FVector::ZeroVector)
 {
-
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -131,7 +131,7 @@ void AEnemyChara::UpdateRay()
 		float Y = End.X * sin(radTheta) + End.Y * cos(radTheta);
 		FVector End2 = FVector(X, Y, End.Z) + GetActorLocation();
 
-		DrawDebugLine(GetWorld(), m_BodyCollisionPos, End2, FColor::Blue, false, 1.0f);
+		// DrawDebugLine(GetWorld(), m_BodyCollisionPos, End2, FColor::Blue, false, 1.0f);
 
 		// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
 		FCollisionQueryParams CollisionParams;
@@ -166,22 +166,22 @@ void AEnemyChara::Damage(AActor* Bullet, const int _atk, FName _compName)
 {
 	if (_compName == "Head")
 	{
-		m_EnemyStatus.downPoint -= _atk + m_HeadShotOfSet;
+		m_EnemyStatus.knockBackPoint -= _atk + m_HeadShotOfSet;
 	}
 	else if (_compName == "Body")
 	{
-		m_EnemyStatus.downPoint -= _atk;
+		m_EnemyStatus.knockBackPoint -= _atk;
 	}
 	else
 	{
-		(_atk / 2 < 1) ? m_EnemyStatus.downPoint -= 1 : m_EnemyStatus.downPoint -= _atk / 2;
+		(_atk / 2 < 1) ? m_EnemyStatus.knockBackPoint -= 1 : m_EnemyStatus.knockBackPoint -= _atk / 2;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("downpoint = %d"), m_EnemyStatus.downPoint));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("knockBackPoint = %d"), m_EnemyStatus.knockBackPoint));
 
-	if (m_EnemyStatus.downPoint <= 0)
+	if (m_EnemyStatus.knockBackPoint <= 0)
 	{
-		int DamagePoint = -m_EnemyStatus.downPoint / m_EnemyStatus.maxDownPoint;
+		int DamagePoint = -m_EnemyStatus.knockBackPoint / m_EnemyStatus.maxDownPoint;
 
 		if (DamagePoint <= 0)
 			DamagePoint = 1;
@@ -190,14 +190,27 @@ void AEnemyChara::Damage(AActor* Bullet, const int _atk, FName _compName)
 
 		(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
 
-		int overDownPoint = -m_EnemyStatus.downPoint % m_EnemyStatus.maxDownPoint;
-		m_EnemyStatus.downPoint = m_EnemyStatus.maxDownPoint;
-		m_EnemyStatus.downPoint -= overDownPoint;
+		int overDownPoint = -m_EnemyStatus.knockBackPoint % m_EnemyStatus.maxDownPoint;
+		m_EnemyStatus.knockBackPoint = m_EnemyStatus.maxDownPoint;
+		m_EnemyStatus.knockBackPoint -= overDownPoint;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("hp = %d,downpoint = %d"), m_EnemyStatus.hp, m_EnemyStatus.downPoint));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("hp = %d,knockBackPoint = %d"), m_EnemyStatus.hp, m_EnemyStatus.knockBackPoint));
 	}
 
 	Cast<ABullet>(Bullet)->SetIsDestoy(true);
+}
+
+void AEnemyChara::DownPoint()
+{
+	m_DownCount++;
+
+	if (m_DownCount <= 2)
+		return;
+
+	m_DownCount = 0;
+
+	if(m_status!=ActionStatus::Death)
+		m_status = ActionStatus::Down;
 }
 
 void AEnemyChara::UpdateAction(float _deltaTime)
@@ -213,15 +226,49 @@ void AEnemyChara::UpdateAction(float _deltaTime)
 		break;
 
 	case ActionStatus::Attack:
-		Attack(_deltaTime);
-		break;
+		Attack();
+		m_AnimCount += _deltaTime;
 
-	case ActionStatus::Avoid:
-		Avoid(_deltaTime);
+		if (m_AnimCount >= AnimEndFrame[(int)ActionStatus::Attack])
+		{
+			m_status = ActionStatus::Move;
+			m_AtkAnimCount = 0.f;
+			m_AnimCount = 0.f;
+		}
 		break;
 
 	case ActionStatus::KnockBack:
-		KnockBack(_deltaTime);
+		m_AnimCount += _deltaTime;
+
+		if (m_AnimCount >= AnimEndFrame[(int)ActionStatus::KnockBack])
+		{
+			m_status = ActionStatus::Move;
+
+			if (m_AtkAnimCount > 0.f)
+				m_AtkAnimCount = 0.f;
+
+			m_AnimCount = 0.f;
+		}
+		break;
+
+	case ActionStatus::Down:
+		m_AnimCount += _deltaTime;
+
+		if (m_AnimCount >= AnimEndFrame[(int)ActionStatus::Down])
+		{
+			m_status = ActionStatus::StandUp;
+			m_AnimCount = 0.f;
+		}
+		break;
+
+	case ActionStatus::StandUp:
+		m_AnimCount += _deltaTime;
+
+		if (m_AnimCount >= AnimEndFrame[(int)ActionStatus::StandUp])
+		{
+			m_status = ActionStatus::Move;
+			m_AnimCount = 0.f;
+		}
 		break;
 
 	default:
@@ -250,7 +297,7 @@ void AEnemyChara::Move(float _deltaTime)
 	AddActorWorldOffset(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
 }
 
-void AEnemyChara::Attack(float _deltaTime)
+void AEnemyChara::Attack()
 {
 	if (m_AtkAnimCount >= m_AtkStartTime && m_AtkAnimCount <= m_AtkEndTime)
 	{
@@ -259,34 +306,6 @@ void AEnemyChara::Attack(float _deltaTime)
 			m_Player->Damage(m_EnemyStatus.atk);
 			m_bIsAttack = false;
 		}
-	}
-
-	m_AnimCount += _deltaTime;
-
-	if (m_AnimCount > AnimEndFrame[(int)ActionStatus::Attack])
-	{
-		m_status = ActionStatus::Move;
-		m_AtkAnimCount = 0.f;
-		m_AnimCount = 0.f;
-	}
-}
-
-void AEnemyChara::Avoid(float _deltaTime)
-{
-
-}
-
-void AEnemyChara::KnockBack(float _deltaTime)
-{
-	m_AnimCount += _deltaTime;
-
-	if (m_AnimCount > AnimEndFrame[(int)ActionStatus::KnockBack])
-	{
-		m_status = ActionStatus::Move;
-		m_AnimCount = 0.f;
-
-		if (m_AtkAnimCount > 0.f)
-			m_AtkAnimCount = 0.f;
 	}
 }
 
@@ -329,6 +348,24 @@ bool AEnemyChara::ReturnKnockBack()
 bool AEnemyChara::ReturnDeath()
 {
 	if (m_status == ActionStatus::Death)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool AEnemyChara::ReturnStandUp()
+{
+	if (m_status == ActionStatus::StandUp)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool AEnemyChara::ReturnDown()
+{
+	if (m_status == ActionStatus::Down)
 	{
 		return true;
 	}

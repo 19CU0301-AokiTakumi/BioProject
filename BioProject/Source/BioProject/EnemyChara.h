@@ -20,6 +20,8 @@ enum class ActionStatus : uint8
 	Attack,		// 攻撃
 	Avoid,		// 回避
 	KnockBack,	// ノックバック
+	StandUp,	// スタンドアップ
+	Down,		// ダウン
 	Death,		// 死亡
 	Max,		// ステータスの数を数える
 };
@@ -32,15 +34,15 @@ struct FEnemyStatus
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int hp;					// 現在のHP
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int maxDownPoint;		// 最大ダウンカウント
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int downPoint;			// ダウンカウント
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int knockBackPoint;		// ノックバックカウント
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") int atk;					// 攻撃
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data") float moveSpeed;			// 移動速度
 
 public:
-	FEnemyStatus(const int _hp = 0, const int _maxDownPoint = 0, const int _downPoint = 0, const int _atk = 0, const float _moveSpeed = 0.f)
+	FEnemyStatus(const int _hp = 0, const int _maxDownPoint = 0, const int _knockBackPoint = 0, const int _atk = 0, const float _moveSpeed = 0.f)
 		: hp(_hp)
 		, maxDownPoint(_maxDownPoint)
-		, downPoint(_downPoint)
+		, knockBackPoint(knockBackPoint)
 		, atk(_atk)
 		, moveSpeed(_moveSpeed)
 	{}
@@ -98,6 +100,10 @@ private:
 	UPROPERTY(BluePrintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FVector m_BodyCollisionPos;
 
+	// ダウン中かどうか
+	UPROPERTY(BluePrintReadWrite, meta = (AllowPrivateAccess = "true"))
+		bool m_IsDown;
+
 private:
 	// エフェクト
 	UPROPERTY(EditAnywhere, Category = "Effects")
@@ -109,8 +115,11 @@ private:
 
 private:
 	// オブジェクト
-	APlayerChara* m_Player;	// プレイヤーを格納
-	ActionStatus m_status;	// ステータスを格納
+	APlayerChara* m_Player;		// プレイヤーを格納
+	ActionStatus m_status;		// ステータスを格納
+
+	// 整数
+	int m_DownCount;	// ダウンするまでをカウントする
 
 	// 実数
 	float m_AnimCount;			// アニメーションをカウントする
@@ -124,11 +133,9 @@ private:
 	void UpdateRay();						// レイを飛ばす
 
 	// ステータス関数
-	void Idle();						// 待機
-	void Move(float _deltaTime);		// 移動
-	void Attack(float _deltaTime);		// 攻撃
-	void Avoid(float _deltaTime);		// 回避
-	void KnockBack(float _deltaTime);	// ノックバック
+	void Idle();					// 待機
+	void Move(float _deltaTime);	// 移動
+	void Attack();					// 攻撃
 
 	void AddAtkAnimTime(float _deltaTime);	// アタックアニメーションが始まったら呼ばれる関数
 
@@ -139,6 +146,10 @@ public:
 	// エネミーのステータスを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "EnemyState", BlueprintPure)
 		FEnemyStatus GetEnemyStatus() const { return m_EnemyStatus; }
+
+	// ダウン回数をカウント
+	UFUNCTION(BlueprintCallable, CateGory = "EnemyState")
+		void DownPoint();
 
 public:
 	// アニメーション用
@@ -153,4 +164,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
 		bool ReturnAttack();		// アタックアニメーション
+
+	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
+		bool ReturnDown();			// ダウンアニメーション
+
+	UFUNCTION(BlueprintCallable, CateGory = "ReturnBool")
+		bool ReturnStandUp();		// スタンドアップアニメーション
 };
