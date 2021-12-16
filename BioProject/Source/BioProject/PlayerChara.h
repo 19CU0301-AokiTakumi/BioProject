@@ -109,6 +109,9 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 
 		// 取得時にアイテムを表示するか
 		bool isShowGetItem : 1;	// 6
+
+		// イベントオブジェクトに触れているか
+		bool isEventObjTouch;	// 7
 	};
 
 	// フラグの管理をしやすくするための共用体
@@ -221,6 +224,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "CharaStatus")
 		TArray<AItemBase*> m_haveGunDatas;
 
+	UFUNCTION(BlueprintCallable, CateGory = "PlayerData")
+		void  SetWeaponDatas(TArray<AItemBase*> _weapons) { m_haveGunDatas = _weapons; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "PlayerData", BlueprintPure)
+		TArray<AItemBase*> GetWeaponDatas() const { return m_haveGunDatas; }
+
 	// 所持している弾薬の保管用
 	FAmmoData m_haveAmmoDatas[(int)EAmmoType::Max];
 
@@ -274,6 +283,10 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
 		bool GetIsItemTouch()const { return m_playerFlags.flagBits.isItemTouch; }
 
+	// イベントオブジェクトに触れているかを渡す
+	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
+		bool GetIsEventObjTouch()const { return m_playerFlags.flagBits.isEventObjTouch; }
+
 	// 触れているアクターを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		AActor* GetOverlapActor() const { return m_pOverlapActor; }
@@ -318,9 +331,9 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsHaveGun() const { return m_playerFlags.flagBits.isHaveGun; }
 
-	//// 【デバッグ用】装備している武器情報をBPで変更する
-	//UFUNCTION(BlueprintCallable, CateGory = "SetData")
-	//	void SetEquipGunData(const FGunData _gunData) { m_playerStatus.equipGunData->GetGunData() = _gunData; }
+	// 【デバッグ用】装備している武器情報をBPで変更する
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetPlayerStatus(const FPlayerStatus _playerstatus) { m_playerStatus= _playerstatus; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "GetData")
 		bool GetIsShowGetItem() const { return m_playerFlags.flagBits.isShowGetItem; }

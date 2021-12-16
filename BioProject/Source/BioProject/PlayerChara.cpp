@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "DoorBase.h"
 #include "ItemBase.h"
+#include "EventObjectBase.h"
 #include "Bullet.h"
 #include "GunControl.h"
 #include "DrawDebugHelpers.h"
@@ -126,14 +127,6 @@ void APlayerChara::Tick(float DeltaTime)
 	{
 		Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID])->CheckFireRate(DeltaTime);
 	}
-	
-	UE_LOG(LogTemp, Error, TEXT("------------------------------------------"));
-	UE_LOG(LogTemp, Error, TEXT("EquipID = %d"), m_playerStatus.equipGunID);
-	for (int i = 0; i < m_haveGunDatas.Num(); ++i)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No. %d Name = %s"), i, *m_haveGunDatas[i]->GetItemData().name);
-	}
-	UE_LOG(LogTemp, Error, TEXT("------------------------------------------"));
 
 	switch (m_ActionStatus)
 	{
@@ -230,6 +223,14 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 		m_pOverlapActor = OtherActor;
 	}
 
+	if (Cast<AEventObjectBase>(OtherActor))
+	{
+		m_playerFlags.flagBits.isEventObjTouch = true;
+
+		// 触れているアクターを保管
+		m_pOverlapActor = OtherActor;
+	}
+
 	// 扉に触れている時
 	if (Cast<ADoorBase>(OtherActor))
 	{
@@ -257,6 +258,8 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	// アイテムに触れているフラグをおろす
 	m_playerFlags.flagBits.isItemTouch = false;
+
+	m_playerFlags.flagBits.isEventObjTouch = false;
 
 	// 保管していた触れていたアクターを無効にする
 	//m_pOverlapActor = NULL;
@@ -502,6 +505,11 @@ void APlayerChara::Input_Action()
 		return;
 	}
 
+	if (Cast<AEventObjectBase>(m_pOverlapActor))
+	{
+		
+	}
+
 	// アイテムに触れていた時
 	if (m_playerFlags.flagBits.isItemTouch == true && Cast<AItemBase>(m_pOverlapActor))
 	{
@@ -644,7 +652,7 @@ void APlayerChara::Input_Action()
 void APlayerChara::Input_Reload()
 {
 	// 銃を装備していない場合は処理しない
-	if (m_haveGunDatas.Num() <= 0 || m_haveGunDatas[m_playerStatus.equipGunID] == NULL)
+	if (m_haveGunDatas.Num() <= 0 || Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]) == NULL)
 		return;
 
 	AGunControl* GunControl = Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]);
