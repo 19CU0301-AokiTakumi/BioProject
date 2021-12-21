@@ -186,6 +186,7 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	// 走り
 	InputComponent->BindAction("Run", IE_Pressed, this, &APlayerChara::Input_Run);
+	InputComponent->BindAction("Run", IE_Released, this, &APlayerChara::Input_Run);
 
 	// アクション
 	InputComponent->BindAction("Action", IE_Pressed, this, &APlayerChara::Input_Action);
@@ -290,23 +291,26 @@ void APlayerChara::UpdateMove(float _deltaTime)
 			AddMovementInput(rightVec, m_CharaMoveInput.X * m_playerStatus.moveSpeed);
 		}
 
-		// 移動時のカメラの揺れ
-		if (m_Count < 0.5f && m_CharaMoveInput.Y != 0)
-		{
-			if (m_Count < 0.3f)
-			{
-				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z + 0.015));
-			}
-			else
-			{
-				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z - 0.015));
-			}
-		}
-		else if (m_Count > 0.5f && m_CharaMoveInput.Y != 0)
-		{
-			m_Count = 0.f;
-			m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, 0));
-		}
+		//// 移動時のカメラの揺れ
+		//if (m_Count < 0.5f && m_CharaMoveInput.Y != 0.f)
+		//{
+		//	if (m_Count < 0.3f)
+		//	{
+		//		m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z + 0.3f));
+		//		GetMesh()->SetRelativeLocation(FVector(GetMesh()->GetRelativeLocation().X, GetMesh()->GetRelativeLocation().Y, GetMesh()->GetRelativeLocation().Z + 0.3f));
+		//	}
+		//	else
+		//	{
+		//		m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z - 0.3f));
+		//		GetMesh()->SetRelativeLocation(FVector(GetMesh()->GetRelativeLocation().X, GetMesh()->GetRelativeLocation().Y, GetMesh()->GetRelativeLocation().Z - 0.3f));
+		//	}
+		//}
+		//else if (m_Count > 0.5f && m_CharaMoveInput.Y != 0)
+		//{
+		//	m_Count = 0.f;
+		//	m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, 0));
+		//	GetMesh()->SetRelativeLocation(FVector(GetMesh()->GetRelativeLocation().X, GetMesh()->GetRelativeLocation().Y, 80.f));
+		//}
 	}
 }
 
@@ -479,11 +483,15 @@ void APlayerChara::Input_Shooting()
 // 【入力バインド】走り
 void APlayerChara::Input_Run()
 {
-	// 移動速度を走りの速度に変更
-	m_playerStatus.moveSpeed = m_statusConst.runSpeed;
+	if (m_ActionStatus == EActionStatus::GunHold)
+		return;
+
+	m_playerFlags.flagBits.isRun = !(m_playerFlags.flagBits.isRun);
 
 	// アクションの状態を走り状態に変更
-	m_ActionStatus = EActionStatus::Run;
+	m_ActionStatus = (m_playerFlags.flagBits.isRun) ? EActionStatus::Run : EActionStatus::Walk;
+
+	m_playerStatus.moveSpeed = (m_playerFlags.flagBits.isRun) ? m_statusConst.runSpeed : m_statusConst.walkSpeed;
 }
 
 // 【入力バインド】アクション
@@ -500,7 +508,7 @@ void APlayerChara::Input_Action()
 		if (Cast<ADoorBase>(m_pOverlapActor)->GetIsLock())
 		{
 			// インベントリを開く
-			m_playerFlags.flagBits.isOpenMenu = true;
+			//m_playerFlags.flagBits.isOpenMenu = true;
 		}
 		return;
 	}
