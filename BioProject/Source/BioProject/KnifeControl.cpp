@@ -3,6 +3,7 @@
 
 #include "KnifeControl.h"
 #include "RopeDoor.h"
+#include "RopeDoubleDoor.h"
 #include "Components/BoxComponent.h"
 
 AKnifeControl::AKnifeControl()
