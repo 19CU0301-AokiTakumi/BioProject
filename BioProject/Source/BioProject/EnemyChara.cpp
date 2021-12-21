@@ -37,7 +37,7 @@ AEnemyChara::AEnemyChara()
 	m_pDamageEffect = DamageEffect.Object;
 
 	// SE
-	ConstructorHelpers::FObjectFinder<USoundBase> DamageSE(TEXT("/Game/Sound/BulletHitSE_Z.BulletHitSE_Z"));
+	ConstructorHelpers::FObjectFinder<USoundBase> DamageSE(TEXT("/Game/Sound/Bullet/BulletHitSE_Z.BulletHitSE_Z"));
 	m_pDamageSE = DamageSE.Object;
 
 	// 構造体ステータスの初期化

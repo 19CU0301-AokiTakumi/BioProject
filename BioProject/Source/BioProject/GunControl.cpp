@@ -15,7 +15,7 @@ AGunControl::AGunControl()
 	, m_bIsShot(false)
 	, m_BulletLocation(NULL)
 {
-	ConstructorHelpers::FObjectFinder<USoundBase> ShotSE(TEXT("/Game/Sound/HandGunSE.HandGunSE"));
+	ConstructorHelpers::FObjectFinder<USoundBase> ShotSE(TEXT("/Game/Sound/Bullet/HandGunSE.HandGunSE"));
 	m_pShotSE = ShotSE.Object;
 
 	m_BulletLocation = CreateDefaultSubobject<USceneComponent>(TEXT("m_BulletLocation"));
