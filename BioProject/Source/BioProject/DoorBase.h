@@ -51,6 +51,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 		USceneComponent* m_pBase;
 
+	UPROPERTY(EditAnywhere, Category = "CharaStatus")
+		USoundBase* m_pDoorSE;
+
 protected:
 	// 開閉処理の判定用のコリジョン
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))

@@ -2,6 +2,9 @@
 
 #include "DoorBase.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Sound/SoundBase.h"
 #include "typeinfo"
 
 // コンストラクタ
@@ -35,6 +38,10 @@ ADoorBase::ADoorBase()
 	// オーバーラップ用のボックスコンポーネント生成(背面)
 	m_pBackBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BackCollision"));
 	m_pBackBoxComp->SetupAttachment(RootComponent);
+
+	// ドア開閉音
+	ConstructorHelpers::FObjectFinder<USoundBase> DoorSE(TEXT("/Game/Sound/Door/DoorSE.DoorSE"));
+	m_pDoorSE = DoorSE.Object;
 }
 
 // ゲーム開始時、または生成時に呼ばれる処理
@@ -77,6 +84,7 @@ void ADoorBase::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 		if (m_DoorState != State::Open)
 		{
 			m_DoorState = State::Open;
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorSE, FVector::ZeroVector);
 			m_bIsOverlapPlayer = true;
 			m_countTime = 0.f;
 		}

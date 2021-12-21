@@ -52,6 +52,7 @@ enum class EActionStatus : uint8
 	Reload,			// リロード
 	Guard,			// Daisuke
 	Shot,			// 銃を撃つ
+	KnifeIdle,
 	KnifeAttack,
 	Aim,			// 銃を覗く
 	Max,			// Max用
@@ -112,9 +113,6 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 
 		// イベントオブジェクトに触れているか
 		bool isEventObjTouch;	// 7
-
-		// 走っているか
-		bool isRun;				// 8
 	};
 
 	// フラグの管理をしやすくするための共用体
@@ -346,6 +344,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "GetData")
 		FGunData GetEquipGunData() const;
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetAttachWeapon(AItemBase* _equipWeapon);
 
 public:
 	// 【入力バインド】キャラ移動：前後

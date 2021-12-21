@@ -70,7 +70,7 @@ APlayerChara::APlayerChara()
 	if (m_pCamera)
 		m_pCamera->SetupAttachment(m_pSpringArm);
 
-	ConstructorHelpers::FObjectFinder<USoundBase> ShotSE(TEXT("/Game/Sound/HandGunSE.HandGunSE"));
+	ConstructorHelpers::FObjectFinder<USoundBase> ShotSE(TEXT("/Game/Sound/Bullet/HandGunSE.HandGunSE"));
 	m_pShotSE = ShotSE.Object;
 
 	// 構造体の初期化
@@ -156,6 +156,14 @@ void APlayerChara::Tick(float DeltaTime)
 	case EActionStatus::Aim:
 		UE_LOG(LogTemp, Error, TEXT("aim"));
 		break;
+
+	case EActionStatus::KnifeIdle:
+		UE_LOG(LogTemp, Error, TEXT("KnifeIdle"));
+		break;
+
+	case EActionStatus::KnifeAttack:
+		UE_LOG(LogTemp, Error, TEXT("KnifeAttack"));
+		break;
 	
 
 		//case eactionstatus::avoid:
@@ -186,7 +194,6 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	// 走り
 	InputComponent->BindAction("Run", IE_Pressed, this, &APlayerChara::Input_Run);
-	InputComponent->BindAction("Run", IE_Released, this, &APlayerChara::Input_Run);
 
 	// アクション
 	InputComponent->BindAction("Action", IE_Pressed, this, &APlayerChara::Input_Action);
@@ -291,26 +298,23 @@ void APlayerChara::UpdateMove(float _deltaTime)
 			AddMovementInput(rightVec, m_CharaMoveInput.X * m_playerStatus.moveSpeed);
 		}
 
-		//// 移動時のカメラの揺れ
-		//if (m_Count < 0.5f && m_CharaMoveInput.Y != 0.f)
-		//{
-		//	if (m_Count < 0.3f)
-		//	{
-		//		m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z + 0.3f));
-		//		GetMesh()->SetRelativeLocation(FVector(GetMesh()->GetRelativeLocation().X, GetMesh()->GetRelativeLocation().Y, GetMesh()->GetRelativeLocation().Z + 0.3f));
-		//	}
-		//	else
-		//	{
-		//		m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z - 0.3f));
-		//		GetMesh()->SetRelativeLocation(FVector(GetMesh()->GetRelativeLocation().X, GetMesh()->GetRelativeLocation().Y, GetMesh()->GetRelativeLocation().Z - 0.3f));
-		//	}
-		//}
-		//else if (m_Count > 0.5f && m_CharaMoveInput.Y != 0)
-		//{
-		//	m_Count = 0.f;
-		//	m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, 0));
-		//	GetMesh()->SetRelativeLocation(FVector(GetMesh()->GetRelativeLocation().X, GetMesh()->GetRelativeLocation().Y, 80.f));
-		//}
+		// 移動時のカメラの揺れ
+		if (m_Count < 0.5f && m_CharaMoveInput.Y != 0)
+		{
+			if (m_Count < 0.3f)
+			{
+				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z + 0.015));
+			}
+			else
+			{
+				m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, m_pCamera->GetRelativeLocation().Z - 0.015));
+			}
+		}
+		else if (m_Count > 0.5f && m_CharaMoveInput.Y != 0)
+		{
+			m_Count = 0.f;
+			m_pCamera->SetRelativeLocation(FVector(m_pCamera->GetRelativeLocation().X, m_pCamera->GetRelativeLocation().Y, 0));
+		}
 	}
 }
 
@@ -483,15 +487,11 @@ void APlayerChara::Input_Shooting()
 // 【入力バインド】走り
 void APlayerChara::Input_Run()
 {
-	if (m_ActionStatus == EActionStatus::GunHold)
-		return;
-
-	m_playerFlags.flagBits.isRun = !(m_playerFlags.flagBits.isRun);
+	// 移動速度を走りの速度に変更
+	m_playerStatus.moveSpeed = m_statusConst.runSpeed;
 
 	// アクションの状態を走り状態に変更
-	m_ActionStatus = (m_playerFlags.flagBits.isRun) ? EActionStatus::Run : EActionStatus::Walk;
-
-	m_playerStatus.moveSpeed = (m_playerFlags.flagBits.isRun) ? m_statusConst.runSpeed : m_statusConst.walkSpeed;
+	m_ActionStatus = EActionStatus::Run;
 }
 
 // 【入力バインド】アクション
@@ -508,14 +508,14 @@ void APlayerChara::Input_Action()
 		if (Cast<ADoorBase>(m_pOverlapActor)->GetIsLock())
 		{
 			// インベントリを開く
-			//m_playerFlags.flagBits.isOpenMenu = true;
+			m_playerFlags.flagBits.isOpenMenu = true;
 		}
 		return;
 	}
 
 	if (Cast<AEventObjectBase>(m_pOverlapActor))
 	{
-		
+
 	}
 
 	// アイテムに触れていた時
@@ -578,7 +578,7 @@ void APlayerChara::Input_Action()
 			m_pTempGun->SetItemData(Cast<AItemBase>(m_pOverlapActor)->GetItemData());
 			m_pTempGun->SetGunData(Cast<AGunControl>(m_pOverlapActor)->GetGunData());
 			m_haveGunDatas.Add(m_pTempGun);
-			
+
 
 			// 銃を初めて手に入れたとき
 			if (m_haveGunDatas.Num() > 0 || m_haveGunDatas[m_playerStatus.equipGunID])
@@ -588,17 +588,9 @@ void APlayerChara::Input_Action()
 
 				// 装備している銃を更新
 				//m_haveGunDatas[m_playerStatus.equipGunID] = Cast<AGunControl>(m_haveGunDatas[m_haveGunDatas.Num() - 1]);
-				if (m_pAttachObject)
-				{
-					m_pAttachObject->GetMesh()->SetVisibility(false);
-					m_pAttachObject = NULL;
-				}
-				m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Gun/HandGunBP.HandGunBP_C");
-				Cast<AGunControl>(m_pAttachObject)->SetCollisionEnabled(false);
-				Cast<AGunControl>(m_pAttachObject)->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Middle1_Socket");
-				Cast<AGunControl>(m_pAttachObject)->SetActorLocation(GetActorLocation());
-				m_GunLocation = Cast<AGunControl>(m_pAttachObject)->GetBulletLocation();
+
 				m_playerStatus.equipGunID = m_haveGunDatas.Num() - 1;
+				SetAttachWeapon(m_haveGunDatas[m_playerStatus.equipGunID]);
 			}
 		}
 
@@ -611,7 +603,8 @@ void APlayerChara::Input_Action()
 			m_pTempKnife->SetItemData(Cast<AItemBase>(m_pOverlapActor)->GetItemData());
 			m_pTempKnife->SetKnifeData(Cast<AKnifeControl>(m_pOverlapActor)->GetKnifeData());
 			m_haveGunDatas.Add(m_pTempKnife);
-			
+			m_ActionStatus = EActionStatus::KnifeIdle;
+
 
 			// 銃を初めて手に入れたとき
 			if (m_haveGunDatas.Num() > 0 || m_haveGunDatas[m_playerStatus.equipGunID])
@@ -621,18 +614,10 @@ void APlayerChara::Input_Action()
 
 				// 装備している銃を更新
 				//m_haveGunDatas[m_playerStatus.equipGunID] = Cast<AKnifeControl>(m_haveGunDatas[m_haveGunDatas.Num() - 1]);
-				if (m_pAttachObject)
-				{
-					m_pAttachObject->GetMesh()->SetVisibility(false);
-					if (Cast<AKnifeControl>(m_pAttachObject))
-						Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
-					m_pAttachObject = NULL;
-				}
-				m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Weapon/Knife.Knife_C");
-				Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
-				Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
-				Cast<AKnifeControl>(m_pAttachObject)->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Knife_Socket");
+				
 				m_playerStatus.equipGunID = m_haveGunDatas.Num() - 1;
+
+				SetAttachWeapon(m_haveGunDatas[m_playerStatus.equipGunID]);
 			}
 		}
 
@@ -735,27 +720,8 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 		//m_playerStatus.equipGunData = m_playerStatus.equipGunData;
 	}
 
-	if (m_pAttachObject)
-	{
-		m_pAttachObject->GetMesh()->SetVisibility(false);
-		m_pAttachObject = nullptr;
-	}
+	SetAttachWeapon(m_haveGunDatas[m_playerStatus.equipGunID]);
 
-	if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
-	{
-		m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Weapon/Knife.Knife_C");
-		Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
-		Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
-		Cast<AKnifeControl>(m_pAttachObject)->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Knife_Socket");
-		m_playerFlags.flagBits.isHaveGun = false;
-	}
-	else if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
-	{
-		m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Gun/HandGunBP.HandGunBP_C");
-		Cast<AGunControl>(m_pAttachObject)->SetCollisionEnabled(false);
-		Cast<AGunControl>(m_pAttachObject)->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "R_Middle1_Socket");
-		m_playerFlags.flagBits.isHaveGun = true;
-	}
 	m_ActionStatus = EActionStatus::Idle;
 }
 
@@ -772,6 +738,54 @@ void APlayerChara::Damage(int _atk)
 	if (m_playerStatus.hp < 0)
 		m_playerStatus.hp = 0;
 }
+
+void APlayerChara::SetAttachWeapon(AItemBase* _equipWeapon)
+{
+	FString weaponPath = "";
+	FName socketPath = "";
+
+	if (m_pAttachObject)
+	{
+		m_pAttachObject->GetMesh()->SetVisibility(false);
+		if (Cast<AKnifeControl>(m_pAttachObject))
+			Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
+		m_pAttachObject = NULL;
+	}
+
+	if (Cast<AGunControl>(_equipWeapon))
+	{
+		UE_LOG(LogTemp, Error, TEXT("HandGunDESU"));
+		weaponPath = "/Game/BP/Gun/HandGunBP.HandGunBP_C";
+		socketPath = "R_Middle1_Socket";
+	}
+	else if (Cast<AKnifeControl>(_equipWeapon))
+	{
+		UE_LOG(LogTemp, Error, TEXT("KnifeDESU"));
+		weaponPath = "/Game/BP/Weapon/Knife.Knife_C";
+		socketPath = "R_Knife_Socket";
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("GomiDESU"));
+	}
+
+	m_pAttachObject = (AItemBase*)UMyGameInstance::GetSpawnActor(GetWorld(), weaponPath);
+
+	if (Cast<AGunControl>(m_pAttachObject))
+	{
+		Cast<AGunControl>(m_pAttachObject)->SetCollisionEnabled(false);
+		m_playerFlags.flagBits.isHaveGun = true;
+	}
+	else if (Cast<AKnifeControl>(m_pAttachObject))
+	{
+		Cast<AKnifeControl>(m_pAttachObject)->SetCollisionEnabled(false);
+		Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
+		m_playerFlags.flagBits.isHaveGun = false;
+	}
+	if (m_pAttachObject)
+		m_pAttachObject->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, socketPath);
+}
+
 
 // インベントリのカーソル位置を渡す
 int APlayerChara::GetCursorIndex(const int _index, const int _moveValue)
@@ -920,12 +934,43 @@ void APlayerChara::CountTime(float _deltaTime)
 		{
 			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Aim])
 			{
-				m_ActionStatus = EActionStatus::Idle;
+				if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+				{
+					m_ActionStatus = EActionStatus::Idle;
+				}
+				else if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+				{
+					m_ActionStatus = EActionStatus::KnifeIdle;
+				}
 				m_CountTime = 0.f;
 
 				m_PrevStatus = m_ActionStatus;
 			}
 
+			break;
+		}
+
+		case EActionStatus::KnifeIdle:
+		{
+			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::KnifeIdle])
+			{
+				m_ActionStatus = EActionStatus::KnifeIdle;
+				m_CountTime = 0.f;
+
+				m_PrevStatus = m_ActionStatus;
+			}
+			break;
+		}
+
+		case EActionStatus::KnifeAttack:
+		{
+			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::KnifeAttack])
+			{
+				m_ActionStatus = EActionStatus::KnifeIdle;
+				m_CountTime = 0.f;
+
+				m_PrevStatus = m_ActionStatus;
+			}
 			break;
 		}
 
