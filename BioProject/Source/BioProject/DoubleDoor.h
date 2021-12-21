@@ -33,6 +33,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* m_pBoxComp_2;
 
+protected:
 	// ÉÅÉbÉVÉÖÇÃí«â¡
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* m_pMesh;
