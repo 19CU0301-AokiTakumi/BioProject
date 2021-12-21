@@ -515,7 +515,7 @@ void APlayerChara::Input_Action()
 
 	if (Cast<AEventObjectBase>(m_pOverlapActor))
 	{
-
+		Cast<AEventObjectBase>(m_pOverlapActor)->SetIsEventStart(true);
 	}
 
 	// アイテムに触れていた時
