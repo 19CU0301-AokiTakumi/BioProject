@@ -35,12 +35,24 @@ void AKnifeControl::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 
 	if (OtherComp->ComponentHasTag("Rope"))
 	{
-		ARopeDoor* OverlapRopeDoor = Cast<ARopeDoor>(OtherActor);
-		if (!OverlapRopeDoor)
-			return;
+		if (Cast<ARopeDoor>(OtherActor))
+		{
+			ARopeDoor* OverlapRopeDoor = Cast<ARopeDoor>(OtherActor);
+			if (!OverlapRopeDoor)
+				return;
 
-		OverlapRopeDoor->HitKnife();
-		OverlapRopeDoor->SetIsLock(false);
+			OverlapRopeDoor->HitKnife();
+			OverlapRopeDoor->SetIsLock(false);
+		}
+		else if (Cast<ARopeDoubleDoor>(OtherActor))
+		{
+			ARopeDoubleDoor* OverlapRopeDoor = Cast<ARopeDoubleDoor>(OtherActor);
+			if (!OverlapRopeDoor)
+				return;
+
+			OverlapRopeDoor->HitKnife();
+			OverlapRopeDoor->SetIsLock(false);
+		}
 	}
 }
 
