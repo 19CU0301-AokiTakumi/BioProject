@@ -3,6 +3,7 @@
 
 #include "BathtubEventControl.h"
 #include "Components/StaticMeshComponent.h"
+#include "MyGameInstance.h"
 
 ABathtubEventControl::ABathtubEventControl()
 	: m_pWaterMesh(NULL)
@@ -11,6 +12,7 @@ ABathtubEventControl::ABathtubEventControl()
 	, m_WaterMaxDown(0.f)
 	, m_WaterShrink(1.f)
 	, m_downShrink(0.f)
+	, m_SpawnOnce(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -33,6 +35,9 @@ void ABathtubEventControl::Tick(float DeltaTime)
 
 	if (m_bIsEventStart && m_WaterMeshLocation >= m_WaterMaxDown)
 		DownWaterSurface(DeltaTime);
+
+	if (m_WaterMeshLocation <= m_WaterMaxDown && !m_SpawnOnce)
+		ItemSpawn();
 }
 
 void ABathtubEventControl::DownWaterSurface(float _deltaTime)
@@ -44,4 +49,16 @@ void ABathtubEventControl::DownWaterSurface(float _deltaTime)
 	// k¬
 	m_WaterShrink -= m_downShrink * _deltaTime;
 	m_pWaterMesh->SetRelativeScale3D(FVector(m_WaterShrink, m_WaterShrink, m_pWaterMesh->GetRelativeScale3D().Z));
+}
+
+void ABathtubEventControl::ItemSpawn()
+{
+	AActor* SpawnItem= UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Gun/HandGunBP.HandGunBP_C");
+
+	if (SpawnItem)
+	{
+		SpawnItem->SetActorLocation(GetActorLocation());
+	}
+
+	m_SpawnOnce = true;
 }

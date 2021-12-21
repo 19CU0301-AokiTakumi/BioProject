@@ -37,5 +37,8 @@ private:
 	float m_WaterMeshLocation;
 	float m_WaterShrink;
 
+	bool m_SpawnOnce;
+
 	void DownWaterSurface(float _deltaTime);
+	void ItemSpawn();
 };
