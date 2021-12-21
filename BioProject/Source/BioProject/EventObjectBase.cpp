@@ -39,6 +39,4 @@ void AEventObjectBase::BeginPlay()
 void AEventObjectBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-

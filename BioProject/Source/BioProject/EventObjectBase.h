@@ -47,5 +47,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Component")
 		EEventType m_eventType;
 
+protected:
 	bool m_bIsEventStart;
+
+public:
+	void SetIsEventStart(const bool _IsEventStart) { m_bIsEventStart = _IsEventStart; }
 };
