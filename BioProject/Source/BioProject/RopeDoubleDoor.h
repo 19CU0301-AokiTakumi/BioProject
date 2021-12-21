@@ -9,6 +9,8 @@
 /**
  * 
  */
+class USkeletalMeshComponent;
+
 UCLASS()
 class BIOPROJECT_API ARopeDoubleDoor : public ADoubleDoor
 {
@@ -19,11 +21,18 @@ public:
 protected:
 	// メッシュの追加
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* m_RopeMesh;
+		USkeletalMeshComponent* m_RopeLeftMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		USkeletalMeshComponent* m_RopeLightMesh;
 
 	// オーバーラップ用のコリジョン(背面)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* m_RopeComp;
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data", meta = (AllowPrivateAccess = "true"))
+		bool m_AnimStart;
 
 public:
 	void HitKnife();
