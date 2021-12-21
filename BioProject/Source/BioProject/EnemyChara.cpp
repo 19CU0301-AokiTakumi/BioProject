@@ -90,15 +90,8 @@ void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 		// エフェクトの生成
 		if (m_pDamageEffect)
 		{
-			for (int i = 0; i < 10; ++i)
-			{
-				float offsetX = FMath::FRandRange(-10.f, 10.f);
-				float offsetY = FMath::FRandRange(-10.f, 10.f);
-				float offsetZ = FMath::FRandRange(-10.f, 10.f);
-
-				FVector SpawnLocation = FVector(OtherActor->GetActorLocation().X + offsetX, OtherActor->GetActorLocation().Y + offsetY, OtherActor->GetActorLocation().Z + offsetZ);
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, SpawnLocation, GetMesh()->GetRelativeRotation());
-			}
+			FVector SpawnLocation = FVector(OtherActor->GetActorLocation().X, OtherActor->GetActorLocation().Y, OtherActor->GetActorLocation().Z);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, SpawnLocation, GetMesh()->GetRelativeRotation());
 		}
 
 		// SEの生成
