@@ -33,6 +33,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Component")
 		float m_downShrink;
 
+	// SEŠÖŒW
+	UPROPERTY(EditAnywhere, Category = "CharaStatus")
+		USoundBase* m_pWaterSE;
+
 private:
 	float m_WaterMeshLocation;
 	float m_WaterShrink;
@@ -41,4 +45,9 @@ private:
 
 	void DownWaterSurface(float _deltaTime);
 	void ItemSpawn();
+
+	bool CanPlaySound;
+
+public:
+	void PlaySound();
 };

@@ -8,6 +8,7 @@
 #include "EventObjectBase.h"
 #include "Bullet.h"
 #include "GunControl.h"
+#include "BathtubEventControl.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
@@ -536,6 +537,11 @@ void APlayerChara::Input_Action()
 				return;
 			}
 				
+		}
+
+		if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetIsEventStart()== false)
+		{
+			Cast<ABathtubEventControl>(m_pOverlapActor)->PlaySound();
 		}
 		Cast<AEventObjectBase>(m_pOverlapActor)->SetIsEventStart(true);
 	}

@@ -3,6 +3,9 @@
 
 #include "BathtubEventControl.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Sound/SoundBase.h"
 #include "MyGameInstance.h"
 
 ABathtubEventControl::ABathtubEventControl()
@@ -13,12 +16,17 @@ ABathtubEventControl::ABathtubEventControl()
 	, m_WaterShrink(1.f)
 	, m_downShrink(0.f)
 	, m_SpawnOnce(false)
+	, m_pWaterSE(NULL)
+	, CanPlaySound(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	m_pWaterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("m_pWaterMesh"));
 	if (m_pWaterMesh)
 		m_pWaterMesh->SetupAttachment(RootComponent);
+
+	ConstructorHelpers::FObjectFinder<USoundBase> WaterSE(TEXT("/Game/Sound/Ambient/haisui.haisui"));
+	m_pWaterSE = WaterSE.Object;
 }
 
 void ABathtubEventControl::BeginPlay()
@@ -49,6 +57,7 @@ void ABathtubEventControl::DownWaterSurface(float _deltaTime)
 	// k¬
 	m_WaterShrink -= m_downShrink * _deltaTime;
 	m_pWaterMesh->SetRelativeScale3D(FVector(m_WaterShrink, m_WaterShrink, m_pWaterMesh->GetRelativeScale3D().Z));
+
 }
 
 void ABathtubEventControl::ItemSpawn()
@@ -61,4 +70,10 @@ void ABathtubEventControl::ItemSpawn()
 	}
 
 	m_SpawnOnce = true;
+}
+
+void ABathtubEventControl::PlaySound()
+{
+	// ‰¹‚ð–Â‚ç‚·
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pWaterSE, FVector(-1820.f, -1320.f, 40.f));
 }
