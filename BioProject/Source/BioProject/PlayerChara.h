@@ -243,6 +243,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "CharaStatus")
 		USoundBase* m_pShotSE;
 
+	UPROPERTY(EditAnywhere, Category = "CharaStatus")
+		USoundBase* m_pDiningSE;
+
 	UPROPERTY(BluePrintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FVector m_SocketLocation;
 

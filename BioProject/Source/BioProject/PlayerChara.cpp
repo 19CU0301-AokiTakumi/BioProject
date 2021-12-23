@@ -74,6 +74,9 @@ APlayerChara::APlayerChara()
 	ConstructorHelpers::FObjectFinder<USoundBase> ShotSE(TEXT("/Game/Sound/Bullet/HandGunSE.HandGunSE"));
 	m_pShotSE = ShotSE.Object;
 
+	ConstructorHelpers::FObjectFinder<USoundBase> DiningSE(TEXT("/Game/Sound/Ambient/Dining.Dining"));
+	m_pDiningSE = DiningSE.Object;
+
 	// 構造体の初期化
 	m_playerStatus = { 10, 10, 1000.f, 0 };
 	m_statusConst = { 1000.f, 10000000.f };
@@ -136,15 +139,15 @@ void APlayerChara::Tick(float DeltaTime)
 		break;
 
 	case EActionStatus::Reload:
-		UE_LOG(LogTemp, Error, TEXT("Reload"));
+		//UE_LOG(LogTemp, Error, TEXT("Reload"));
 		break;
 
 	case EActionStatus::Walk:
-		UE_LOG(LogTemp, Error, TEXT("Walk"));
+		//UE_LOG(LogTemp, Error, TEXT("Walk"));
 		break;
 
 	case EActionStatus::Shot:
-		UE_LOG(LogTemp, Error, TEXT("Shot"));
+		//UE_LOG(LogTemp, Error, TEXT("Shot"));
 		m_ActionStatus = EActionStatus::Idle;
 		m_CountTime += DeltaTime;
 		if (m_CountTime >= 2.f)
@@ -155,15 +158,15 @@ void APlayerChara::Tick(float DeltaTime)
 		break;
 
 	case EActionStatus::Aim:
-		UE_LOG(LogTemp, Error, TEXT("aim"));
+		//UE_LOG(LogTemp, Error, TEXT("aim"));
 		break;
 
 	case EActionStatus::KnifeIdle:
-		UE_LOG(LogTemp, Error, TEXT("KnifeIdle"));
+		//UE_LOG(LogTemp, Error, TEXT("KnifeIdle"));
 		break;
 
 	case EActionStatus::KnifeAttack:
-		UE_LOG(LogTemp, Error, TEXT("KnifeAttack"));
+		//UE_LOG(LogTemp, Error, TEXT("KnifeAttack"));
 		break;
 	
 
@@ -231,6 +234,12 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 
 		// 触れているアクターを保管
 		m_pOverlapActor = OtherActor;
+	}
+
+	if (OtherComp->ComponentHasTag("floorsound"))
+	{
+		UE_LOG(LogTemp, Error, TEXT("morio"));
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDiningSE, FVector(-3300.f, 450.f, 500.f));
 	}
 
 	if (Cast<AEventObjectBase>(OtherActor))
