@@ -6,6 +6,8 @@
 #include "ItemBase.h"
 #include "GunControl.generated.h"
 
+class UNiagaraSystem;
+
 // e‚Ìí—Ş
 UENUM(BlueprintType)
 enum class EGunType : uint8
@@ -68,6 +70,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "CharaStatus")
 		USoundBase* m_pShotSE;
 
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		UNiagaraSystem* m_pMazzleFlashEffect;
+
 	float m_fireRateCount;
 
 	bool m_bIsShot;
@@ -83,7 +88,7 @@ public:
 	void RemoveAmmo(const int _removeValue) { m_gunData.ammoStock -= _removeValue; }
 
 	// Œ‚‚Â
-	void Shot(AActor* _actor);
+	void Shot(FVector _playerPos);
 
 	// ƒŠƒ[ƒhˆ—
 	void Reload(int& _ammoStock);

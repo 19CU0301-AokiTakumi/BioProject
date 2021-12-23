@@ -16,6 +16,7 @@
 //#include "XRMotionControllerBase.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/Engine.h"
+#include "MessageObject.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -131,7 +132,7 @@ void APlayerChara::Tick(float DeltaTime)
 	switch (m_ActionStatus)
 	{
 	case EActionStatus::Idle:
-		UE_LOG(LogTemp, Error, TEXT("Idle"));
+		//UE_LOG(LogTemp, Error, TEXT("Idle"));
 		break;
 
 	case EActionStatus::Reload:
@@ -194,6 +195,7 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	// 走り
 	InputComponent->BindAction("Run", IE_Pressed, this, &APlayerChara::Input_Run);
+	InputComponent->BindAction("Run", IE_Released, this, &APlayerChara::Input_Run);
 
 	// アクション
 	InputComponent->BindAction("Action", IE_Pressed, this, &APlayerChara::Input_Action);
@@ -437,8 +439,8 @@ void APlayerChara::Input_Shooting()
 	if (!m_playerFlags.flagBits.isGunHold)
 		return;
 
-	//m_haveGunDatas[m_playerStatus.equipGunID]->Shot(this);
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, FVector::ZeroVector);
+	Cast<AGunControl>(m_pAttachObject)->Shot(GetMesh()->GetSocketLocation("R_Middle1_Socket"));
+	//UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, FVector::ZeroVector);
 
 	// 装備している銃の情報を一時保管
 	FGunData NewGunData = GunControl->GetGunData();
@@ -487,11 +489,13 @@ void APlayerChara::Input_Shooting()
 // 【入力バインド】走り
 void APlayerChara::Input_Run()
 {
+	m_playerFlags.flagBits.isRun = !m_playerFlags.flagBits.isRun;
+
 	// 移動速度を走りの速度に変更
-	m_playerStatus.moveSpeed = m_statusConst.runSpeed;
+	m_playerStatus.moveSpeed = (m_playerFlags.flagBits.isRun) ? m_statusConst.runSpeed : m_statusConst.walkSpeed;
 
 	// アクションの状態を走り状態に変更
-	m_ActionStatus = EActionStatus::Run;
+	m_ActionStatus = (m_playerFlags.flagBits.isRun) ? EActionStatus::Run : EActionStatus::Walk;
 }
 
 // 【入力バインド】アクション
@@ -515,6 +519,15 @@ void APlayerChara::Input_Action()
 
 	if (Cast<AEventObjectBase>(m_pOverlapActor))
 	{
+		if (Cast<AMessageObject>(m_pOverlapActor))
+		{
+			if (Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
+			{
+				Cast<AEventObjectBase>(m_pOverlapActor)->SetIsEventStart(false);
+				return;
+			}
+				
+		}
 		Cast<AEventObjectBase>(m_pOverlapActor)->SetIsEventStart(true);
 	}
 

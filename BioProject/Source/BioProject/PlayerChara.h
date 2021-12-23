@@ -113,6 +113,10 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 
 		// イベントオブジェクトに触れているか
 		bool isEventObjTouch;	// 7
+
+		bool isRun;
+
+		bool isShowMessage;
 	};
 
 	// フラグの管理をしやすくするための共用体

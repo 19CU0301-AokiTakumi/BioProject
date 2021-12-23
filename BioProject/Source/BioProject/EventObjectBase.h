@@ -52,4 +52,7 @@ protected:
 
 public:
 	void SetIsEventStart(const bool _IsEventStart) { m_bIsEventStart = _IsEventStart; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		bool GetIsEventStart() const { return m_bIsEventStart; }
 };

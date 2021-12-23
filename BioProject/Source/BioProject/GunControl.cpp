@@ -6,11 +6,15 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
 #include "Components/BoxComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "UObject/ConstructorHelpers.h"
 
 // コンストラクタ
 AGunControl::AGunControl()
 	: m_gunData(FGunData::NoneData())
 	, m_pShotSE(NULL)
+	, m_pMazzleFlashEffect(NULL)
 	, m_fireRateCount(0.f)
 	, m_bIsShot(false)
 	, m_BulletLocation(NULL)
@@ -20,6 +24,9 @@ AGunControl::AGunControl()
 
 	m_BulletLocation = CreateDefaultSubobject<USceneComponent>(TEXT("m_BulletLocation"));
 	m_BulletLocation->SetupAttachment(RootComponent);
+
+	ConstructorHelpers::FObjectFinder<UNiagaraSystem> MazzleFlashEffect(TEXT("/Game/niagara/personal_use/Mazzle_Flash/Mazzle_flash_2_System.Mazzle_flash_2_System"));
+	m_pMazzleFlashEffect = MazzleFlashEffect.Object;
 }
 
 // 毎フレーム更新処理
@@ -37,10 +44,13 @@ void AGunControl::CheckFireRate(float _deltaTime)
 }
 
 // 撃つ
-void AGunControl::Shot(AActor* _actor)
+void AGunControl::Shot(FVector _playerPos)
 {
 	if (m_pShotSE)
-		UGameplayStatics::PlaySoundAtLocation(_actor->GetWorld(), m_pShotSE, FVector::ZeroVector);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, GetActorLocation() + m_BulletLocation->GetRelativeLocation());
+
+	FVector pos = FVector(_playerPos.X, _playerPos.Y, _playerPos.Z + m_BulletLocation->GetRelativeLocation().Z);
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pMazzleFlashEffect, pos);
 }
 
 // リロード処理
