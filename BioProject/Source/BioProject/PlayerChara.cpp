@@ -750,7 +750,14 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 
 	SetAttachWeapon(m_haveGunDatas[m_playerStatus.equipGunID]);
 
-	m_ActionStatus = EActionStatus::Idle;
+	if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+	{
+		m_ActionStatus = EActionStatus::Idle;
+	}
+	else if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+	{
+		m_ActionStatus = EActionStatus::KnifeIdle;
+	}
 }
 
 // 被ダメージ処理
