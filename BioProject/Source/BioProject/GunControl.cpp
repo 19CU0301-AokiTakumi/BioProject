@@ -49,8 +49,8 @@ void AGunControl::Shot(FVector _playerPos)
 	if (m_pShotSE)
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pShotSE, GetActorLocation() + m_BulletLocation->GetRelativeLocation());
 
-	FVector pos = FVector(_playerPos.X, _playerPos.Y, _playerPos.Z + m_BulletLocation->GetRelativeLocation().Z);
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pMazzleFlashEffect, pos);
+	FVector pos = _playerPos + m_BulletLocation->GetRelativeLocation();//FVector(_playerPos.X, _playerPos.Y, _playerPos.Z + m_BulletLocation->GetRelativeLocation().Z);
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pMazzleFlashEffect, _playerPos);
 }
 
 // ƒŠƒ[ƒhˆ—
