@@ -8,6 +8,7 @@
 #include "GunControl.h"
 #include "KnifeControl.h"
 #include "GunAmmoControl.h"
+#include "BathtubEventControl.h"
 #include "PlayerCameraShake.h"
 #include "PlayerChara.generated.h"
 
@@ -413,6 +414,8 @@ public:
 	// ‰æŠp‚Ì’l(’Ç‰Á)
 	float m_Viewvalue;
 
+	bool ItemDestroy;
+
 	UPROPERTY(EditAnywhere, Category = "View")
 		float m_DefaultViewvalue;
 
@@ -431,4 +434,6 @@ private:
 		AKnifeControl* m_pTempKnife;
 
 		AGunControl* m_pTempGun;
+
+		ABathtubEventControl* m_Bathtub;
 };

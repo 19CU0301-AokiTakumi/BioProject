@@ -4,6 +4,8 @@
 #include "EventObjectBase.h"
 #include "BathtubEventControl.generated.h"
 
+class APlayerChara;
+
 UCLASS()
 class BIOPROJECT_API ABathtubEventControl : public AEventObjectBase
 {
@@ -33,21 +35,43 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Component")
 		float m_downShrink;
 
-	// SEä÷åW
 	UPROPERTY(EditAnywhere, Category = "CharaStatus")
 		USoundBase* m_pWaterSE;
 
 private:
+	APlayerChara* m_Player;		// ÉvÉåÉCÉÑÅ[Çäiî[
+	AActor* SpawnItem;
+
+	int m_index;
+
 	float m_WaterMeshLocation;
 	float m_WaterShrink;
 
 	bool m_SpawnOnce;
+	bool m_WidgetOpen;
+	bool m_DoAction;
 
 	void DownWaterSurface(float _deltaTime);
 	void ItemSpawn();
 
-	bool CanPlaySound;
+public:
+	void SetDoAction(bool _doAction) { m_DoAction = _doAction; }
+
+	void PlaySound();
 
 public:
-	void PlaySound();
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		bool GetEventStartCheck() { return m_bIsEventStart; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetOpenWidget(const bool _widgetOpen) { m_WidgetOpen = _widgetOpen; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
+		bool GetOpenWidget()const { return m_WidgetOpen; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetIndex(const int _index) { m_index = _index; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetEventStart(const bool _eventStart) { m_bIsEventStart = _eventStart; }
 };
