@@ -18,6 +18,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/Engine.h"
 #include "MessageObject.h"
+#include "RopeDoubleDoor.h"
 
 // コンストラクタ
 APlayerChara::APlayerChara()
@@ -542,10 +543,13 @@ void APlayerChara::Input_Action()
 	if (Cast<ADoorBase>(m_pOverlapActor))
 	{
 		// 扉に鍵がかかっていた場合
-		if (Cast<ADoorBase>(m_pOverlapActor)->GetIsLock())
+		if (Cast<ADoorBase>(m_pOverlapActor)->GetIsLock() && Cast<ARopeDoubleDoor>(m_pOverlapActor) == NULL)
 		{
 			// インベントリを開く
-			m_playerFlags.flagBits.isOpenMenu = true;
+			m_playerFlags.flagBits.isOpenKeyMenu = true;
+
+			// インベントリの状態を設定
+			m_invenoryState = (m_playerFlags.flagBits.isOpenKeyMenu) ? EInventoryState::Open : EInventoryState::Close;
 		}
 		return;
 	}
@@ -1028,6 +1032,8 @@ void APlayerChara::CountTime(float _deltaTime)
 			{
 				m_ActionStatus = EActionStatus::KnifeIdle;
 				m_CountTime = 0.f;
+
+				Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
 
 				m_PrevStatus = m_ActionStatus;
 			}

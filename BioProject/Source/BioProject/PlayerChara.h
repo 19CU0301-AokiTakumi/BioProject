@@ -112,11 +112,13 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 		bool isShowGetItem : 1;	// 6
 
 		// イベントオブジェクトに触れているか
-		bool isEventObjTouch;	// 7
+		bool isEventObjTouch : 1;	// 7
 
-		bool isRun;
+		bool isRun : 1;
 
-		bool isShowMessage;
+		bool isShowMessage : 1;
+
+		bool isOpenKeyMenu : 1;
 	};
 
 	// フラグの管理をしやすくするための共用体
@@ -326,6 +328,10 @@ public:
 	// インベントリが開かれているかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsOpenInventory() const { return m_playerFlags.flagBits.isOpenMenu; }
+
+	// 鍵選択用のインベントリが開かれているかを渡す
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		bool GetIsOpenKeyInventory() const { return m_playerFlags.flagBits.isOpenKeyMenu; }
 
 	// 銃を構えているかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
