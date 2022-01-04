@@ -382,7 +382,7 @@ FGunData APlayerChara::GetEquipGunData() const
 //　【入力バインド】キャラ移動：前後
 void APlayerChara::Input_MoveForward(float _axisValue)
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() && m_Bathtub->GetOpenWidget() == false)
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
 		return;
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
@@ -392,7 +392,7 @@ void APlayerChara::Input_MoveForward(float _axisValue)
 //　【入力バインド】キャラ移動左右
 void APlayerChara::Input_MoveRight(float _axisValue)
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() && m_Bathtub->GetOpenWidget() == false)
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
 		return;
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
@@ -404,7 +404,7 @@ void APlayerChara::Input_MoveRight(float _axisValue)
 //　【入力バインド】カメラの回転：（Y軸）
 void APlayerChara::Input_CameraRotatePitch(float _axisValue)
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() && m_Bathtub->GetOpenWidget() == false)
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
 		return;
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CameraRotationInput.Y = _axisValue;
@@ -413,7 +413,7 @@ void APlayerChara::Input_CameraRotatePitch(float _axisValue)
 //　【入力バインド】カメラ回転：（Z軸）
 void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() && m_Bathtub->GetOpenWidget() == false)
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
 		return;
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CameraRotationInput.X = _axisValue;
@@ -571,6 +571,8 @@ void APlayerChara::Input_Action()
 
 		if (Cast<ABathtubEventControl>(m_pOverlapActor))
 		{
+			Cast<ABathtubEventControl>(m_pOverlapActor)->SetIsEventStart(true);
+
 			if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetIsEventStart() == false)
 			{
 				Cast<ABathtubEventControl>(m_pOverlapActor)->PlaySound();
@@ -579,7 +581,6 @@ void APlayerChara::Input_Action()
 			if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetOpenWidget())
 				Cast<ABathtubEventControl>(m_pOverlapActor)->SetDoAction(true);
 		}
-		Cast<AEventObjectBase>(m_pOverlapActor)->SetIsEventStart(true);
 	}
 
 	// アイテムに触れていた時
@@ -864,31 +865,34 @@ void APlayerChara::SetAttachWeapon(AItemBase* _equipWeapon)
 int APlayerChara::GetCursorIndex(const int _index, const int _moveValue)
 {
 	// インベントリを開いていない場合は処理しない
-	if (m_playerFlags.flagBits.isOpenMenu == false)
+	if (m_playerFlags.flagBits.isOpenMenu == false && m_Bathtub->GetOpenWidget() == false)
 		return _index;
 
 	// 移動可能かのフラグを一時保管
 	bool ret = false;
 
-	// 上下のカーソル移動
-	if (FMath::Abs(_moveValue) % 4 == 0)
+	if (m_playerFlags.flagBits.isOpenMenu)
 	{
-		// 上入力
-		if (_moveValue < 0)
-			ret = _index >= 4;
-		// 下入力
-		else
-			ret = (_index + 4) < m_bagSize;
-	}
-	// 左右のカーソル移動
-	else if (FMath::Abs(_moveValue) == 1)
-	{
-		// 左入力
-		if (_moveValue < 0)
-			ret = (_index % 4) != 0;
-		// 右入力
-		else
-			ret = (_index % 4) <= 2;
+		// 上下のカーソル移動
+		if (FMath::Abs(_moveValue) % 4 == 0)
+		{
+			// 上入力
+			if (_moveValue < 0)
+				ret = _index >= 4;
+			// 下入力
+			else
+				ret = (_index + 4) < m_bagSize;
+		}
+		// 左右のカーソル移動
+		else if (FMath::Abs(_moveValue) == 1)
+		{
+			// 左入力
+			if (_moveValue < 0)
+				ret = (_index % 4) != 0;
+			// 右入力
+			else
+				ret = (_index % 4) <= 2;
+		}
 	}
 
 	if (m_Bathtub->GetOpenWidget())

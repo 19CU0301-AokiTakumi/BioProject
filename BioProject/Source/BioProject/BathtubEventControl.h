@@ -60,18 +60,18 @@ public:
 	void PlaySound();
 
 public:
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetEventStart(const bool _eventStart) { m_bIsEventStart = _eventStart; }
+
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetEventStartCheck() { return m_bIsEventStart; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
-		void SetOpenWidget(const bool _widgetOpen) { m_WidgetOpen = _widgetOpen; }
+		void SetOpenWidget(bool _widgetOpen) { m_WidgetOpen = _widgetOpen; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
 		bool GetOpenWidget()const { return m_WidgetOpen; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetIndex(const int _index) { m_index = _index; }
-
-	UFUNCTION(BlueprintCallable, CateGory = "SetData")
-		void SetEventStart(const bool _eventStart) { m_bIsEventStart = _eventStart; }
 };
