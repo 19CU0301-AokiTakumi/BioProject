@@ -76,3 +76,9 @@ FVector AItemBase::GetCenterPos() const
 { 
 	return m_pBoxComp->GetComponentLocation(); 
 }
+
+void AItemBase::SetCollisionEnabled(const bool _isEnable)
+{
+	if (m_pBoxComp)
+		(_isEnable) ? m_pBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly) : m_pBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}

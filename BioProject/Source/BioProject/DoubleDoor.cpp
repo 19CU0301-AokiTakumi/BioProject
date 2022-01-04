@@ -4,6 +4,9 @@
 #include "DoubleDoor.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Sound/SoundBase.h"
 
 ADoubleDoor::ADoubleDoor()
 	: m_pBoxComp(NULL)
@@ -74,6 +77,7 @@ void ADoubleDoor::SideOpen(float _deltaTime)
 		case State::Close:
 			if (angle <= 0.f + GetDoorLocation.Y)
 			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorCloseSE, GetActorLocation());
 				m_DoorState = State::Idle;
 				return;
 			}
@@ -114,6 +118,7 @@ void ADoubleDoor::FrontOpen(float _deltaTime)
 		case State::Close:
 			if (angle <= 0 + m_MeshRelativeRotation.Yaw)
 			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorCloseSE, GetActorLocation());
 				m_DoorState = State::Idle;
 				return;
 			}

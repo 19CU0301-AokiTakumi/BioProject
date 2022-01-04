@@ -19,6 +19,8 @@ ADoorBase::ADoorBase()
 	, m_id(-1)
 	, m_bIsOpenReverse(false)
 	, m_bIsOverlapPlayer(false)
+	, m_pDoorOpenSE(NULL)
+	, m_pDoorCloseSE(NULL)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -39,9 +41,13 @@ ADoorBase::ADoorBase()
 	m_pBackBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BackCollision"));
 	m_pBackBoxComp->SetupAttachment(RootComponent);
 
-	// ドア開閉音
-	ConstructorHelpers::FObjectFinder<USoundBase> DoorSE(TEXT("/Game/Sound/Door/DoorSE.DoorSE"));
-	m_pDoorSE = DoorSE.Object;
+	// ドア開音
+	ConstructorHelpers::FObjectFinder<USoundBase> DoorOpenSE(TEXT("/Game/Sound/Door/DoorOpenSE.DoorOpenSE"));
+	m_pDoorOpenSE = DoorOpenSE.Object;
+
+	// ドア閉音
+	ConstructorHelpers::FObjectFinder<USoundBase> DoorCloseSE(TEXT("/Game/Sound/Door/DoorCloseSE.DoorCloseSE"));
+	m_pDoorCloseSE = DoorCloseSE.Object;
 }
 
 // ゲーム開始時、または生成時に呼ばれる処理
@@ -81,10 +87,10 @@ void ADoorBase::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 		m_pBackBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		// 開いている状態でないとき開ける準備に入る
-		if (m_DoorState != State::Open)
+		if (m_DoorState != State::Open && m_bIsLock == false)
 		{
 			m_DoorState = State::Open;
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorSE, FVector::ZeroVector);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorOpenSE, GetActorLocation());
 			m_bIsOverlapPlayer = true;
 			m_countTime = 0.f;
 		}

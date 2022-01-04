@@ -4,6 +4,9 @@
 #include "SingleDoor.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Sound/SoundBase.h"
 
 // コンストラクタ
 ASingleDoor::ASingleDoor()
@@ -71,10 +74,10 @@ void ASingleDoor::SideOpen(float _deltaTime)
 		case State::Close:
 			if (m_angle <= 0.f + m_MeshRelativeLocation.Y)
 			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorCloseSE, GetActorLocation());
 				m_DoorState = State::Idle;
 				return;
 			}
-
 			m_angle -= m_speed * _deltaTime;
 			break;
 
@@ -108,6 +111,7 @@ void ASingleDoor::FrontOpen(float _deltaTime)
 			if (m_angle <= 0 + m_MeshRelativeRotation.Yaw)
 			{
 				m_DoorState = State::Idle;
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorCloseSE, GetActorLocation());
 				return;
 			}
 

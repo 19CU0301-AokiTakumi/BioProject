@@ -72,7 +72,7 @@ protected:
 		int32 OtherBodyIndex);
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		USceneComponent* m_pBase;
 
 	// “–‚½‚è”»’è‚Ì’Ç‰Á
@@ -91,7 +91,7 @@ protected:
 	APlayerChara* m_pOtherPlayer;
 
 public:
-	virtual void SetCollisionEnabled(const bool _isEnable) {};
+	virtual void SetCollisionEnabled(const bool _isEnable);
 
 	void SetItemData(const FItemData _itemData) { m_itemData = _itemData; }
 
