@@ -50,6 +50,7 @@ private:
 	bool m_SpawnOnce;
 	bool m_WidgetOpen;
 	bool m_DoAction;
+	bool m_ActionEnd;
 
 	void DownWaterSurface(float _deltaTime);
 	void ItemSpawn();
@@ -63,7 +64,7 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetEventStart(const bool _eventStart) { m_bIsEventStart = _eventStart; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
 		bool GetEventStartCheck() { return m_bIsEventStart; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
@@ -74,4 +75,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetIndex(const int _index) { m_index = _index; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
+		bool GetDoAction()const { return m_DoAction; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
+		bool GetActionEnd()const { return m_ActionEnd; }
 };

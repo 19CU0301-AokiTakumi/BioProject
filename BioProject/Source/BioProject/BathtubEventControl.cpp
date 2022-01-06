@@ -21,6 +21,7 @@ ABathtubEventControl::ABathtubEventControl()
 	, m_SpawnOnce(false)
 	, m_WidgetOpen(false)
 	, m_DoAction(false)
+	, m_ActionEnd(false)
 	, m_index(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -89,7 +90,10 @@ void ABathtubEventControl::DownWaterSurface(float _deltaTime)
 	m_pWaterMesh->SetRelativeScale3D(FVector(m_WaterShrink, m_WaterShrink, m_pWaterMesh->GetRelativeScale3D().Z));
 
 	if (m_WaterMeshLocation <= m_WaterMaxDown)
+	{
+		m_ActionEnd = true;
 		SpawnItem->SetActorEnableCollision(ECollisionEnabled::QueryOnly);
+	}
 }
 
 void ABathtubEventControl::ItemSpawn()
