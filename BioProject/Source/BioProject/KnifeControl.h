@@ -42,8 +42,12 @@ private:
 public:
 	void SetCollisionEnabled(const bool _isEnable) override;
 	void SetAttckColEnable(const bool _isEnable);
-	FKnifeData GetKnifeData() const { return m_KnifeData; }
-	void SetKnifeData(const FKnifeData _knifeData) { m_KnifeData = _knifeData; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		FKnifeData GetKnifeData() const { return m_KnifeData; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetKnifeData(const FKnifeData _knifeData) { m_KnifeData = _knifeData; }
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))

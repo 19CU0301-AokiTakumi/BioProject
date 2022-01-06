@@ -383,21 +383,27 @@ FGunData APlayerChara::GetEquipGunData() const
 //　【入力バインド】キャラ移動：前後
 void APlayerChara::Input_MoveForward(float _axisValue)
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
+	if (m_playerFlags.flagBits.isOpenMenu)
 		return;
+
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AEventObjectBase>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
+		return;
+
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
-
 }
 
 //　【入力バインド】キャラ移動左右
 void APlayerChara::Input_MoveRight(float _axisValue)
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
+	if (m_playerFlags.flagBits.isOpenMenu)
 		return;
-	if (m_playerFlags.flagBits.isOpenMenu == false)
-		m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AEventObjectBase>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
+		return;
+
+	if (m_playerFlags.flagBits.isOpenMenu == false)
+		m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;\
 }
 
 
@@ -405,8 +411,12 @@ void APlayerChara::Input_MoveRight(float _axisValue)
 //　【入力バインド】カメラの回転：（Y軸）
 void APlayerChara::Input_CameraRotatePitch(float _axisValue)
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
+	if (m_playerFlags.flagBits.isOpenMenu)
 		return;
+
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AEventObjectBase>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
+		return;
+
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CameraRotationInput.Y = _axisValue;
 }
@@ -414,8 +424,12 @@ void APlayerChara::Input_CameraRotatePitch(float _axisValue)
 //　【入力バインド】カメラ回転：（Z軸）
 void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
+	if (m_playerFlags.flagBits.isOpenMenu)
 		return;
+
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AEventObjectBase>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
+		return;
+
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CameraRotationInput.X = _axisValue;
 }
@@ -423,7 +437,7 @@ void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 //【入力バインド】銃を構える
 void APlayerChara::Input_Hold()
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AEventObjectBase>(m_pOverlapActor)->GetIsEventStart())
 		return;
 	if (m_haveGunDatas.Num() <= 0 || m_haveGunDatas[m_playerStatus.equipGunID] == NULL)
 		return;
@@ -436,7 +450,7 @@ void APlayerChara::Input_Hold()
 // 【入力バインド】銃を撃つ
 void APlayerChara::Input_Shooting()
 {
-	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
+	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AEventObjectBase>(m_pOverlapActor)->GetIsEventStart())
 		return;
 	// 武器を持っていない場合は処理しない
 	if (m_haveGunDatas.Num() <= 0)
@@ -574,7 +588,7 @@ void APlayerChara::Input_Action()
 		{
 			Cast<ABathtubEventControl>(m_pOverlapActor)->SetIsEventStart(true);
 
-			if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetIsEventStart() == false)
+			if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetIsEventStart())
 			{
 				Cast<ABathtubEventControl>(m_pOverlapActor)->PlaySound();
 			}
@@ -862,7 +876,10 @@ void APlayerChara::SetAttachWeapon(AItemBase* _equipWeapon)
 		m_playerFlags.flagBits.isHaveGun = false;
 	}
 	if (m_pAttachObject)
+	{
 		m_pAttachObject->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, socketPath);
+	}
+		
 }
 
 
@@ -1064,6 +1081,7 @@ void APlayerChara::CountTime(float _deltaTime)
 				m_ActionStatus = EActionStatus::KnifeIdle;
 				m_CountTime = 0.f;
 
+				UE_LOG(LogTemp, Error, TEXT("KnifeCollision_false"));
 				Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
 
 				m_PrevStatus = m_ActionStatus;
@@ -1072,7 +1090,7 @@ void APlayerChara::CountTime(float _deltaTime)
 		}
 
 		default:
-			UE_LOG(LogTemp, Error, TEXT("mogu"));
+			
 			m_PrevStatus = m_ActionStatus;
 			break;
 	}

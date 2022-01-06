@@ -2,6 +2,13 @@
 #include "MyGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
+FString UMyGameInstance::GetMission(const int _index) const
+{
+	if (m_Missions.Num() < _index)
+		return "";
+
+	return m_Missions[_index];
+}
 AActor* UMyGameInstance::GetActorFromTag(const AActor* _pOwnerActor, const FName& _tag)
 {
 	if (_pOwnerActor == NULL)
