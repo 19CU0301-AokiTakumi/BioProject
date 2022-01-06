@@ -59,7 +59,6 @@ void AEventControl::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	m_SpawnLocationLength = m_SpawnLocation.Num();
 	UE_LOG(LogTemp, Error, TEXT("%d"), m_SpawnLocationLength);
 }
