@@ -67,11 +67,13 @@ void ADrawerControl::Tick(float DeltaTime)
 
 void ADrawerControl::OpenDrawer(const float _deltaTime)
 {
+	
 	if (m_bIsEventStart == false)
 		return;
 
 	if (m_bIsDrawerOpen)
 		return;
+	
 
 	if (m_pItem)
 		m_pItem->SetCollisionEnabled(true);

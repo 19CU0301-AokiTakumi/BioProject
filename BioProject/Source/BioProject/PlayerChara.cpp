@@ -9,6 +9,7 @@
 #include "Bullet.h"
 #include "GunControl.h"
 #include "BathtubEventControl.h"
+#include "DrawerControl.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
@@ -567,9 +568,9 @@ void APlayerChara::Input_Action()
 				Cast<AMessageObject>(m_pOverlapActor)->SetIsEventStart(false);
 				return;
 			}
+			Cast<AMessageObject>(m_pOverlapActor)->SetIsEventStart(true);
 		}
-
-		if (Cast<ABathtubEventControl>(m_pOverlapActor))
+		else if (Cast<ABathtubEventControl>(m_pOverlapActor))
 		{
 			Cast<ABathtubEventControl>(m_pOverlapActor)->SetIsEventStart(true);
 
@@ -580,6 +581,10 @@ void APlayerChara::Input_Action()
 
 			if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetOpenWidget())
 				Cast<ABathtubEventControl>(m_pOverlapActor)->SetDoAction(true);
+		}
+		else if (Cast<ADrawerControl>(m_pOverlapActor))
+		{
+			Cast<ADrawerControl>(m_pOverlapActor)->SetIsEventStart(true);
 		}
 	}
 
