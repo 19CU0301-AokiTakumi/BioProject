@@ -271,7 +271,28 @@ void AEnemyChara::UpdateAction(float _deltaTime)
 
 void AEnemyChara::Idle()
 {
-	m_status = ActionStatus::Move;
+	/*
+	float disx = m_Player->GetActorLocation().X - GetActorLocation().X;
+	float disy = m_Player->GetActorLocation().Y - GetActorLocation().Y;
+	if (disx < 0) disx *= -1;
+	if (disy < 0) disy *= -1;
+
+	UE_LOG(LogTemp, Error, TEXT("%f"), disx);
+	UE_LOG(LogTemp, Error, TEXT("%f"), disy);
+
+
+	float distance = FMath.sqrt( (m_Player->GetActorLocation().X - GetActorLocation().X) *
+								(m_Player->GetActorLocation().X - GetActorLocation().X) + 
+								(m_Player->GetActorLocation().Y - GetActorLocation().Y) *
+								(m_Player->GetActorLocation().Y - GetActorLocation().Y));
+	*/
+
+	float distance = FVector::Distance(m_Player->GetActorLocation(), GetActorLocation());
+
+	if (distance <= m_LengthDis)
+	{
+		m_status = ActionStatus::Move;
+	}
 }
 
 // ˆÚ“®ˆ—

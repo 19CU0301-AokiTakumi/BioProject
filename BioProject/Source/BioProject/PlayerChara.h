@@ -58,6 +58,7 @@ enum class EActionStatus : uint8
 	Aim,			// 銃を覗く
 	GunIdle,		// 銃のIdle
 	KnifeWalk,      // ナイフを所持して歩く
+	ChangeWeapon,   //
 	Max,			// Max用
 };
 

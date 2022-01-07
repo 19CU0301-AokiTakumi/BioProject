@@ -184,6 +184,10 @@ void APlayerChara::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Error, TEXT("GunWalk"));
 		break;
 
+	case EActionStatus::ChangeWeapon:
+		UE_LOG(LogTemp, Error, TEXT("ChangeWeapon"));
+		break;
+
 		//case eactionstatus::avoid:
 			//avoid(_deltatime);
 			//break;
@@ -801,15 +805,16 @@ void APlayerChara::Input_ChangeGun(float _axisValue)
 	}
 
 	SetAttachWeapon(m_haveGunDatas[m_playerStatus.equipGunID]);
-
-	if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+	
+	m_ActionStatus = EActionStatus::ChangeWeapon;
+	/*if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 	{
 		m_ActionStatus = EActionStatus::GunIdle;
 	}
 	else if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 	{
 		m_ActionStatus = EActionStatus::KnifeIdle;
-	}
+	}*/
 }
 
 // 被ダメージ処理
@@ -1073,6 +1078,26 @@ void APlayerChara::CountTime(float _deltaTime)
 				m_CountTime = 0.f;
 
 				Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
+
+				m_PrevStatus = m_ActionStatus;
+			}
+			break;
+		}
+
+		case EActionStatus::ChangeWeapon:
+		{
+			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::ChangeWeapon])
+			{
+				if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+				{
+					m_ActionStatus = EActionStatus::GunIdle;
+				}
+				else if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
+				{
+					m_ActionStatus = EActionStatus::KnifeIdle;
+				}
+
+				m_CountTime = 0.f;
 
 				m_PrevStatus = m_ActionStatus;
 			}

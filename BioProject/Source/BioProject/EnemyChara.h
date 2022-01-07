@@ -104,6 +104,9 @@ private:
 	UPROPERTY(BluePrintReadWrite, meta = (AllowPrivateAccess = "true"))
 		bool m_IsDown;
 
+	UPROPERTY(EditAnywhere, Category = "Status")
+		float m_LengthDis;
+
 private:
 	// エフェクト
 	UPROPERTY(EditAnywhere, Category = "Effects")
