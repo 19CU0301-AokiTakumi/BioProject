@@ -48,6 +48,7 @@ APlayerChara::APlayerChara()
 	, m_pTempGun(NULL)
 	, ItemDestroy(false)
 	, m_Bathtub(NULL)
+	, m_pmagazine(NULL)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -399,6 +400,15 @@ void APlayerChara::Input_MoveForward(float _axisValue)
 	if (m_playerFlags.flagBits.isOpenMenu == false)
 		m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 
+	if (m_CharaMoveInput.Y != 0 && m_playerStatus.moveSpeed == m_statusConst.walkSpeed)
+	{
+		//m_ActionStatus = EActionStatus::Walk;
+	}
+	else if(m_CharaMoveInput.Y == 0.f)
+	{
+		//m_ActionStatus = EActionStatus::Idle;
+	}
+
 }
 
 //　【入力バインド】キャラ移動左右
@@ -747,6 +757,11 @@ void APlayerChara::Input_Reload()
 		{
 			// ステータスをリロードに
 			m_ActionStatus = EActionStatus::Reload;
+
+			m_pmagazine = UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Gun/Magazine.Magazine_C");
+			if (m_pmagazine != NULL)
+				m_pmagazine->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, "Hand_Mug");
+			
 		}
 
 		// リロード処理
@@ -874,6 +889,8 @@ void APlayerChara::SetAttachWeapon(AItemBase* _equipWeapon)
 		Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
 		m_playerFlags.flagBits.isHaveGun = false;
 	}
+
+
 	if (m_pAttachObject)
 		m_pAttachObject->GetMesh()->AttachToComponent(GetMesh(), { EAttachmentRule::SnapToTarget, true }, socketPath);
 }
@@ -1019,8 +1036,16 @@ void APlayerChara::CountTime(float _deltaTime)
 			{
 				m_ActionStatus = EActionStatus::GunIdle;
 				m_CountTime = 0.f;
-
 				m_PrevStatus = m_ActionStatus;
+			}
+			if (m_CountTime == 1.258f)
+			{
+
+			}
+			if (m_CountTime >= 2.67f)
+			{
+				if (m_pmagazine != NULL)
+				m_pmagazine->Destroy();
 			}
 			break;
 

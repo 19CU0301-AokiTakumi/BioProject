@@ -439,4 +439,6 @@ private:
 		AGunControl* m_pTempGun;
 
 		ABathtubEventControl* m_Bathtub;
+
+		AActor* m_pmagazine;
 };
