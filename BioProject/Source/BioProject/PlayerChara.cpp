@@ -742,6 +742,9 @@ void APlayerChara::Input_Reload()
 	if (m_haveGunDatas.Num() <= 0 || Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]) == NULL)
 		return;
 
+	if (m_ActionStatus == EActionStatus::Aim)
+		return;
+
 	AGunControl* GunControl = Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]);
 
 	if (GunControl->GetIsShot())
@@ -995,6 +998,8 @@ void APlayerChara::ShootCameraShake(int _deltaTime)
 // 画角変更(追加)
 void APlayerChara::Changeview(float _deltaTime)
 {
+	if (m_ActionStatus == EActionStatus::Reload)
+		return;
 
 		if (m_playerFlags.flagBits.isGunHold == true)
 		{
@@ -1037,10 +1042,6 @@ void APlayerChara::CountTime(float _deltaTime)
 				m_ActionStatus = EActionStatus::GunIdle;
 				m_CountTime = 0.f;
 				m_PrevStatus = m_ActionStatus;
-			}
-			if (m_CountTime == 1.258f)
-			{
-
 			}
 			if (m_CountTime >= 2.67f)
 			{
