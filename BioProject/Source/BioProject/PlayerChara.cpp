@@ -243,8 +243,6 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
-
 	// アイテムに触れている時
 	if (Cast<AItemBase>(OtherActor) && !OtherComp->ComponentHasTag("Blade"))
 	{
@@ -288,6 +286,7 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 
 		// 触れているアクターを保管
 		m_pOverlapActor = OtherActor;
+		
 	}
 }
 
@@ -299,7 +298,7 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 
 	m_playerFlags.flagBits.isEventObjTouch = false;
 
-	if (Cast<AMessageObject>(m_pOverlapActor))
+	if (Cast<AMessageObject>(m_pOverlapActor) || Cast<ADoorBase>(m_pOverlapActor))
 	{
 		// 保管していた触れていたアクターを無効にする
 		m_pOverlapActor = NULL;
@@ -318,7 +317,7 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 void APlayerChara::UpdateMove(float _deltaTime)
 {
 	if ((Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
-		|| m_playerFlags.flagBits.isOpenMenu)
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu)
 		return;
 
 	if (m_pSpringArm)
@@ -359,7 +358,7 @@ void APlayerChara::UpdateMove(float _deltaTime)
 void APlayerChara::UpdateCamera(float _deltaTime)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart()
-		|| m_playerFlags.flagBits.isOpenMenu)
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu)
 		return;
 
 	if (m_pSpringArm)
@@ -397,7 +396,7 @@ void APlayerChara::Input_MoveForward(float _axisValue)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
 		return;
-	if (m_playerFlags.flagBits.isOpenMenu == false)
+	if (m_playerFlags.flagBits.isOpenMenu == false && m_playerFlags.flagBits.isOpenKeyMenu == false)
 		m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 
 	if (m_CharaMoveInput.Y != 0 && m_playerStatus.moveSpeed == m_statusConst.walkSpeed)
@@ -416,7 +415,7 @@ void APlayerChara::Input_MoveRight(float _axisValue)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
 		return;
-	if (m_playerFlags.flagBits.isOpenMenu == false)
+	if (m_playerFlags.flagBits.isOpenMenu == false && m_playerFlags.flagBits.isOpenKeyMenu == false)
 		m_CharaMoveInput.X = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 
 }
@@ -428,7 +427,7 @@ void APlayerChara::Input_CameraRotatePitch(float _axisValue)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
 		return;
-	if (m_playerFlags.flagBits.isOpenMenu == false)
+	if (m_playerFlags.flagBits.isOpenMenu == false && m_playerFlags.flagBits.isOpenKeyMenu == false)
 		m_CameraRotationInput.Y = _axisValue;
 }
 
@@ -437,7 +436,7 @@ void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart() || m_Bathtub->GetOpenWidget() == true)
 		return;
-	if (m_playerFlags.flagBits.isOpenMenu == false)
+	if (m_playerFlags.flagBits.isOpenMenu == false && m_playerFlags.flagBits.isOpenKeyMenu == false)
 		m_CameraRotationInput.X = _axisValue;
 }
 
@@ -565,6 +564,7 @@ void APlayerChara::Input_Action()
 	// 何にも触れていない場合は処理しない
 	if (m_pOverlapActor == NULL)
 		return;
+	UE_LOG(LogTemp, Error, TEXT("DoorTouch"));
 
 	// 扉に触れていた場合
 	if (Cast<ADoorBase>(m_pOverlapActor))
@@ -903,35 +903,34 @@ void APlayerChara::SetAttachWeapon(AItemBase* _equipWeapon)
 int APlayerChara::GetCursorIndex(const int _index, const int _moveValue)
 {
 	// インベントリを開いていない場合は処理しない
-	if (m_playerFlags.flagBits.isOpenMenu == false && m_Bathtub->GetOpenWidget() == false)
+	if (m_playerFlags.flagBits.isOpenMenu == false && m_playerFlags.flagBits.isOpenKeyMenu == false && m_Bathtub->GetOpenWidget() == false)
 		return _index;
 
 	// 移動可能かのフラグを一時保管
 	bool ret = false;
 
-	if (m_playerFlags.flagBits.isOpenMenu)
+
+	// 上下のカーソル移動
+	if (FMath::Abs(_moveValue) % 4 == 0)
 	{
-		// 上下のカーソル移動
-		if (FMath::Abs(_moveValue) % 4 == 0)
-		{
-			// 上入力
-			if (_moveValue < 0)
-				ret = _index >= 4;
-			// 下入力
-			else
-				ret = (_index + 4) < m_bagSize;
-		}
-		// 左右のカーソル移動
-		else if (FMath::Abs(_moveValue) == 1)
-		{
-			// 左入力
-			if (_moveValue < 0)
-				ret = (_index % 4) != 0;
-			// 右入力
-			else
-				ret = (_index % 4) <= 2;
-		}
+		// 上入力
+		if (_moveValue < 0)
+			ret = _index >= 4;
+		// 下入力
+		else
+			ret = (_index + 4) < m_bagSize;
 	}
+	// 左右のカーソル移動
+	else if (FMath::Abs(_moveValue) == 1)
+	{
+		// 左入力
+		if (_moveValue < 0)
+			ret = (_index % 4) != 0;
+		// 右入力
+		else
+			ret = (_index % 4) <= 2;
+	}
+	
 
 	if (m_Bathtub->GetOpenWidget())
 	{
