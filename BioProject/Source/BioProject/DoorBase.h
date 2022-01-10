@@ -120,7 +120,8 @@ public:
 		void SetIsLock(const bool _isLock) { m_bIsLock = _isLock; }
 
 	// ©g‚ÌID‚ğ“n‚·
-	int GetID()const { return m_id; }
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		int GetID()const { return m_id; }
 
 	// ŠJ‚­•ûŒü‚ğİ’è‚·‚é
 	void SetOpenReverse(bool _isBack) { m_bIsOpenReverse = _isBack; }

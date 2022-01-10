@@ -337,6 +337,9 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsOpenKeyInventory() const { return m_playerFlags.flagBits.isOpenKeyMenu; }
 
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetIsOpenKeyInventory(const bool _isOpenKeyMenu) { m_playerFlags.flagBits.isOpenKeyMenu = _isOpenKeyMenu; }
+
 	// e‚ğ\‚¦‚Ä‚¢‚é‚©‚ğ“n‚·
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsGunHold() const { return m_playerFlags.flagBits.isGunHold; }

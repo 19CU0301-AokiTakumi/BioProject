@@ -32,6 +32,7 @@ ADoorBase::ADoorBase()
 	// 衝突判定用のボックスコンポーネント生成
 	m_pRootBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("MainCollision"));
 	m_pRootBoxComp->SetupAttachment(RootComponent);
+	
 
 	// オーバーラップ用のボックスコンポーネント生成(前面)
 	m_pFrontBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("FrontCollision"));
@@ -59,12 +60,22 @@ void ADoorBase::BeginPlay()
 	if (m_pRootBoxComp != NULL)
 	{
 		m_pRootBoxComp->OnComponentBeginOverlap.AddDynamic(this, &ADoorBase::OnOverlapBegin);
-	}
-	// オーバーラップしたら呼ばれる関数を登録
-	if (m_pRootBoxComp != NULL)
-	{
 		m_pRootBoxComp->OnComponentEndOverlap.AddDynamic(this, &ADoorBase::OnOverlapEnd);
 	}
+	// オーバーラップしたら呼ばれる関数を登録
+	if (m_pFrontBoxComp != NULL)
+	{
+		m_pFrontBoxComp->OnComponentBeginOverlap.AddDynamic(this, &ADoorBase::OnOverlapBegin);
+		m_pFrontBoxComp->OnComponentEndOverlap.AddDynamic(this, &ADoorBase::OnOverlapEnd);
+	}
+
+	if (m_pBackBoxComp != NULL)
+	{
+		m_pBackBoxComp->OnComponentBeginOverlap.AddDynamic(this, &ADoorBase::OnOverlapBegin);
+		m_pBackBoxComp->OnComponentEndOverlap.AddDynamic(this, &ADoorBase::OnOverlapEnd);
+	}
+
+	m_pRootBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // 毎フレーム更新処理
@@ -82,14 +93,15 @@ void ADoorBase::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 	// 当たったオブジェクトのTag名が"Player"だった時に処理する
 	if (OtherActor->ActorHasTag("Player"))
 	{
-		// コリジョンを一旦無効化
-		m_pFrontBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		m_pBackBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
 		// 開いている状態でないとき開ける準備に入る
 		if (m_DoorState != State::Open && m_bIsLock == false)
 		{
+			// コリジョンを一旦無効化
+			m_pFrontBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			m_pBackBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 			m_DoorState = State::Open;
+			m_pRootBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorOpenSE, GetActorLocation());
 			m_bIsOverlapPlayer = true;
 			m_countTime = 0.f;
