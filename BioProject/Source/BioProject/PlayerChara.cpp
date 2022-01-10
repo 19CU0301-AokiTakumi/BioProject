@@ -399,13 +399,48 @@ void APlayerChara::Input_MoveForward(float _axisValue)
 	if (m_playerFlags.flagBits.isOpenMenu == false && m_playerFlags.flagBits.isOpenKeyMenu == false)
 		m_CharaMoveInput.Y = FMath::Clamp(_axisValue, -1.0f, 1.0f) * 1.0f;
 
-	if (m_CharaMoveInput.Y != 0 && m_playerStatus.moveSpeed == m_statusConst.walkSpeed)
+	if (m_CharaMoveInput.Y != 0 || m_CharaMoveInput.X != 0.f)
 	{
-		//m_ActionStatus = EActionStatus::Walk;
+		if (m_playerStatus.moveSpeed == m_statusConst.walkSpeed)
+		{
+			if (m_playerFlags.flagBits.isHaveGun == true && m_ActionStatus != EActionStatus::Reload && m_ActionStatus != EActionStatus::GunWalk && m_ActionStatus != EActionStatus::ChangeWeapon
+				&& m_ActionStatus != EActionStatus::KnifeWalk)
+			{
+				m_ActionStatus = EActionStatus::GunWalk;
+			}
+			else if (m_playerFlags.flagBits.isHaveKnife == true  && m_ActionStatus != EActionStatus::KnifeWalk
+				     && m_ActionStatus != EActionStatus::KnifeAttack && m_ActionStatus != EActionStatus::GunWalk && m_ActionStatus != EActionStatus::ChangeWeapon && m_ActionStatus != EActionStatus::Reload)
+			{
+				m_ActionStatus = EActionStatus::KnifeWalk;
+			}
+			else if (m_playerFlags.flagBits.isHaveGun == false && m_playerFlags.flagBits.isHaveKnife == false && m_ActionStatus != EActionStatus::Walk && m_ActionStatus != EActionStatus::ChangeWeapon
+				    && m_ActionStatus != EActionStatus::KnifeWalk && m_ActionStatus != EActionStatus::GunWalk && m_ActionStatus != EActionStatus::Reload)
+			{
+				m_ActionStatus = EActionStatus::Walk;
+			}
+		}
 	}
-	else if(m_CharaMoveInput.Y == 0.f)
+
+	if (m_CharaMoveInput.Y == 0.f && m_CharaMoveInput.X == 0.f)
 	{
-		//m_ActionStatus = EActionStatus::Idle;
+		if (m_playerFlags.flagBits.isHaveGun == true && m_ActionStatus == EActionStatus::GunWalk)
+		{
+			if (m_ActionStatus != EActionStatus::Reload && m_ActionStatus != EActionStatus::ChangeWeapon)
+			{
+				m_ActionStatus = EActionStatus::GunIdle;
+			}
+		}
+		else if (m_playerFlags.flagBits.isHaveKnife == true  && m_ActionStatus == EActionStatus::KnifeWalk)
+		{
+			if (m_ActionStatus != EActionStatus::KnifeAttack && m_ActionStatus != EActionStatus::ChangeWeapon)
+			{
+				m_ActionStatus = EActionStatus::KnifeIdle;
+			}
+		}
+		else if (m_playerFlags.flagBits.isHaveGun == false && m_playerFlags.flagBits.isHaveKnife == false && m_ActionStatus != EActionStatus::ChangeWeapon)
+		{
+			m_ActionStatus = EActionStatus::Idle;
+		}
 	}
 
 }
@@ -705,6 +740,7 @@ void APlayerChara::Input_Action()
 			{
 				// 銃の所持フラグを立てる
 				m_playerFlags.flagBits.isHaveGun = false;
+				m_playerFlags.flagBits.isHaveKnife = true;
 
 				// 装備している銃を更新
 				//m_haveGunDatas[m_playerStatus.equipGunID] = Cast<AKnifeControl>(m_haveGunDatas[m_haveGunDatas.Num() - 1]);
@@ -789,6 +825,9 @@ void APlayerChara::Input_Inventory()
 // 【入力バインド】銃の切り替え処理
 void APlayerChara::Input_ChangeGun(float _axisValue)
 {
+	if (m_ActionStatus == EActionStatus::Reload)
+		return;
+
 	if (_axisValue == m_prevAxisValue)
 		return;
 
@@ -1116,6 +1155,7 @@ void APlayerChara::CountTime(float _deltaTime)
 				if (Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 				{
 					m_ActionStatus = EActionStatus::GunIdle;
+					UE_LOG(LogTemp, Error, TEXT("mogu111111111111111111111111111111"));
 				}
 				else if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 				{

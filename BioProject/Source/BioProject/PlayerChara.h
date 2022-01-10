@@ -59,6 +59,9 @@ enum class EActionStatus : uint8
 	GunIdle,		// 銃のIdle
 	KnifeWalk,      // ナイフを所持して歩く
 	ChangeWeapon,   //
+	Stairsclimb,	// 階段を上がる
+	Stairscgetoff,	// 階段を下りる
+	GunWalk,		// 銃を持った歩き
 	Max,			// Max用
 };
 
@@ -123,6 +126,8 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 		bool isShowMessage : 1;
 
 		bool isOpenKeyMenu : 1;
+
+		bool isHaveKnife : 1;
 	};
 
 	// フラグの管理をしやすくするための共用体
