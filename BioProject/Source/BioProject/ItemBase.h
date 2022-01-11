@@ -20,6 +20,7 @@ enum class ItemType : uint8
 	Weapon,
 	Bullet,
 	Event,
+	Book,
 	Debug,
 };
 
