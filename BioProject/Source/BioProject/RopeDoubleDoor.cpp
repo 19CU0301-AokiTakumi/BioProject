@@ -47,7 +47,7 @@ void ARopeDoubleDoor::HitKnife()
 	m_RopeComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	m_AnimStart = true;
 
-	m_RopeStaticMesh->DestroyComponent(true);
+	m_RopeStaticMesh->SetVisibility(false);
 	m_RopeSkeletalMesh->SetVisibility(true);
 }
 
@@ -60,7 +60,7 @@ void ARopeDoubleDoor::AnimEnd(float _deltaTime)
 
 	if (m_AnimCount >= m_AnimTime)
 	{
-		m_RopeSkeletalMesh->DestroyComponent(true);
+		m_RopeSkeletalMesh->SetVisibility(false);
 		SetIsLock(false);
 	}
 }
