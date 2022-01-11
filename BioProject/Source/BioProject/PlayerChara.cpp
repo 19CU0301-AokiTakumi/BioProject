@@ -9,6 +9,7 @@
 #include "Bullet.h"
 #include "GunControl.h"
 #include "BathtubEventControl.h"
+#include "BookEventControl.h"
 #include "DrawerControl.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
@@ -654,6 +655,10 @@ void APlayerChara::Input_Action()
 		else if (Cast<ADrawerControl>(m_pOverlapActor))
 		{
 			Cast<ADrawerControl>(m_pOverlapActor)->SetIsEventStart(true);
+		}
+		else if (Cast<ABookEventControl>(m_pOverlapActor))
+		{
+			Cast<ABookEventControl>(m_pOverlapActor)->SetIsEventStart(true);
 		}
 	}
 

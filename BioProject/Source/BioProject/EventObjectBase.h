@@ -38,13 +38,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		USceneComponent* m_pBase;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* m_pMainMesh;
-
 	UPROPERTY(EditAnywhere, Category = "Component")
 		EEventType m_eventType;
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		UStaticMeshComponent* m_pMainMesh;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* m_pBoxComp;
 
