@@ -62,6 +62,8 @@ enum class EActionStatus : uint8
 	Stairsclimb,	// 階段を上がる
 	Stairscgetoff,	// 階段を下りる
 	GunWalk,		// 銃を持った歩き
+	KnifeRun,		// ナイフ所持状態の走り
+	GunRun,			// 銃所持中の走り
 	Max,			// Max用
 };
 
