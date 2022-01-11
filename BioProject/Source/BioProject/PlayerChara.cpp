@@ -217,7 +217,7 @@ void APlayerChara::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	// 走り
 	InputComponent->BindAction("Run", IE_Pressed, this, &APlayerChara::Input_Run);
-	InputComponent->BindAction("Run", IE_Released, this, &APlayerChara::Input_Run);
+	InputComponent->BindAction("Run", IE_Released, this, &APlayerChara::Input_RunEnd);
 
 	// アクション
 	InputComponent->BindAction("Action", IE_Pressed, this, &APlayerChara::Input_Action);
@@ -584,13 +584,22 @@ void APlayerChara::Input_Shooting()
 // 【入力バインド】走り
 void APlayerChara::Input_Run()
 {
-	m_playerFlags.flagBits.isRun = !m_playerFlags.flagBits.isRun;
+	m_playerFlags.flagBits.isRun = true;
 
 	// 移動速度を走りの速度に変更
-	m_playerStatus.moveSpeed = (m_playerFlags.flagBits.isRun) ? m_statusConst.runSpeed : m_statusConst.walkSpeed;
+	m_playerStatus.moveSpeed = m_statusConst.runSpeed;
 
 	// アクションの状態を走り状態に変更
-	m_ActionStatus = (m_playerFlags.flagBits.isRun) ? EActionStatus::Run : EActionStatus::Walk;
+	m_ActionStatus = EActionStatus::Run;
+}
+
+void APlayerChara::Input_RunEnd()
+{
+	m_playerFlags.flagBits.isRun = false;
+
+	m_playerStatus.moveSpeed = m_statusConst.walkSpeed;
+
+	m_ActionStatus = EActionStatus::Walk;
 }
 
 // 【入力バインド】アクション
@@ -600,6 +609,9 @@ void APlayerChara::Input_Action()
 	if (m_pOverlapActor == NULL)
 		return;
 	UE_LOG(LogTemp, Error, TEXT("DoorTouch"));
+
+	if (m_playerFlags.flagBits.isRun)
+		m_playerFlags.flagBits.isRun = false;
 
 	// 扉に触れていた場合
 	if (Cast<ADoorBase>(m_pOverlapActor))
@@ -826,6 +838,9 @@ void APlayerChara::Input_Inventory()
 void APlayerChara::Input_ChangeGun(float _axisValue)
 {
 	if (m_ActionStatus == EActionStatus::Reload)
+		return;
+
+	if (m_ActionStatus == EActionStatus::Aim)
 		return;
 
 	if (_axisValue == m_prevAxisValue)

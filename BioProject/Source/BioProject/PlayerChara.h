@@ -395,6 +395,8 @@ public:
 	// 【入力バインド】走る
 	void Input_Run();
 
+	void Input_RunEnd();
+
 	// 【入力バインド】物に対してのアクション
 	void Input_Action();
 
