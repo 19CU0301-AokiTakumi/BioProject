@@ -1,9 +1,0 @@
-D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Development\BioProject\Definitions.BioProject.h
-D:\19cu0337\bio\1206\BioProject\Source\BioProject\DoorBase.h
-D:\19cu0337\bio\1206\BioProject\Intermediate\Build\Win64\UE4Editor\Inc\BioProject\DoorBase.generated.h
-C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/BoxComponent.h
-C:\Program Files\Epic Games\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/ShapeComponent.h
-C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ShapeComponent.generated.h
-C:\Program Files\Epic Games\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\BoxComponent.generated.h
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\INCLUDE\typeinfo
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\INCLUDE\vcruntime_typeinfo.h
