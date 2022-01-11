@@ -52,7 +52,6 @@ void AKnifeControl::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 				return;
 
 			OverlapRopeDoor->HitKnife();
-			OverlapRopeDoor->SetIsLock(false);
 		}
 	}
 }

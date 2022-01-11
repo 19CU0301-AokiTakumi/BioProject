@@ -9,7 +9,6 @@
 /**
  * 
  */
-class USkeletalMeshComponent;
 
 UCLASS()
 class BIOPROJECT_API ARopeDoubleDoor : public ADoubleDoor
@@ -18,13 +17,17 @@ class BIOPROJECT_API ARopeDoubleDoor : public ADoubleDoor
 public:
 	ARopeDoubleDoor();
 
+public:
+	// 毎フレーム呼更新処理
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	// メッシュの追加
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		USkeletalMeshComponent* m_RopeLeftMesh;
+		USkeletalMeshComponent* m_RopeSkeletalMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		USkeletalMeshComponent* m_RopeLightMesh;
+		UStaticMeshComponent* m_RopeStaticMesh;
 
 	// オーバーラップ用のコリジョン(背面)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
@@ -33,6 +36,20 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data", meta = (AllowPrivateAccess = "true"))
 		bool m_AnimStart;
+
+	UPROPERTY(EditAnywhere, Category = "Data")
+		float m_AnimTime;
+
+private:
+	float m_AnimCount;
+
+	/*bool m_Vanish;*/
+
+	void AnimEnd(float _deltaTime);
+
+//public:
+//	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
+//		bool GetIsVanish()const { return m_Vanish; }
 
 public:
 	void HitKnife();
