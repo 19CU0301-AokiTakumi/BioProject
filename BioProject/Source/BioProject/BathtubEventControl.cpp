@@ -98,7 +98,7 @@ void ABathtubEventControl::DownWaterSurface(float _deltaTime)
 
 void ABathtubEventControl::ItemSpawn()
 {
-	SpawnItem = UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/Gun/AirAmmoControl.AirAmmoControl_C");
+	SpawnItem = UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/OwnerRoomKeyBP.OwnerRoomKeyBP_C");
 
 	if (SpawnItem)
 	{
