@@ -1219,3 +1219,21 @@ void APlayerChara::CountTime(float _deltaTime)
 			break;
 	}
 }
+
+void APlayerChara::KnifeVisible(bool cameraChangeOn, bool cameraChangeOff)
+{
+	if (m_pAttachObject == NULL)
+		return;
+
+	if (cameraChangeOn)
+	{
+		GetMesh()->SetVisibility(false);
+		Cast<AItemBase>(m_pAttachObject)->GetMesh()->SetVisibility(false);
+	}
+
+	if (cameraChangeOff)
+	{
+		GetMesh()->SetVisibility(true);
+		Cast<AItemBase>(m_pAttachObject)->GetMesh()->SetVisibility(true);
+	}
+}

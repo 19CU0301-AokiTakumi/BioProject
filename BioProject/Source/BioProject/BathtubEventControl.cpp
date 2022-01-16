@@ -58,9 +58,6 @@ void ABathtubEventControl::Tick(float DeltaTime)
 	if (m_DoAction && m_WaterMeshLocation >= m_WaterMaxDown)
 	{
 		DownWaterSurface(DeltaTime);
-
-		if (!m_SpawnOnce)
-			ItemSpawn();
 	}
 
 	if (SpawnItem)
@@ -68,6 +65,8 @@ void ABathtubEventControl::Tick(float DeltaTime)
 		if (m_Player->ItemDestroy)
 			SpawnItem->Destroy();
 	}
+
+	m_Player->KnifeVisible(GetDoAction(), GetActionEnd());
 }
 
 void ABathtubEventControl::DownWaterSurface(float _deltaTime)
@@ -78,6 +77,9 @@ void ABathtubEventControl::DownWaterSurface(float _deltaTime)
 		m_DoAction = false;
 		return;
 	}
+
+	if (!m_SpawnOnce)
+		ItemSpawn();
 
 	m_pBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 

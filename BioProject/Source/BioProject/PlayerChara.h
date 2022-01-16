@@ -426,6 +426,8 @@ public:
 	// Œ‚‚Á‚½‚É¶‚¶‚éƒJƒƒ‰‚Ì—h‚ê
 	void ShootCameraShake(int _deltaTime);
 
+	void KnifeVisible(bool cameraChangeOn, bool cameraChangeOff);
+
 	// ‰æŠp‚Ì’l(’Ç‰Á)
 	float m_Viewvalue;
 

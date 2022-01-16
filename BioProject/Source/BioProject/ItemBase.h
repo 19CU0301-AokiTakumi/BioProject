@@ -21,6 +21,7 @@ enum class ItemType : uint8
 	Bullet,
 	Event,
 	Book,
+	MusicScore,
 	Debug,
 };
 
