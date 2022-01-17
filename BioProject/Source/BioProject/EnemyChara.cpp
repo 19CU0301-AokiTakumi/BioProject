@@ -215,7 +215,7 @@ void AEnemyChara::UpdateAction(float _deltaTime)
 		break;
 
 	case ActionStatus::Move:
-		Move(_deltaTime);
+		//Move(_deltaTime);
 		break;
 
 	case ActionStatus::Attack:
@@ -296,20 +296,20 @@ void AEnemyChara::Idle()
 }
 
 // 移動処理
-void AEnemyChara::Move(float _deltaTime)
-{
-	// 自分とターゲットの距離を取得
-	float TargetDistanceX = m_Player->GetActorLocation().X - GetActorLocation().X;
-	float TargetDistanceY = m_Player->GetActorLocation().Y - GetActorLocation().Y;
-
-	float angle = atan2(-TargetDistanceX, TargetDistanceY);
-
-	float angleDeg = FMath::RadiansToDegrees(angle) + 90.f;
-
-	SetActorRotation(FRotator(0, angleDeg, 0));
-
-	AddActorWorldOffset(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
-}
+//void AEnemyChara::Move(float _deltaTime)
+//{
+//	// 自分とターゲットの距離を取得
+//	float TargetDistanceX = m_Player->GetActorLocation().X - GetActorLocation().X;
+//	float TargetDistanceY = m_Player->GetActorLocation().Y - GetActorLocation().Y;
+//
+//	float angle = atan2(-TargetDistanceX, TargetDistanceY);
+//
+//	float angleDeg = FMath::RadiansToDegrees(angle) + 90.f;
+//
+//	SetActorRotation(FRotator(0, angleDeg, 0));
+//
+//	AddActorWorldOffset(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
+//}
 
 void AEnemyChara::Attack()
 {

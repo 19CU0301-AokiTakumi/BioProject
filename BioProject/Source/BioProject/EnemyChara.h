@@ -84,6 +84,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Status", meta = (AllowPrivateAccess = "true"))
 		FEnemyStatus m_EnemyStatus;
 
+
 	// ヘッドショット倍率
 	UPROPERTY(EditAnywhere, Category = "Status")
 		int m_HeadShotOfSet;
@@ -137,7 +138,7 @@ private:
 
 	// ステータス関数
 	void Idle();					// 待機
-	void Move(float _deltaTime);	// 移動
+	//void Move(float _deltaTime);	// 移動
 	void Attack();					// 攻撃
 
 	void AddAtkAnimTime(float _deltaTime);	// アタックアニメーションが始まったら呼ばれる関数
@@ -149,6 +150,9 @@ public:
 	// エネミーのステータスを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "EnemyState", BlueprintPure)
 		FEnemyStatus GetEnemyStatus() const { return m_EnemyStatus; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "EnemyState", BlueprintPure)
+		ActionStatus GetEnemyState() const { return m_status; }
 
 	// ダウン回数をカウント
 	UFUNCTION(BlueprintCallable, CateGory = "EnemyState")
