@@ -340,6 +340,10 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsOpenInventory() const { return m_playerFlags.flagBits.isOpenMenu; }
 
+	// インベントリが開かれているかを渡す
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetIsOpenInventory(const bool _isOpenMenu) { m_playerFlags.flagBits.isOpenMenu = _isOpenMenu; }
+
 	// 鍵選択用のインベントリが開かれているかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool GetIsOpenKeyInventory() const { return m_playerFlags.flagBits.isOpenKeyMenu; }
