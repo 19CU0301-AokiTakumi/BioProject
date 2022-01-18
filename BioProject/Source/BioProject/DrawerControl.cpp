@@ -48,7 +48,7 @@ void ADrawerControl::BeginPlay()
 	m_pItem = Cast<AItemBase>(UMyGameInstance::GetSpawnActor(GetWorld(), *SpawnPath));
 	if (m_pItem)
 	{
-		m_pItem->SetActorLocation(GetActorLocation() + m_pItemSpawnPoint->GetRelativeLocation());
+		m_pItem->AttachToComponent(m_pDrawerMesh, { EAttachmentRule::SnapToTarget, true }, "ItemSocket");
 		m_pItem->SetActorRotation(GetActorRotation() + m_pItemSpawnPoint->GetRelativeRotation());
 		m_pItem->SetCollisionEnabled(false);
 		m_ItemMoveCount = m_pItem->GetActorLocation().Y;

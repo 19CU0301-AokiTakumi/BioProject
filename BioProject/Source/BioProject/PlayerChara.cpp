@@ -291,6 +291,7 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 		{
 			// 開く方向を設定
 			Cast<ADoorBase>(OtherActor)->SetOpenReverse(true);
+			Cast<ADoorBase>(OtherActor)->SetIsLock(false);
 		}
 
 		// 触れているアクターを保管
@@ -326,7 +327,7 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 void APlayerChara::UpdateMove(float _deltaTime)
 {
 	if ((Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
-		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu)
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget())
 		return;
 
 	if (m_pSpringArm)
@@ -367,7 +368,7 @@ void APlayerChara::UpdateMove(float _deltaTime)
 void APlayerChara::UpdateCamera(float _deltaTime)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart()
-		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu)
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget())
 		return;
 
 	if (m_pSpringArm)
@@ -502,6 +503,10 @@ void APlayerChara::Input_Shooting()
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
 		return;
+
+	if (m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu)
+		return;
+
 	// 武器を持っていない場合は処理しない
 	if (m_haveGunDatas.Num() <= 0)
 		return;
@@ -864,6 +869,15 @@ void APlayerChara::Input_Reload()
 // 【入力バインド】インベントリ処理
 void APlayerChara::Input_Inventory()
 {
+	if (m_playerFlags.flagBits.isOpenKeyMenu)
+	{
+		// インベントリの開閉を切り替え
+		m_playerFlags.flagBits.isOpenKeyMenu = false;
+
+		// インベントリの状態を設定
+		m_invenoryState = (m_playerFlags.flagBits.isOpenKeyMenu) ? EInventoryState::Open : EInventoryState::Close;
+		return;
+	}
 	// インベントリの開閉を切り替え
 	m_playerFlags.flagBits.isOpenMenu = !(m_playerFlags.flagBits.isOpenMenu);
 
