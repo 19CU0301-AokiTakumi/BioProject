@@ -12,13 +12,12 @@
 
 ABathtubEventControl::ABathtubEventControl()
 	: m_pWaterMesh(NULL)
-	, SpawnItem(NULL)
+	, m_SpawnItem(NULL)
 	, m_downSpeed(1.f)
 	, m_WaterShrink(1.f)
 	, m_WaterMeshLocation(0.f)
 	, m_WaterMaxDown(0.f)
 	, m_downShrink(0.f)
-	, m_SpawnOnce(false)
 	, m_WidgetOpen(false)
 	, m_DoAction(false)
 	, m_ActionEnd(false)
@@ -37,6 +36,10 @@ ABathtubEventControl::ABathtubEventControl()
 void ABathtubEventControl::BeginPlay()
 {
 	Super::BeginPlay();
+
+	m_SpawnItem = UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/OwnerRoomKeyBP.OwnerRoomKeyBP_C");
+	m_SpawnItem->SetActorLocation(GetActorLocation());
+	m_SpawnItem->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 
 	m_WaterMeshLocation = m_pWaterMesh->GetRelativeLocation().Z;
 	m_WaterMaxDown += m_WaterMeshLocation;
@@ -60,12 +63,6 @@ void ABathtubEventControl::Tick(float DeltaTime)
 		DownWaterSurface(DeltaTime);
 	}
 
-	if (SpawnItem)
-	{
-		if (m_Player->ItemDestroy)
-			SpawnItem->Destroy();
-	}
-
 	m_Player->KnifeVisible(GetDoAction(), GetActionEnd());
 }
 
@@ -77,9 +74,6 @@ void ABathtubEventControl::DownWaterSurface(float _deltaTime)
 		m_DoAction = false;
 		return;
 	}
-
-	if (!m_SpawnOnce)
-		ItemSpawn();
 
 	m_pBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
@@ -94,20 +88,7 @@ void ABathtubEventControl::DownWaterSurface(float _deltaTime)
 	if (m_WaterMeshLocation <= m_WaterMaxDown)
 	{
 		m_ActionEnd = true;
-		SpawnItem->SetActorEnableCollision(ECollisionEnabled::QueryOnly);
-	}
-}
-
-void ABathtubEventControl::ItemSpawn()
-{
-	SpawnItem = UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/OwnerRoomKeyBP.OwnerRoomKeyBP_C");
-
-	if (SpawnItem)
-	{
-		SpawnItem->SetActorLocation(GetActorLocation());
-		SpawnItem->SetActorEnableCollision(ECollisionEnabled::NoCollision);
-
-		m_SpawnOnce = true;
+		m_SpawnItem->SetActorEnableCollision(ECollisionEnabled::QueryOnly);
 	}
 }
 

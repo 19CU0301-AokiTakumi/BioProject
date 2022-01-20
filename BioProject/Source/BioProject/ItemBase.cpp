@@ -1,6 +1,7 @@
 
 #include "ItemBase.h"
 #include "PlayerChara.h"
+#include "MyGameInstance.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 
@@ -81,4 +82,19 @@ void AItemBase::SetCollisionEnabled(const bool _isEnable)
 {
 	if (m_pBoxComp)
 		(_isEnable) ? m_pBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly) : m_pBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AItemBase::DestroyMesh()
+{
+	if (UMyGameInstance::GetActorFromTag(this, "OwnerRoomKey"))
+	{
+		APlayerChara* m_Player = Cast<APlayerChara>(UMyGameInstance::GetActorFromTag(this, "Player"));
+		m_Player->SetIsGetItem(false);
+		m_pMesh->SetVisibility(false);
+	}
+
+	if (!UMyGameInstance::GetActorFromTag(this, "OwnerRoomKey"))
+	{
+		m_pMesh->SetVisibility(true);
+	}
 }

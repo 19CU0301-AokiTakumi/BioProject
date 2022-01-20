@@ -97,6 +97,8 @@ public:
 
 	void SetItemData(const FItemData _itemData) { m_itemData = _itemData; }
 
+	void DestroyMesh();
+
 public:
 	// 自身のアイテムデータを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)

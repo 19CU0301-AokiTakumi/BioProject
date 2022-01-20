@@ -47,8 +47,8 @@ APlayerChara::APlayerChara()
 	, m_pAttachObject(NULL)
 	, m_pTempKnife(NULL)
 	, m_pTempGun(NULL)
-	, ItemDestroy(false)
 	, m_Bathtub(NULL)
+	, m_Piano(NULL)
 	, m_pmagazine(NULL)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
@@ -120,6 +120,7 @@ void APlayerChara::BeginPlay()
 	m_PrevStatus = m_ActionStatus;
 
 	m_Bathtub = Cast<ABathtubEventControl>(UMyGameInstance::GetActorFromTag(this, "Bathtub"));
+	m_Piano = Cast<APianoEventControl>(UMyGameInstance::GetActorFromTag(this, "Piano"));
 }
 
 // 毎フレーム更新処理
@@ -697,6 +698,10 @@ void APlayerChara::Input_Action()
 		{
 			Cast<ABookEventControl>(m_pOverlapActor)->SetIsEventStart(true);
 		}
+		else if (Cast<APianoEventControl>(m_pOverlapActor))
+		{
+			Cast<APianoEventControl>(m_pOverlapActor)->SetIsEventStart(true);
+		}
 	}
 
 	// アイテムに触れていた時
@@ -708,8 +713,6 @@ void APlayerChara::Input_Action()
 		// 弾薬に触れていた時
 		if (Cast<AGunAmmoControl>(m_pOverlapActor))
 		{
-			ItemDestroy = true;
-
 			// 触れていた弾薬
 			AGunAmmoControl* OverlapAmmo = Cast<AGunAmmoControl>(m_pOverlapActor);
 
@@ -823,6 +826,9 @@ void APlayerChara::Input_Action()
 			}
 		}
 	}
+
+	if (m_pOverlapActor->ActorHasTag("OwnerRoomKey"))
+		Cast<AItemBase>(m_pOverlapActor)->DestroyMesh();
 }
 
 // 【入力バインド】リロード処理
@@ -1000,34 +1006,36 @@ void APlayerChara::SetAttachWeapon(AItemBase* _equipWeapon)
 int APlayerChara::GetCursorIndex(const int _index, const int _moveValue)
 {
 	// インベントリを開いていない場合は処理しない
-	if (m_playerFlags.flagBits.isOpenMenu == false && m_playerFlags.flagBits.isOpenKeyMenu == false && m_Bathtub->GetOpenWidget() == false)
+	if (m_playerFlags.flagBits.isOpenMenu == false && m_playerFlags.flagBits.isOpenKeyMenu == false && m_Bathtub->GetOpenWidget() == false && m_Piano->GetIsEventStart() == false)
 		return _index;
 
 	// 移動可能かのフラグを一時保管
 	bool ret = false;
 
+	if (m_playerFlags.flagBits.isOpenMenu == true || m_playerFlags.flagBits.isOpenKeyMenu == true)
+	{
+		// 上下のカーソル移動
+		if (FMath::Abs(_moveValue) % 4 == 0)
+		{
+			// 上入力
+			if (_moveValue < 0)
+				ret = _index >= 4;
+			// 下入力
+			else
+				ret = (_index + 4) < m_bagSize;
+		}
+		// 左右のカーソル移動
+		else if (FMath::Abs(_moveValue) == 1)
+		{
+			// 左入力
+			if (_moveValue < 0)
+				ret = (_index % 4) != 0;
+			// 右入力
+			else
+				ret = (_index % 4) <= 2;
+		}
+	}
 
-	// 上下のカーソル移動
-	if (FMath::Abs(_moveValue) % 4 == 0)
-	{
-		// 上入力
-		if (_moveValue < 0)
-			ret = _index >= 4;
-		// 下入力
-		else
-			ret = (_index + 4) < m_bagSize;
-	}
-	// 左右のカーソル移動
-	else if (FMath::Abs(_moveValue) == 1)
-	{
-		// 左入力
-		if (_moveValue < 0)
-			ret = (_index % 4) != 0;
-		// 右入力
-		else
-			ret = (_index % 4) <= 2;
-	}
-	
 
 	if (m_Bathtub->GetOpenWidget())
 	{
@@ -1039,6 +1047,19 @@ int APlayerChara::GetCursorIndex(const int _index, const int _moveValue)
 			// 右入力
 			else
 				return 1;
+		}
+	}
+
+	if (m_Piano->GetIsEventStart())
+	{
+		if (FMath::Abs(_moveValue) == 1)
+		{
+			// 左入力
+			if (_moveValue < 0)
+				ret = (_index % 8) != 0;
+			// 右入力
+			else
+				ret = (_index % 8) != 7;
 		}
 	}
 

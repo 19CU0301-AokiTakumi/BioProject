@@ -40,20 +40,18 @@ private:
 
 private:
 	APlayerChara* m_Player;		// ÉvÉåÉCÉÑÅ[Çäiî[
-	AActor* SpawnItem;
+	AActor* m_SpawnItem;
 
 	int m_index;
 
 	float m_WaterMeshLocation;
 	float m_WaterShrink;
 
-	bool m_SpawnOnce;
 	bool m_WidgetOpen;
 	bool m_DoAction;
 	bool m_ActionEnd;
 
 	void DownWaterSurface(float _deltaTime);
-	void ItemSpawn();
 
 public:
 	void SetDoAction(bool _doAction) { m_DoAction = _doAction; }

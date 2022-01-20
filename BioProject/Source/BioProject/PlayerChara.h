@@ -9,6 +9,7 @@
 #include "KnifeControl.h"
 #include "GunAmmoControl.h"
 #include "BathtubEventControl.h"
+#include "PianoEventControl.h"
 #include "PlayerCameraShake.h"
 #include "PlayerChara.generated.h"
 
@@ -435,28 +436,28 @@ public:
 	// 画角の値(追加)
 	float m_Viewvalue;
 
-	bool ItemDestroy;
-
 	UPROPERTY(EditAnywhere, Category = "View")
 		float m_DefaultViewvalue;
 
 private:
-		float m_CountTime;
+	float m_CountTime;
 
-		FVector m_GunLocation;
+	FVector m_GunLocation;
 
-		float m_prevAxisValue;
+	float m_prevAxisValue;
 
-		// アニメーション用
-		void CountTime(float _deltaTime);
+	// アニメーション用
+	void CountTime(float _deltaTime);
 
-		EActionStatus m_PrevStatus;
+	EActionStatus m_PrevStatus;
 
-		AKnifeControl* m_pTempKnife;
+	AKnifeControl* m_pTempKnife;
 
-		AGunControl* m_pTempGun;
+	AGunControl* m_pTempGun;
 
-		ABathtubEventControl* m_Bathtub;
+	ABathtubEventControl* m_Bathtub;
 
-		AActor* m_pmagazine;
+	APianoEventControl* m_Piano;
+
+	AActor* m_pmagazine;
 };
