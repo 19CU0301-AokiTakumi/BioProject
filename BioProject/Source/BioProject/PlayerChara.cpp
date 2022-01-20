@@ -50,6 +50,10 @@ APlayerChara::APlayerChara()
 	, m_Bathtub(NULL)
 	, m_Piano(NULL)
 	, m_pmagazine(NULL)
+	, LadderDown(false)
+	, Ladderflag(false)
+	, LadderUp(false)
+	, Ladderflag2(false)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -263,6 +267,16 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 		m_pOverlapActor = OtherActor;
 	}
 
+	if (OtherComp->ComponentHasTag("Ladder"))
+	{
+		LadderDown = true;
+	}
+
+	if (OtherComp->ComponentHasTag("Ladder2"))
+	{
+		LadderUp = true;
+	}
+
 	if (OtherComp->ComponentHasTag("floorsound"))
 	{
 		UE_LOG(LogTemp, Error, TEXT("morio"));
@@ -320,6 +334,16 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 	{
 		// インベントリを閉じる
 		m_playerFlags.flagBits.isOpenMenu = false;
+	}
+
+	if (OtherComp->ComponentHasTag("Ladder"))
+	{
+		LadderDown = false;
+	}
+
+	if (OtherComp->ComponentHasTag("Ladder2"))
+	{
+		LadderUp = false;
 	}
 }
 
@@ -644,6 +668,17 @@ void APlayerChara::Input_RunEnd()
 // 【入力バインド】アクション
 void APlayerChara::Input_Action()
 {
+	if (LadderDown == true)
+	{
+		Ladderflag = true;
+		SetActorRelativeLocation(FVector(GetActorLocation().X, GetActorLocation().Y - 400.f, GetActorLocation().Z - 500.f));
+	}
+
+	if (LadderUp == true)
+	{
+		SetActorRelativeLocation(FVector(GetActorLocation().X, GetActorLocation().Y + 400.f, GetActorLocation().Z + 500.f));
+	}
+
 	// 何にも触れていない場合は処理しない
 	if (m_pOverlapActor == NULL)
 		return;
@@ -1271,4 +1306,9 @@ void APlayerChara::KnifeVisible(bool cameraChangeOn, bool cameraChangeOff)
 		GetMesh()->SetVisibility(true);
 		Cast<AItemBase>(m_pAttachObject)->GetMesh()->SetVisibility(true);
 	}
+}
+
+void APlayerChara::SetLadderflag(bool _Ladderflag)
+{
+	Ladderflag = _Ladderflag;
 }

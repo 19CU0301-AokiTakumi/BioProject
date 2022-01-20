@@ -380,6 +380,12 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetAttachWeapon(AItemBase* _equipWeapon);
 
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		bool Ladderflag1() const { return Ladderflag; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		void SetLadderflag(bool _Ladderflag);
+
 public:
 	// 【入力バインド】キャラ移動：前後
 	void Input_MoveForward(float _axisValue);
@@ -460,4 +466,12 @@ private:
 	APianoEventControl* m_Piano;
 
 	AActor* m_pmagazine;
+
+	bool LadderDown;
+
+	bool Ladderflag;
+
+	bool LadderUp;
+
+	bool Ladderflag2;
 };
