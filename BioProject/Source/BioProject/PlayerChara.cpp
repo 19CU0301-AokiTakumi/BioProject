@@ -352,7 +352,7 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 void APlayerChara::UpdateMove(float _deltaTime)
 {
 	if ((Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
-		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget())
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget() || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
 		return;
 
 	if (m_pSpringArm)
@@ -393,7 +393,7 @@ void APlayerChara::UpdateMove(float _deltaTime)
 void APlayerChara::UpdateCamera(float _deltaTime)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart()
-		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget())
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget() || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
 		return;
 
 	if (m_pSpringArm)
@@ -691,7 +691,7 @@ void APlayerChara::Input_Action()
 	if (Cast<ADoorBase>(m_pOverlapActor))
 	{
 		// 扉に鍵がかかっていた場合
-		if (Cast<ADoorBase>(m_pOverlapActor)->GetIsLock() && Cast<ARopeDoubleDoor>(m_pOverlapActor) == NULL)
+		if (Cast<ADoorBase>(m_pOverlapActor)->GetIsLock() && Cast<ARopeDoubleDoor>(m_pOverlapActor) == NULL && m_playerFlags.flagBits.isOpenNotKeyMatchMenu == false)
 		{
 			// インベントリを開く
 			m_playerFlags.flagBits.isOpenKeyMenu = true;
