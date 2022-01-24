@@ -24,6 +24,15 @@ public:
 	// 更新
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	// オーバーラップ接触をし始めたときに呼ばれるイベント関数
+	UFUNCTION() virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	// オーバーラップ接触をし終えたときに呼ばれるイベント関数
+	UFUNCTION() void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex);
+
 private:
 	APlayerChara* m_Player;		// プレイヤーを格納
 	AActor* SpawnItem;
@@ -33,7 +42,8 @@ private:
 	int m_MaxNumber;
 
 	bool m_bIsOpen;
-	bool m_ItemOnce;
+	bool m_bIsItemOnce;
+	bool m_bIsMusicHaveCheck;
 
 	void GetItem();
 	bool KeyCheck();
@@ -54,4 +64,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "Getint", BlueprintPure)
 		int GetMaxNumber() { return m_ArrayKeybord.Num(); }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
+		bool GetScoreHaveCheck() { return m_bIsMusicHaveCheck; }
 };
