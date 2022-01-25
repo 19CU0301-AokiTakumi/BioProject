@@ -25,6 +25,7 @@ void AKnifeControl::BeginPlay()
 	if (m_pBladeBoxComp != NULL)
 	{
 		m_pBladeBoxComp->OnComponentBeginOverlap.AddDynamic(this, &AKnifeControl::OnOverlapBegin);
+		m_pBladeBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
