@@ -71,6 +71,7 @@ void APianoEventControl::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, 
 {
 	// フラグを下げる
 	m_bIsMusicHaveCheck = false;
+	SetIsEventStart(false);
 }
 
 // キーボードが押された瞬間に呼ばれる関数
