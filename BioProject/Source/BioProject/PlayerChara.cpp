@@ -514,7 +514,12 @@ void APlayerChara::Input_CameraRotateYaw(float _axisValue)
 void APlayerChara::Input_Hold()
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
+	{
+		if (m_playerFlags.flagBits.isGunHold)
+			m_playerFlags.flagBits.isGunHold = false;
 		return;
+	}
+		
 	if (m_haveGunDatas.Num() <= 0 || m_haveGunDatas[m_playerStatus.equipGunID] == NULL)
 		return;
 
