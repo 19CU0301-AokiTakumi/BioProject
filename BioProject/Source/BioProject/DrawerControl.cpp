@@ -33,13 +33,19 @@ void ADrawerControl::BeginPlay()
 {
 	Super::BeginPlay();
 	FString SpawnPath = "";
+	FString SocketName = "";
+	FRotator ItemRotation = FRotator::ZeroRotator;
 	switch (m_SpawnItem)
 	{
 		case ESpawnItem::HandGun:
 			SpawnPath = "/Game/BP/Gun/HandGunBP.HandGunBP_C";
+			SocketName = "GunSocket";
+			ItemRotation = FRotator(-90.f, 0.f, 30.f);
 			break;
 		case ESpawnItem::HandGunAmmo:
 			SpawnPath = "/Game/BP/Gun/HandGunAmmoBP.HandGunAmmoBP_C";
+			SocketName = "AmmoSocket";
+			ItemRotation = FRotator(0.f, 90.f, 0.f);
 			break;
 		default:
 			break;
@@ -48,8 +54,8 @@ void ADrawerControl::BeginPlay()
 	m_pItem = Cast<AItemBase>(UMyGameInstance::GetSpawnActor(GetWorld(), *SpawnPath));
 	if (m_pItem)
 	{
-		m_pItem->AttachToComponent(m_pDrawerMesh, { EAttachmentRule::SnapToTarget, true }, "ItemSocket");
-		m_pItem->SetActorRotation(GetActorRotation() + m_pItemSpawnPoint->GetRelativeRotation());
+		m_pItem->AttachToComponent(m_pDrawerMesh, { EAttachmentRule::SnapToTarget, true }, *SocketName);
+		m_pItem->SetActorRotation(GetActorRotation() + ItemRotation);
 		m_pItem->SetCollisionEnabled(false);
 		m_ItemMoveCount = m_pItem->GetActorLocation().Y;
 	}
@@ -84,8 +90,6 @@ void ADrawerControl::OpenDrawer(const float _deltaTime)
 	if (m_DrawerOpenCount < m_maxOpenValue)
 	{
 		m_pDrawerMesh->SetRelativeLocation(FVector(m_pDrawerMesh->GetRelativeLocation().X, m_DrawerOpenCount, m_pDrawerMesh->GetRelativeLocation().Z));
-		m_pItem->AttachToComponent(m_pDrawerMesh, { EAttachmentRule::SnapToTarget, true }, "ItemSocket");
-			
 	}
 	else
 	{
