@@ -1,11 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+//---------------------------------------------------------------
+// ファイル名	：BathtubEventControl.cpp
+// 概要			：浴槽のイベントを行う
+// 作成者		：青木拓洋
+// 作成日		：2022年12月21日 青木拓洋 作成
+// 更新履歴		：2022年12月21日 メッシュ、当たり判定の生成
+//---------------------------------------------------------------
 
 #include "PianoEventControl.h"
 #include "PlayerChara.h"
 #include "MyGameInstance.h"
 #include "Components/BoxComponent.h"
 
+// コンストラクタ
 APianoEventControl::APianoEventControl()
 	: m_Player(NULL)
 	, SpawnItem(NULL)
@@ -15,9 +21,11 @@ APianoEventControl::APianoEventControl()
 	, m_bIsItemOnce(false)
 	, m_bIsMusicHaveCheck(false)
 {
+	// 毎フレーム、このクラスのTick()を呼ぶかどうかを決めるフラグ
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+// ゲーム開始時に呼ばれる処理
 void APianoEventControl::BeginPlay()
 {
 	Super::BeginPlay();
@@ -33,6 +41,7 @@ void APianoEventControl::BeginPlay()
 	m_Player = Cast<APlayerChara>(UMyGameInstance::GetActorFromTag(this, "Player"));
 }
 
+// 毎フレームの処理
 void APianoEventControl::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -41,23 +50,30 @@ void APianoEventControl::Tick(float DeltaTime)
 		GetItem();
 }
 
+// オーバーラップ接触をし始めたときに呼ばれるイベント関数
 void APianoEventControl::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 当たっているオブジェクトがプレイヤーだった場合
 	if (Cast<APlayerChara>(OtherActor))
 	{
+		// バッグの中身を検索
 		for (int i = 0; i < Cast<APlayerChara>(OtherActor)->GetPlayerBag().Num(); i++)
 		{
+			//  バッグの中身に本が入っていたらフラグを立てる
 			if (Cast<APlayerChara>(OtherActor)->GetPlayerBag()[i].type == ItemType::MusicScore)
 				(!m_bIsOpen) ? m_bIsMusicHaveCheck = true : m_bIsMusicHaveCheck = false;
 		}
 	}
 }
+
 // オーバーラップ接触をし終えたときに呼ばれるイベント関数
 void APianoEventControl::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	// フラグを下げる
 	m_bIsMusicHaveCheck = false;
 }
 
+// キーボードが押された瞬間に呼ばれる関数
 void APianoEventControl::InputKeybord(const int _index)
 {
 	if (!m_bIsMusicHaveCheck)
@@ -85,6 +101,7 @@ void APianoEventControl::InputKeybord(const int _index)
 	m_CountNumber++;
 }
 
+// 番号があっているかを判断する関数
 bool APianoEventControl::KeyCheck()
 {
 	if (m_ArrayKeybord[m_CountNumber] == m_AnswerKeybord[m_CountNumber])
@@ -93,6 +110,7 @@ bool APianoEventControl::KeyCheck()
 	return false;
 }
 
+// アイテムをスポーンする関数
 void APianoEventControl::GetItem()
 {
 	SpawnItem = UMyGameInstance::GetSpawnActor(GetWorld(), "/Game/BP/BackyardKeyBP.BackyardKeyBP_C");
