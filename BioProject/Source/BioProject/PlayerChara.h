@@ -267,6 +267,8 @@ private:
 
 	AItemBase* m_pAttachObject;
 
+
+
 private:
 	// ˆÚ“®ˆ—
 	void UpdateMove(float _deltaTime);
@@ -453,6 +455,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "View")
 		float m_DefaultViewvalue;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool GameClear;
 
 private:
 	float m_CountTime;

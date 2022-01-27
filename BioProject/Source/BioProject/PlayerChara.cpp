@@ -54,6 +54,7 @@ APlayerChara::APlayerChara()
 	, Ladderflag(false)
 	, LadderUp(false)
 	, Ladderflag2(false)
+	, GameClear(false)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -265,6 +266,11 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 
 		// 触れているアクターを保管
 		m_pOverlapActor = OtherActor;
+	}
+
+	if (OtherActor->ActorHasTag("GameClear"))
+	{
+		GameClear = true;
 	}
 
 	if (OtherComp->ComponentHasTag("Ladder"))
