@@ -53,7 +53,7 @@ void AEnemyManager::InputPath()
 		switch (i + 1)
 		{
 		case 1:
-			PathName = "/Game/EnemyAI/ThroughEnemy.ThroughEnemy_C";
+			PathName = "/Game/BP/Enemy/DropKeyEnemyBP.DropKeyEnemyBP_C";
 			break;
 
 		case 2:
