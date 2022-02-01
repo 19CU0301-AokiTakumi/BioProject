@@ -96,15 +96,7 @@ void ADoorBase::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 		// 開いている状態でないとき開ける準備に入る
 		if (m_DoorState != State::Open && m_bIsLock == false)
 		{
-			// コリジョンを一旦無効化
-			m_pFrontBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			m_pBackBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-			m_DoorState = State::Open;
-			m_pRootBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorOpenSE, GetActorLocation());
-			m_bIsOverlapPlayer = true;
-			m_countTime = 0.f;
+			OpenSetup();
 		}
 	}
 }
@@ -140,4 +132,17 @@ void ADoorBase::CheckClose(float _deltaTime)
 	{
 		m_countTime = 0.f;
 	}
+}
+
+void ADoorBase::OpenSetup()
+{
+	// コリジョンを一旦無効化
+	m_pFrontBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	m_pBackBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	m_DoorState = State::Open;
+	m_pRootBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDoorOpenSE, GetActorLocation());
+	m_bIsOverlapPlayer = true;
+	m_countTime = 0.f;
 }

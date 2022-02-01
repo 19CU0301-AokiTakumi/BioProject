@@ -124,5 +124,9 @@ public:
 		int GetID()const { return m_id; }
 
 	// ŠJ‚­•ûŒü‚ğİ’è‚·‚é
-	void SetOpenReverse(bool _isBack) { m_bIsOpenReverse = _isBack; }
+	UFUNCTION(BlueprintCallable, CateGory = "Setup")
+		void SetOpenReverse(bool _isBack) { m_bIsOpenReverse = _isBack; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "Setup")
+		void OpenSetup();
 };
