@@ -728,13 +728,17 @@ void APlayerChara::Input_Action()
 		{
 			Cast<ABathtubEventControl>(m_pOverlapActor)->SetIsEventStart(true);
 
-			if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetIsEventStart())
-			{
-				Cast<ABathtubEventControl>(m_pOverlapActor)->PlaySound();
-			}
+			//if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetIsEventStart())
+			//{
+			//	
+			//}
 
 			if (Cast<ABathtubEventControl>(m_pOverlapActor)->GetOpenWidget())
+			{
 				Cast<ABathtubEventControl>(m_pOverlapActor)->SetDoAction(true);
+				Cast<ABathtubEventControl>(m_pOverlapActor)->PlaySound();
+			}
+				
 		}
 		else if (Cast<ADrawerControl>(m_pOverlapActor))
 		{
