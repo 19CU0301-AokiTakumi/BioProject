@@ -81,9 +81,6 @@ void ABathtubEventControl::Tick(float DeltaTime)
 	{
 		DownWaterSurface(DeltaTime);
 	}
-
-	// プレイヤーのナイフを消す処理(判定はプレイヤー側)
-	m_Player->KnifeVisible(GetDoAction(), GetActionEnd());
 }
 
 // イベント中
@@ -117,6 +114,9 @@ void ABathtubEventControl::DownWaterSurface(float _deltaTime)
 		// アイテムの当たり判定をつける
 		m_SpawnItem->SetActorEnableCollision(ECollisionEnabled::QueryOnly);
 	}
+
+	// プレイヤーのナイフを消す処理(判定はプレイヤー側)
+	m_Player->KnifeVisible(GetDoAction(), GetActionEnd());
 }
 
 // サウンド

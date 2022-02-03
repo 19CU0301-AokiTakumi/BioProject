@@ -91,6 +91,7 @@ void AItemBase::DestroyMesh()
 		APlayerChara* m_Player = Cast<APlayerChara>(UMyGameInstance::GetActorFromTag(this, "Player"));
 		m_Player->SetIsGetItem(false);
 		m_pMesh->SetVisibility(false);
+		Destroy();
 	}
 
 	if (!UMyGameInstance::GetActorFromTag(this, "OwnerRoomKey"))
