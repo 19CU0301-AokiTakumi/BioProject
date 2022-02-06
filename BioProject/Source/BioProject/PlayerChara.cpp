@@ -116,7 +116,7 @@ void APlayerChara::BeginPlay()
 	}
 
 	// 画角の初期設定(追加)
-	//m_Viewvalue = 90.f;
+	m_Viewvalue = 90.f;
 	m_pCamera->SetFieldOfView(m_DefaultViewvalue);
 
 	m_playerStatus.moveSpeed = m_statusConst.walkSpeed;
