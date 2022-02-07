@@ -358,7 +358,7 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 void APlayerChara::UpdateMove(float _deltaTime)
 {
 	if ((Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
-		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget() || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget() || (m_Bathtub->GetIsEventStart() && m_Bathtub->GetActionEnd() == false) || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
 		return;
 
 	if (m_pSpringArm)
@@ -372,7 +372,7 @@ void APlayerChara::UpdateMove(float _deltaTime)
 			AddMovementInput(forwardVec, m_CharaMoveInput.Y * m_playerStatus.moveSpeed);
 
 			const FVector rightVec = m_pSpringArm->GetRightVector();
-			AddMovementInput(rightVec, m_CharaMoveInput.X * m_playerStatus.moveSpeed);
+			AddMovementInput(rightVec, m_CharaMoveInput.X * m_statusConst.sideWalkSpeed);
 		}
 
 		// 移動時のカメラの揺れ
@@ -399,7 +399,7 @@ void APlayerChara::UpdateMove(float _deltaTime)
 void APlayerChara::UpdateCamera(float _deltaTime)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart()
-		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget() || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget() || (m_Bathtub->GetIsEventStart() && m_Bathtub->GetActionEnd() == false) || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
 		return;
 
 	if (m_pSpringArm)
@@ -712,6 +712,9 @@ void APlayerChara::Input_Action()
 		}
 		return;
 	}
+
+	if (m_playerFlags.flagBits.isGunHold)
+		return;
 
 	if (Cast<AEventObjectBase>(m_pOverlapActor))
 	{

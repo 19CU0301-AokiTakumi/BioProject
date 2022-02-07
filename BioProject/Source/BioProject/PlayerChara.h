@@ -86,6 +86,9 @@ struct FStatusConstant
 	// 歩きのスピード
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (Clampmin = 0.f, Clampmax = 1.f)) float walkSpeed;
 
+	// 横歩きのスピード
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (Clampmin = 0.f, Clampmax = 1.f)) float sideWalkSpeed;
+
 	// 走りのスピード
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (Clampmin = 0.f, Clampmax = 1.f)) float runSpeed;
 
