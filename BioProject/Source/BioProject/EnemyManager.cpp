@@ -53,7 +53,8 @@ void AEnemyManager::InputPath()
 		switch (i + 1)
 		{
 		case 1:
-			PathName = "/Game/BP/Enemy/DropKeyEnemyBP.DropKeyEnemyBP_C";
+			// UE_LOG(LogTemp, Warning, TEXT("—N‚¢‚Ä‚é‚º"))
+			PathName = "/Game/BP/Enemy/KeyEnemyCharaBP.KeyEnemyCharaBP_C";
 			break;
 
 		case 2:
