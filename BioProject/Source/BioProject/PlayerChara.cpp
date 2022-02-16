@@ -273,7 +273,7 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	{
 		GameClear = true;
 	}
-
+	
 	if (OtherComp->ComponentHasTag("Ladder"))
 	{
 		LadderDown = true;

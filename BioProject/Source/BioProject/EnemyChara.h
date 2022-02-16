@@ -138,7 +138,7 @@ private:
 
 	// ステータス関数
 	void Idle();					// 待機
-	//void Move(float _deltaTime);	// 移動
+	void Move(float _deltaTime);	// 移動
 	void Attack();					// 攻撃
 
 	void AddAtkAnimTime(float _deltaTime);	// アタックアニメーションが始まったら呼ばれる関数

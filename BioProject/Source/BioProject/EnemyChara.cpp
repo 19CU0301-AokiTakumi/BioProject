@@ -13,6 +13,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
+#include "KnifeControl.h"
 
 // コンストラクタ
 AEnemyChara::AEnemyChara()
@@ -80,10 +81,33 @@ void AEnemyChara::Tick(float DeltaTime)
 	// アニメーションの時間を加算していく関数
 	if(ReturnAttack())
 		AddAtkAnimTime(DeltaTime);
+
+	if (m_EnemyStatus.hp < 0)
+	{
+		m_status = ActionStatus::Death;
+	}
 }
 
-void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
+	if (Cast<AKnifeControl>(OtherActor))
+	{
+		m_EnemyStatus.hp -= 0.5;
+
+		UE_LOG(LogTemp, Error, TEXT("BBBBBBBBBBB"));
+
+		FVector SpawnLocation = FVector(OtherActor->GetActorLocation().X, OtherActor->GetActorLocation().Y, OtherActor->GetActorLocation().Z + 1000);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, SpawnLocation, GetMesh()->GetRelativeRotation());
+
+		if (m_pDamageSE)
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDamageSE, GetActorLocation());
+
+		(m_EnemyStatus.hp > 0) ? m_status = ActionStatus::KnockBack : m_status = ActionStatus::Death;
+
+	}
+
 	// 弾が当たっている場合
 	if (Cast<ABullet>(OtherActor))
 	{
@@ -215,7 +239,7 @@ void AEnemyChara::UpdateAction(float _deltaTime)
 		break;
 
 	case ActionStatus::Move:
-		//Move(_deltaTime);
+		Move(_deltaTime);
 		break;
 
 	case ActionStatus::Attack:
@@ -296,20 +320,20 @@ void AEnemyChara::Idle()
 }
 
 // 移動処理
-//void AEnemyChara::Move(float _deltaTime)
-//{
-//	// 自分とターゲットの距離を取得
-//	float TargetDistanceX = m_Player->GetActorLocation().X - GetActorLocation().X;
-//	float TargetDistanceY = m_Player->GetActorLocation().Y - GetActorLocation().Y;
-//
-//	float angle = atan2(-TargetDistanceX, TargetDistanceY);
-//
-//	float angleDeg = FMath::RadiansToDegrees(angle) + 90.f;
-//
-//	SetActorRotation(FRotator(0, angleDeg, 0));
-//
-//	AddActorWorldOffset(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
-//}
+void AEnemyChara::Move(float _deltaTime)
+{
+	// 自分とターゲットの距離を取得
+	float TargetDistanceX = m_Player->GetActorLocation().X - GetActorLocation().X;
+	float TargetDistanceY = m_Player->GetActorLocation().Y - GetActorLocation().Y;
+
+	float angle = atan2(-TargetDistanceX, TargetDistanceY);
+
+	float angleDeg = FMath::RadiansToDegrees(angle) + 90.f;
+
+	SetActorRotation(FRotator(0, angleDeg, 0));
+
+	AddActorWorldOffset(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
+}
 
 void AEnemyChara::Attack()
 {
