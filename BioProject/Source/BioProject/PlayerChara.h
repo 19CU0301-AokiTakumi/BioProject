@@ -136,6 +136,8 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 		bool isHaveKnife : 1;
 
 		bool isOpenNotKeyMatchMenu : 1;
+
+		bool isOpenPianoWidget : 1;
 	};
 
 	// フラグの管理をしやすくするための共用体
@@ -351,6 +353,14 @@ public:
 	// インベントリが開かれているかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetIsOpenInventory(const bool _isOpenMenu) { m_playerFlags.flagBits.isOpenMenu = _isOpenMenu; }
+
+	// インベントリが開かれているかを渡す
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		bool GetIsOpenPianoWidget() const { return m_playerFlags.flagBits.isOpenPianoWidget; }
+
+	// インベントリが開かれているかを渡す
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetIsOpenPianoWidget(const bool _isOpenMenu) { m_playerFlags.flagBits.isOpenPianoWidget = _isOpenMenu; }
 
 	// 鍵選択用のインベントリが開かれているかを渡す
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)

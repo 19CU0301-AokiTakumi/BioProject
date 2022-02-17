@@ -10,6 +10,7 @@
 
 #include "CoreMinimal.h"
 #include "EventObjectBase.h"
+#include "Sound/SoundBase.h"
 #include "PianoEventControl.generated.h"
 
 // 前方宣言
@@ -52,6 +53,8 @@ private:
 	bool m_bIsOpen;				// イベントを終えてるかを判断
 	bool m_bIsItemOnce;			// アイテムを一度だけしか生成しないようにする
 	bool m_bIsMusicHaveCheck;	// 本がインベントリにあるかをチェック
+
+	USoundBase* m_PianoSEs[8];
 
 	void GetItem();		// アイテムをスポーンする関数
 	bool KeyCheck();	// 番号があっているかを判断する関数

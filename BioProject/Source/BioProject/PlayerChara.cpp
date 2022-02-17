@@ -359,7 +359,7 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 void APlayerChara::UpdateMove(float _deltaTime)
 {
 	if ((Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
-		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget() || (m_Bathtub->GetIsEventStart() && m_Bathtub->GetActionEnd() == false) || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_playerFlags.flagBits.isOpenPianoWidget || m_Bathtub->GetOpenWidget() || (m_Bathtub->GetIsEventStart() && m_Bathtub->GetActionEnd() == false) || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
 		return;
 
 	if (m_pSpringArm)
@@ -400,7 +400,7 @@ void APlayerChara::UpdateMove(float _deltaTime)
 void APlayerChara::UpdateCamera(float _deltaTime)
 {
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart()
-		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_Bathtub->GetOpenWidget() || (m_Bathtub->GetIsEventStart() && m_Bathtub->GetActionEnd() == false) || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
+		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_playerFlags.flagBits.isOpenPianoWidget || m_Bathtub->GetOpenWidget() || (m_Bathtub->GetIsEventStart() && m_Bathtub->GetActionEnd() == false) || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
 		return;
 
 	if (m_pSpringArm)
@@ -760,6 +760,7 @@ void APlayerChara::Input_Action()
 		else if (Cast<APianoEventControl>(m_pOverlapActor))
 		{
 			Cast<APianoEventControl>(m_pOverlapActor)->SetIsEventStart(true);
+			m_playerFlags.flagBits.isOpenPianoWidget = true;
 		}
 	}
 
