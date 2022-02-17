@@ -273,7 +273,7 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	{
 		GameClear = true;
 	}
-	
+
 	if (OtherComp->ComponentHasTag("Ladder"))
 	{
 		LadderDown = true;
@@ -548,6 +548,9 @@ void APlayerChara::Input_Shooting()
 	if (m_haveGunDatas.Num() <= 0)
 		return;
 
+	if (m_ActionStatus == EActionStatus::Reload)
+		return;
+
 	// 装備している武器がナイフの時
 	if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 	{
@@ -724,8 +727,10 @@ void APlayerChara::Input_Action()
 			if (Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
 			{
 				Cast<AMessageObject>(m_pOverlapActor)->SetIsEventStart(false);
+				m_playerFlags.flagBits.isShowMessage = false;
 				return;
 			}
+			m_playerFlags.flagBits.isShowMessage = true;
 			Cast<AMessageObject>(m_pOverlapActor)->SetIsEventStart(true);
 		}
 		else if (Cast<ABathtubEventControl>(m_pOverlapActor))
@@ -892,8 +897,8 @@ void APlayerChara::Input_Reload()
 	if (m_haveGunDatas.Num() <= 0 || Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]) == NULL)
 		return;
 
-	if (m_ActionStatus == EActionStatus::Aim)
-		return;
+	/*if (m_ActionStatus == EActionStatus::Aim)
+		return;*/
 
 	AGunControl* GunControl = Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]);
 
@@ -929,6 +934,9 @@ void APlayerChara::Input_Reload()
 // 【入力バインド】インベントリ処理
 void APlayerChara::Input_Inventory()
 {
+	if (m_playerFlags.flagBits.isShowMessage)
+		return;
+
 	if (m_playerFlags.flagBits.isOpenKeyMenu)
 	{
 		// インベントリの開閉を切り替え
