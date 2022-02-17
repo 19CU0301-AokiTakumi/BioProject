@@ -80,6 +80,8 @@ void AKeyEnemyChara::Tick(float DeltaTime)
 	// アニメーションの時間を加算していく関数
 	if (ReturnAttack())
 		AddAtkAnimTime(DeltaTime);
+
+	UE_LOG(LogTemp, Error, TEXT("%d"), m_KeyEnemyStatus.hp);
 }
 
 void AKeyEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -92,6 +94,7 @@ void AKeyEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AA
 		{
 			FVector SpawnLocation = FVector(OtherActor->GetActorLocation().X, OtherActor->GetActorLocation().Y, OtherActor->GetActorLocation().Z);
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_pDamageEffect, SpawnLocation, GetMesh()->GetRelativeRotation());
+			m_status = KeyEnemyActionStatus::Death;
 		}
 
 		// SEの生成
