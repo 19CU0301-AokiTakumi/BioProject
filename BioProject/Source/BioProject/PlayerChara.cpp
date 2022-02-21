@@ -530,6 +530,9 @@ void APlayerChara::Input_Hold()
 	if (m_haveGunDatas.Num() <= 0 || m_haveGunDatas[m_playerStatus.equipGunID] == NULL)
 		return;
 
+	if (m_ActionStatus == EActionStatus::KnifeWalk || m_ActionStatus == EActionStatus::KnifeIdle || m_ActionStatus == EActionStatus::KnifeAttack || m_ActionStatus == EActionStatus::ChangeWeapon)
+		return;
+
 	// 銃を構えているかのフラグを切り替える
 	m_playerFlags.flagBits.isGunHold = !(m_playerFlags.flagBits.isGunHold);
 	m_playerStatus.moveSpeed = (m_playerFlags.flagBits.isGunHold) ? m_statusConst.gunHoldSpeed : m_statusConst.walkSpeed;
