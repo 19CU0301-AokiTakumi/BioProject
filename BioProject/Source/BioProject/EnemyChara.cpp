@@ -194,7 +194,7 @@ void AEnemyChara::Damage(AActor* Bullet, const int _atk, FName _compName)
 		(_atk / 2 < 1) ? m_EnemyStatus.knockBackPoint -= 1 : m_EnemyStatus.knockBackPoint -= _atk / 2;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("knockBackPoint = %d"), m_EnemyStatus.knockBackPoint));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("knockBackPoint = %d"), m_EnemyStatus.knockBackPoint));
 
 	if (m_EnemyStatus.knockBackPoint <= 0)
 	{
@@ -211,7 +211,7 @@ void AEnemyChara::Damage(AActor* Bullet, const int _atk, FName _compName)
 		m_EnemyStatus.knockBackPoint = m_EnemyStatus.maxDownPoint;
 		m_EnemyStatus.knockBackPoint -= overDownPoint;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("hp = %d,knockBackPoint = %d"), m_EnemyStatus.hp, m_EnemyStatus.knockBackPoint));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("hp = %d,knockBackPoint = %d"), m_EnemyStatus.hp, m_EnemyStatus.knockBackPoint));
 	}
 
 	Cast<ABullet>(Bullet)->SetIsDestoy(true);

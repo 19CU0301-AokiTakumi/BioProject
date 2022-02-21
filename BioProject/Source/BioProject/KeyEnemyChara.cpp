@@ -127,7 +127,7 @@ void AKeyEnemyChara::UpdateRay()
 		float Y = End.X * sin(radTheta) + End.Y * cos(radTheta);
 		FVector End2 = FVector(X, Y, End.Z) + GetActorLocation();
 
-		DrawDebugLine(GetWorld(), m_BodyCollisionPos, End2, FColor::Blue, false, 1.0f);
+		//DrawDebugLine(GetWorld(), m_BodyCollisionPos, End2, FColor::Blue, false, 1.0f);
 
 		// コリジョン判定で無視する項目を指定（今回はこのActor自分自身。thisポインタで指定）
 		FCollisionQueryParams CollisionParams;
@@ -173,7 +173,7 @@ void AKeyEnemyChara::Damage(AActor* Bullet, const int _atk, FName _compName)
 		(_atk / 2 < 1) ? m_KeyEnemyStatus.knockBackPoint -= 1 : m_KeyEnemyStatus.knockBackPoint -= _atk / 2;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("knockBackPoint = %d"), m_KeyEnemyStatus.knockBackPoint));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("knockBackPoint = %d"), m_KeyEnemyStatus.knockBackPoint));
 
 	if (m_KeyEnemyStatus.knockBackPoint <= 0)
 	{
@@ -190,7 +190,7 @@ void AKeyEnemyChara::Damage(AActor* Bullet, const int _atk, FName _compName)
 		m_KeyEnemyStatus.knockBackPoint = m_KeyEnemyStatus.maxDownPoint;
 		m_KeyEnemyStatus.knockBackPoint -= overDownPoint;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("hp = %d,knockBackPoint = %d"), m_KeyEnemyStatus.hp, m_KeyEnemyStatus.knockBackPoint));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("hp = %d,knockBackPoint = %d"), m_KeyEnemyStatus.hp, m_KeyEnemyStatus.knockBackPoint));
 	}
 
 	Cast<ABullet>(Bullet)->SetIsDestoy(true);

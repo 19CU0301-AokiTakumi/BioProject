@@ -612,7 +612,7 @@ void APlayerChara::Input_Shooting()
 	// 弾の弾着位置
 	FVector EndOffset = FVector(0.f, 0.f, 0.f);
 	FVector End = GetActorLocation() + EndOffset + m_pCamera->GetRelativeLocation() + m_pSpringArm->GetRelativeLocation() + m_pCamera->GetForwardVector() * 10000.f;
-	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f);
 	// 仕事してない。仕事しろ（怒り）
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
@@ -1236,7 +1236,7 @@ void APlayerChara::CountTime(float _deltaTime)
 		case EActionStatus::Shot:
 			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::Shot])
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Aho"), m_ActionStatus));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Aho"), m_ActionStatus));
 				if (m_playerFlags.flagBits.isShoot == true)
 				{
 					m_ActionStatus = EActionStatus::GunIdle;
