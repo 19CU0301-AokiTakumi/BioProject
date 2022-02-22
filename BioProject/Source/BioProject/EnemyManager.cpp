@@ -54,11 +54,12 @@ void AEnemyManager::InputPath()
 		{
 		case 1:
 			// UE_LOG(LogTemp, Warning, TEXT("—N‚¢‚Ä‚é‚º"))
-			PathName = "/Game/BP/Enemy/KeyEnemyCharaBP.KeyEnemyCharaBP_C";
+			PathName = "/Game/BP/Enemy/DropKeyEnemyBP.DropKeyEnemyBP_C";
 			break;
 
 		case 2:
-			PathName = "/Game/EnemyAI/ShutterEnemyBP.ShutterEnemyBP_C";
+			UE_LOG(LogTemp, Warning, TEXT("—N‚¢‚Ä‚é‚º"));
+			PathName = "/Game/EnemyAI/NewEnemyBP.NewEnemyBP_C";
 			break;
 
 		case 3:
