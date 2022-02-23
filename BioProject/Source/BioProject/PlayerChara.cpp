@@ -53,7 +53,8 @@ APlayerChara::APlayerChara()
 	, LadderDown(false)
 	, Ladderflag(false)
 	, LadderUp(false)
-	, Ladderflag2(false)
+	, Ladderflag3(false)
+	, Ladderflag4(false)
 	, GameClear(false)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
@@ -705,6 +706,7 @@ void APlayerChara::Input_Action()
 
 	if (LadderUp == true)
 	{
+		Ladderflag3 = true;
 		SetActorRelativeLocation(FVector(GetActorLocation().X, GetActorLocation().Y + 400.f, GetActorLocation().Z + 500.f));
 	}
 
@@ -1157,6 +1159,8 @@ void APlayerChara::AfterDeath(float _deltaTime)
 {
 	m_CountTime += _deltaTime;
 
+	GetMesh()->SetVisibility(false);
+
 	FRotator camRot = m_pCamera->GetRelativeRotation();
 
 	if (m_pCamera->GetRelativeRotation().Pitch < 85.f)
@@ -1300,7 +1304,19 @@ void APlayerChara::CountTime(float _deltaTime)
 		{
 			if (m_CountTime >= AnimEndFrame[(int)EActionStatus::KnifeAttack])
 			{
-				m_ActionStatus = EActionStatus::KnifeIdle;
+				if (m_CharaMoveInput.X == 0 && m_CharaMoveInput.Y == 0)
+				{
+					m_ActionStatus = EActionStatus::KnifeIdle;
+				}
+				else if(m_playerStatus.moveSpeed == m_statusConst.walkSpeed)
+				{
+					m_ActionStatus = EActionStatus::KnifeWalk;
+				}
+
+				else if (m_playerStatus.moveSpeed == m_statusConst.runSpeed)
+				{
+					m_ActionStatus = EActionStatus::KnifeRun;
+				}
 				m_CountTime = 0.f;
 
 				Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(false);
@@ -1359,4 +1375,9 @@ void APlayerChara::KnifeVisible(bool cameraChangeOn, bool cameraChangeOff)
 void APlayerChara::SetLadderflag(bool _Ladderflag)
 {
 	Ladderflag = _Ladderflag;
+}
+
+void APlayerChara::SetLadderflag2(bool _Ladderflag)
+{
+	Ladderflag3 = _Ladderflag;
 }

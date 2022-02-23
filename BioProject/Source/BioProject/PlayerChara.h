@@ -410,6 +410,12 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "GetData")
 		void SetLadderflag(bool _Ladderflag);
 
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		bool Ladderflag2() const { return Ladderflag3; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+		void SetLadderflag2(bool _Ladderflag);
+
 public:
 	// 【入力バインド】キャラ移動：前後
 	void Input_MoveForward(float _axisValue);
@@ -500,5 +506,8 @@ private:
 
 	bool LadderUp;
 
-	bool Ladderflag2;
+	bool Ladderflag3;
+
+	bool Ladderflag4;
+
 };
