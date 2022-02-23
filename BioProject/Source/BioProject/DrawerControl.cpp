@@ -40,7 +40,7 @@ void ADrawerControl::BeginPlay()
 		case ESpawnItem::HandGun:
 			SpawnPath = "/Game/BP/Gun/HandGunBP.HandGunBP_C";
 			SocketName = "GunSocket";
-			ItemRotation = FRotator(-90.f, 0.f, 30.f);
+			ItemRotation = FRotator(0.f, 0.f, 90.f);
 			break;
 		case ESpawnItem::HandGunAmmo:
 			SpawnPath = "/Game/BP/Gun/HandGunAmmoBP.HandGunAmmoBP_C";

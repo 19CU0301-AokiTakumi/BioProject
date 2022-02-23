@@ -363,6 +363,9 @@ void APlayerChara::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 // 移動処理
 void APlayerChara::UpdateMove(float _deltaTime)
 {
+	if (m_playerStatus.hp <= 0)
+		return;
+
 	if ((Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart())
 		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_playerFlags.flagBits.isOpenPianoWidget || m_Bathtub->GetOpenWidget() || (m_Bathtub->GetIsEventStart() && m_Bathtub->GetActionEnd() == false) || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
 		return;
@@ -404,6 +407,9 @@ void APlayerChara::UpdateMove(float _deltaTime)
 //　カメラの更新処理
 void APlayerChara::UpdateCamera(float _deltaTime)
 {
+	if (m_playerStatus.hp <= 0)
+		return;
+
 	if (Cast<AMessageObject>(m_pOverlapActor) && Cast<AMessageObject>(m_pOverlapActor)->GetIsEventStart()
 		|| m_playerFlags.flagBits.isOpenMenu || m_playerFlags.flagBits.isOpenKeyMenu || m_playerFlags.flagBits.isOpenPianoWidget || m_Bathtub->GetOpenWidget() || (m_Bathtub->GetIsEventStart() && m_Bathtub->GetActionEnd() == false) || m_playerFlags.flagBits.isOpenNotKeyMatchMenu)
 		return;
@@ -1152,12 +1158,18 @@ void APlayerChara::AfterDeath(float _deltaTime)
 	m_CountTime += _deltaTime;
 
 	FRotator camRot = m_pCamera->GetRelativeRotation();
-	float camPitchdown = camRot.Pitch + 5.f * m_CountTime;
-	m_pCamera->SetRelativeRotation(FRotator(camPitchdown, camRot.Yaw, camRot.Roll));
+
+	if (m_pCamera->GetRelativeRotation().Pitch < 85.f)
+	{
+		float camPitchdown = camRot.Pitch + 5.f * m_CountTime;
+		m_pCamera->SetRelativeRotation(FRotator(camPitchdown, camRot.Yaw, camRot.Roll));
+	}
+	
 
 	FVector camLoc = m_pCamera->GetRelativeLocation();
-	float camZdown = camLoc.Z - 1.f * m_CountTime;
-	m_pCamera->SetRelativeLocation(FVector(camLoc.X, camLoc.Y, camZdown));
+	float camZdown = camLoc.Z - 0.5f * m_CountTime;
+	if (m_pCamera->GetRelativeLocation().Z >= -30.f)
+		m_pCamera->SetRelativeLocation(FVector(camLoc.X, camLoc.Y, camZdown));
 
 	if (m_CountTime > 2.f)
 		m_afterDead = true;
