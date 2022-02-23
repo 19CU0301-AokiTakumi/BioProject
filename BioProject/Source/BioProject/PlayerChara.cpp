@@ -143,6 +143,11 @@ void APlayerChara::Tick(float DeltaTime)
 	// 画角変更
 	Changeview(DeltaTime);
 
+	if (m_playerStatus.hp <= 0)
+	{
+		AfterDeath(DeltaTime);
+	}
+
 	if (m_haveGunDatas.Num() > 0 && Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 	{
 		Cast<AGunControl>(m_haveGunDatas[m_playerStatus.equipGunID])->CheckFireRate(DeltaTime);
@@ -1151,7 +1156,7 @@ void APlayerChara::AfterDeath(float _deltaTime)
 	m_pCamera->SetRelativeRotation(FRotator(camPitchdown, camRot.Yaw, camRot.Roll));
 
 	FVector camLoc = m_pCamera->GetRelativeLocation();
-	float camZdown = camLoc.Z - 10.f * m_CountTime;
+	float camZdown = camLoc.Z - 1.f * m_CountTime;
 	m_pCamera->SetRelativeLocation(FVector(camLoc.X, camLoc.Y, camZdown));
 
 	if (m_CountTime > 2.f)
