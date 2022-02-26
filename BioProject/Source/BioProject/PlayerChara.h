@@ -138,6 +138,8 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 		bool isOpenNotKeyMatchMenu : 1;
 
 		bool isOpenPianoWidget : 1;
+
+		bool isShowInventoryWidget : 1;
 	};
 
 	// ÉtÉâÉOÇÃä«óùÇÇµÇ‚Ç∑Ç≠Ç∑ÇÈÇΩÇﬂÇÃã§ópëÃ
@@ -397,6 +399,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetIsShowGetItem(const bool _isShowGetItem) { m_playerFlags.flagBits.isShowGetItem = _isShowGetItem; }
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetIsShowInventoryWidget(const bool _isShowInventoryWidget) { m_playerFlags.flagBits.isShowInventoryWidget = _isShowInventoryWidget; }
 
 	UFUNCTION(BlueprintCallable, CateGory = "GetData")
 		FGunData GetEquipGunData() const;

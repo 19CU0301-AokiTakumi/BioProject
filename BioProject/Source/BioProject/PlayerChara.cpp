@@ -542,7 +542,7 @@ void APlayerChara::Input_Hold()
 	if (m_haveGunDatas.Num() <= 0 || m_haveGunDatas[m_playerStatus.equipGunID] == NULL)
 		return;
 
-	if (m_ActionStatus == EActionStatus::KnifeWalk || m_ActionStatus == EActionStatus::KnifeIdle || m_ActionStatus == EActionStatus::KnifeAttack || m_ActionStatus == EActionStatus::ChangeWeapon)
+	if (m_ActionStatus == EActionStatus::KnifeWalk || m_ActionStatus == EActionStatus::KnifeIdle || m_ActionStatus == EActionStatus::KnifeAttack || m_ActionStatus == EActionStatus::ChangeWeapon || m_ActionStatus == EActionStatus::KnifeRun)
 		return;
 
 	// 銃を構えているかのフラグを切り替える
@@ -569,6 +569,7 @@ void APlayerChara::Input_Shooting()
 	// 装備している武器がナイフの時
 	if (Cast<AKnifeControl>(m_haveGunDatas[m_playerStatus.equipGunID]))
 	{
+		if(m_ActionStatus != EActionStatus::KnifeAttack)
 		// ナイフの刀身のコリジョン判定を有効にする
 		Cast<AKnifeControl>(m_pAttachObject)->SetAttckColEnable(true);
 
@@ -698,6 +699,9 @@ void APlayerChara::Input_RunEnd()
 // 【入力バインド】アクション
 void APlayerChara::Input_Action()
 {
+	if (m_playerFlags.flagBits.isOpenMenu)
+		return;
+
 	if (LadderDown == true)
 	{
 		Ladderflag = true;
@@ -952,6 +956,9 @@ void APlayerChara::Input_Reload()
 void APlayerChara::Input_Inventory()
 {
 	if (m_playerFlags.flagBits.isShowMessage)
+		return;
+
+	if (m_playerFlags.flagBits.isShowInventoryWidget)
 		return;
 
 	if (m_playerFlags.flagBits.isOpenKeyMenu)

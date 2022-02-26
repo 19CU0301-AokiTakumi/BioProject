@@ -331,8 +331,8 @@ void AEnemyChara::Move(float _deltaTime)
 	float angleDeg = FMath::RadiansToDegrees(angle) + 90.f;
 
 	SetActorRotation(FRotator(0, angleDeg, 0));
-
-	AddActorWorldOffset(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
+	UE_LOG(LogTemp, Error, TEXT("EnemySpeed : %s"), *(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime).ToString());
+	AddMovementInput(GetActorForwardVector() * m_EnemyStatus.moveSpeed * _deltaTime);
 }
 
 void AEnemyChara::Attack()
