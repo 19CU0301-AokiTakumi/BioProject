@@ -106,6 +106,8 @@ void APlayerChara::BeginPlay()
 {
 	Super::BeginPlay();
 
+	DisableInput(Cast<APlayerController>(this));
+
 	//	バッグの中身を初期化
 	m_ItemDatas.Init(FItemData::NoneData(), m_bagSize);
 
@@ -134,6 +136,11 @@ void APlayerChara::BeginPlay()
 void APlayerChara::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (m_playerFlags.flagBits.isCanMove)
+		EnableInput(Cast<APlayerController>(this));
+	else
+		return;
 
 	UpdateMove(DeltaTime);
 	UpdateCamera(DeltaTime);

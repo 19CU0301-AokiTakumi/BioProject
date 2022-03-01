@@ -104,42 +104,44 @@ class BIOPROJECT_API APlayerChara : public ACharacter
 	struct FPlayerFlagBits	// ※16個まで
 	{
 		// アイテムを取得したか
-		bool isItemGet : 1;		// 1
+		bool isItemGet : 1;			// 1
 
 		// アイテムに触れているか
-		bool isItemTouch : 1;	// 2
+		bool isItemTouch : 1;		// 2
 
 		// 銃を所持しているか
-		bool isHaveGun : 1;		// 3
+		bool isHaveGun : 1;			// 3
 
 		// 銃を構えているか
-		bool isGunHold : 1;		// 4
+		bool isGunHold : 1;			// 4
 
 		// メニューを開いているか
-		bool isOpenMenu : 1;	// 5
+		bool isOpenMenu : 1;		// 5
 
 		// 撃っているかどうか
-		bool isShoot	: 1;    // 6
+		bool isShoot	: 1;		// 6
 
 		// 取得時にアイテムを表示するか
-		bool isShowGetItem : 1;	// 6
+		bool isShowGetItem : 1;		// 6
 
 		// イベントオブジェクトに触れているか
 		bool isEventObjTouch : 1;	// 7
 
-		bool isRun : 1;
+		bool isRun : 1;				// 8
 
-		bool isShowMessage : 1;
+		bool isShowMessage : 1;		// 9
 
-		bool isOpenKeyMenu : 1;
+		bool isOpenKeyMenu : 1;		// 10
 
-		bool isHaveKnife : 1;
+		bool isHaveKnife : 1;		// 11
 
-		bool isOpenNotKeyMatchMenu : 1;
+		bool isOpenNotKeyMatchMenu : 1;	// 12
 
-		bool isOpenPianoWidget : 1;
+		bool isOpenPianoWidget : 1;		// 13
 
-		bool isShowInventoryWidget : 1;
+		bool isShowInventoryWidget : 1;	// 14
+
+		bool isCanMove;					// 15
 	};
 
 	// フラグの管理をしやすくするための共用体
@@ -418,8 +420,11 @@ public:
 	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
 		bool Ladderflag2() const { return Ladderflag3; }
 
-	UFUNCTION(BlueprintCallable, CateGory = "GetData")
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
 		void SetLadderflag2(bool _Ladderflag);
+
+	UFUNCTION(BlueprintCallable, CateGory = "SetData")
+		void SetIsCanMove(bool _isCanMove) { m_playerFlags.flagBits.isCanMove = _isCanMove; }
 
 public:
 	// 【入力バインド】キャラ移動：前後
