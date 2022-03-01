@@ -303,7 +303,7 @@ void APlayerChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), m_pDiningSE, FVector(-3300.f, 450.f, 500.f));
 	}
 
-	if (Cast<AEventObjectBase>(OtherActor))
+	if (Cast<AEventObjectBase>(OtherActor) || Cast<ADoorBase>(OtherActor))
 	{
 		m_playerFlags.flagBits.isEventObjTouch = true;
 

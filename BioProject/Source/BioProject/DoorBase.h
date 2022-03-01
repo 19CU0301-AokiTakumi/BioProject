@@ -71,6 +71,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* m_pBackBoxComp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
+		USceneComponent* m_pIconPosition;
+
 	// Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é‚©
 	UPROPERTY(EditAnywhere, Category = "State")
 		bool m_bIsLock;
@@ -129,4 +132,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, CateGory = "Setup")
 		void OpenSetup();
+
+	UFUNCTION(BlueprintCallable, CateGory = "GetData", BlueprintPure)
+		FVector GetIconPosition() const { return m_pIconPosition->GetRelativeLocation(); }
 };

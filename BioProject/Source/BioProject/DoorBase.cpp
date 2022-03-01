@@ -21,6 +21,7 @@ ADoorBase::ADoorBase()
 	, m_bIsOverlapPlayer(false)
 	, m_pDoorOpenSE(NULL)
 	, m_pDoorCloseSE(NULL)
+	, m_pIconPosition(NULL)
 {
 	// 毎フレームTick()処理を呼ぶかどうか
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,6 +29,9 @@ ADoorBase::ADoorBase()
 	// ベースの追加
 	m_pBase = CreateDefaultSubobject<USceneComponent>(TEXT("m_pBase"));
 	RootComponent = m_pBase;
+
+	m_pIconPosition = CreateDefaultSubobject<USceneComponent>(TEXT("m_pIconPos"));
+	m_pIconPosition->SetupAttachment(RootComponent);
 
 	// 衝突判定用のボックスコンポーネント生成
 	m_pRootBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("MainCollision"));
