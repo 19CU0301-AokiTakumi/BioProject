@@ -941,6 +941,12 @@ void APlayerChara::Input_Reload()
 	{
 		if (m_haveAmmoDatas[EcuipGunTypeIndex].ammoStock)
 		{
+			if (GunControl->GetGunData().ammoStock >= 12)
+				return;
+
+			if (m_ActionStatus == EActionStatus::Aim)
+				return;
+
 			// ステータスをリロードに
 			m_ActionStatus = EActionStatus::Reload;
 
