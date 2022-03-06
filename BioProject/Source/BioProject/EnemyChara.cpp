@@ -94,7 +94,7 @@ void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 
 	if (Cast<AKnifeControl>(OtherActor))
 	{
-		m_EnemyStatus.hp -= 0.5;
+		m_EnemyStatus.hp -= 0.1;
 
 		UE_LOG(LogTemp, Error, TEXT("BBBBBBBBBBB"));
 
