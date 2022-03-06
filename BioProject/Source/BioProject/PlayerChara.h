@@ -16,6 +16,7 @@
 // 前方宣言
 class USpringArmComponent;
 class UCameraComponent;
+class UPianoEventControl;
 
 // プレイヤーのステータスをまとめた構造体
 USTRUCT(BlueprintType)

@@ -52,7 +52,7 @@ private:
 
 	bool m_bIsOpen;				// イベントを終えてるかを判断
 	bool m_bIsItemOnce;			// アイテムを一度だけしか生成しないようにする
-	bool m_bIsMusicHaveCheck;	// 本がインベントリにあるかをチェック
+	//bool m_bIsMusicHaveCheck;	// 本がインベントリにあるかをチェック
 
 	USoundBase* m_PianoSEs[8];
 
@@ -84,4 +84,6 @@ public:
 	// インベントリに本が入っているかをゲットする関数
 	UFUNCTION(BlueprintCallable, CateGory = "GetBool", BlueprintPure)
 		bool GetScoreHaveCheck() { return m_bIsMusicHaveCheck; }
+
+	bool m_bIsMusicHaveCheck;	// 本がインベントリにあるかをチェック
 };

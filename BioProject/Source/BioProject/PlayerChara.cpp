@@ -21,7 +21,7 @@
 #include "Engine/Engine.h"
 #include "MessageObject.h"
 #include "RopeDoubleDoor.h"
-
+#include "PianoEventControl.h"
 // コンストラクタ
 APlayerChara::APlayerChara()
 	: m_pSpringArm(NULL)
@@ -786,8 +786,11 @@ void APlayerChara::Input_Action()
 		}
 		else if (Cast<APianoEventControl>(m_pOverlapActor))
 		{
-			Cast<APianoEventControl>(m_pOverlapActor)->SetIsEventStart(true);
-			m_playerFlags.flagBits.isOpenPianoWidget = true;
+			if (m_Piano->m_bIsMusicHaveCheck == true)
+			{
+				Cast<APianoEventControl>(m_pOverlapActor)->SetIsEventStart(true);
+				m_playerFlags.flagBits.isOpenPianoWidget = true;
+			}
 		}
 	}
 
