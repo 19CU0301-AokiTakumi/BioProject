@@ -839,6 +839,7 @@ void APlayerChara::Input_Action()
 			// アイテムに触れていない状態にする
 			m_playerFlags.flagBits.isItemTouch = false;
 
+			m_pOverlapActor->Destroy();
 
 			if (isHaveTypeAmmo)
 				return;
@@ -912,6 +913,8 @@ void APlayerChara::Input_Action()
 
 				// アイテムに触れていない状態にする
 				m_playerFlags.flagBits.isItemTouch = false;
+
+				m_pOverlapActor->Destroy();
 				break;
 			}
 		}

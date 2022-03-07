@@ -49,13 +49,13 @@ void AItemBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// プレイヤーが「自身から離れていない」かつ「アクションキーを入力している」場合
-	if (m_pOtherPlayer && m_pOtherPlayer->IsGetItem())
-	{
-		m_pOtherPlayer->SetIsGetItem(false);
+	//if (m_pOtherPlayer && m_pOtherPlayer->IsGetItem())
+	//{
+	//	m_pOtherPlayer->SetIsGetItem(false);
 
-		// 自分自身を消す
-		Destroy();
-	}
+	//	// 自分自身を消す
+	//	Destroy();
+	//}
 }
 
 // オーバーラップ接触をし始めたときに呼ばれるイベント関数
