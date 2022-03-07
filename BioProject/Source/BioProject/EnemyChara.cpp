@@ -84,8 +84,10 @@ void AEnemyChara::Tick(float DeltaTime)
 
 	if (m_EnemyStatus.hp < 0)
 	{
-		m_status = ActionStatus::Death;
+		//m_status = ActionStatus::Death;
 	}
+
+	UE_LOG(LogTemp, Error, TEXT("%f"), m_EnemyStatus.hp);
 }
 
 void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
@@ -94,7 +96,7 @@ void AEnemyChara::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 
 	if (Cast<AKnifeControl>(OtherActor))
 	{
-		m_EnemyStatus.hp -= 0.1;
+		m_EnemyStatus.hp -= 1;
 
 		UE_LOG(LogTemp, Error, TEXT("BBBBBBBBBBB"));
 
